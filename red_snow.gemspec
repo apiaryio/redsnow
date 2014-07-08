@@ -11,6 +11,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{Ruby bindings for SnowCrash}
   gem.summary       = %q{Ruby bindings for SnowCrash}
   gem.homepage      = "https://github.com/apiaryio/redsnow"
+  gem.license       = "MIT"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
