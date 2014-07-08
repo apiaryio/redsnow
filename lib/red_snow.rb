@@ -4,7 +4,13 @@ require "ffi"
 module RedSnow
 
   extend FFI::Library
-  ffi_lib File.expand_path("../../ext/snowcrash/build/out/Release/libsnowcrash.dylib", __FILE__)
+
+  prefix = ""
+  if FFI::Platform.unix?
+    prefix = "lib.target/"
+  end
+
+  ffi_lib File.expand_path("../../ext/snowcrash/build/out/Release/#{prefix}libsnowcrash.#{FFI::Platform::LIBSUFFIX}", __FILE__)
 
   attach_function("parse", "sc_c_parse", [ :string, :int, :pointer, :pointer ], :int)
 

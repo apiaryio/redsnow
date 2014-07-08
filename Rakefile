@@ -1,11 +1,16 @@
 require "bundler/gem_tasks"
 require 'rake/testtask'
+require 'ffi'
 
 task :default => :test
 
 desc "Compile extension"
 task :compile do
-  path = File.expand_path("ext/snowcrash/build/out/Release/libsnowcrash.dylib", File.dirname(__FILE__))
+  prefix = ""
+  if FFI::Platform.unix?
+    prefix = "lib.target/"
+  end
+  path = File.expand_path("ext/snowcrash/build/out/Release/#{prefix}libsnowcrash.#{FFI::Platform::LIBSUFFIX}", File.dirname(__FILE__))
   puts path
   if !File.exists?(path) || ENV['RECOMPILE']
     puts "Compiling extension..."
