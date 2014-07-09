@@ -6,9 +6,9 @@ task :default => :test
 
 desc "Compile extension"
 task :compile do
-  prefix = ""
-  if FFI::Platform.unix?
-    prefix = "lib.target/"
+  prefix = "lib.target/"
+  if FFI::Platform.mac?
+    prefix = ""
   end
   path = File.expand_path("ext/snowcrash/build/out/Release/#{prefix}libsnowcrash.#{FFI::Platform::LIBSUFFIX}", File.dirname(__FILE__))
   puts path
