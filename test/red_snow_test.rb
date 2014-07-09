@@ -32,7 +32,7 @@ class RedSnowTest < Test::Unit::TestCase
   context "API Blueprint parser" do
     should "parses API name" do
       result = RedSnow.parse("# My API")
-      assert_equal result.name, 'My API'
+      assert_equal "My API", result.name
     end
 
     should "parses API description" do
@@ -42,8 +42,8 @@ class RedSnowTest < Test::Unit::TestCase
         STR
 
       result = RedSnow.parse(source.unindent)
-      assert_equal result.name, ""
-      assert_equal result.description, "**description**\n"
+      assert_equal "", result.name
+      assert_equal "**description**\n", result.description
     end
 
     should "parses resource group" do
@@ -57,6 +57,60 @@ class RedSnowTest < Test::Unit::TestCase
       assert_equal 1, result.resource_groups.count
       assert_equal "Name", result.resource_groups[0].name
       assert_equal "_description_\n", result.resource_groups[0].description
+    end
+
+    should "parses resource" do
+
+      source = <<-STR
+        # My Resource [/resource]
+        Resource description
+
+        + Model (text/plain)
+
+                Hello World
+
+        ## Retrieve Resource [GET]
+        Method description
+
+        + Response 200 (text/plain)
+
+          Response description
+
+          + Headers
+
+                    X-Response-Header: Fighter
+
+          + Body
+
+                    Y.T.
+
+          + Schema
+
+                    Kourier
+
+        ## Delete Resource [DELETE]
+
+        + Response 200
+
+            [My Resource][]
+
+        STR
+
+      result = RedSnow.parse(source.unindent)
+
+      assert_equal 1, result.resource_groups.count
+
+      resourceGroup = result.resource_groups[0]
+      assert_equal "", resourceGroup.name
+      assert_equal "", resourceGroup.description
+
+      assert_equal 1, resourceGroup.resources.count
+
+      resource = resourceGroup.resources[0]
+      assert_equal "/resource", resource.uri_template
+      assert_equal "My Resource", resource.name
+      assert_equal "Resource description\n\n", resource.description
+
     end
 
   end
