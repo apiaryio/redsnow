@@ -1,4 +1,5 @@
 require '_helper'
+require 'unindent'
 
 class RedSnowTest < Test::Unit::TestCase
 
@@ -28,11 +29,36 @@ class RedSnowTest < Test::Unit::TestCase
     end
   end
 
-  context "RedSnow" do
-    should "convert API Blueprint to AST" do
+  context "API Blueprint parser" do
+    should "parses API name" do
       result = RedSnow.parse("# My API")
-      assert_equal result, 'My API'
+      assert_equal result.name, 'My API'
     end
+
+    should "parses API description" do
+
+      source = <<-STR
+        **description**
+        STR
+
+      result = RedSnow.parse(source.unindent)
+      assert_equal result.name, ""
+      assert_equal result.description, "**description**\n"
+    end
+
+    should "parses resource group" do
+
+      source = <<-STR
+        # Group Name
+        _description_
+      STR
+
+      result = RedSnow.parse(source.unindent)
+      assert_equal 1, result.resource_groups.count
+      assert_equal "Name", result.resource_groups[0].name
+      assert_equal "_description_\n", result.resource_groups[0].description
+    end
+
   end
 
 end

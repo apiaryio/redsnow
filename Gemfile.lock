@@ -34,6 +34,7 @@ GEM
       ansi
       minitest (~> 4)
     tzinfo (0.3.39)
+    unindent (1.0)
 
 PLATFORMS
   ruby
@@ -43,3 +44,4 @@ DEPENDENCIES
   red_snow!
   shoulda
   turn
+  unindent
