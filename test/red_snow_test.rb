@@ -8,22 +8,22 @@ class RedSnowTest < Test::Unit::TestCase
       blueprint = FFI::MemoryPointer.new :pointer
       result = FFI::MemoryPointer.new :pointer
 
-      ret = RedSnow::Binding.parse("meta: data\nfoo:bar\n#XXXX\ndescription for it", 0, result, blueprint)
+      ret = RedSnow::Binding.sc_c_parse("meta: data\nfoo:bar\n#XXXX\ndescription for it", 0, result, blueprint)
 
       blueprint = blueprint.get_pointer(0)
       result = result.get_pointer(0)
-      assert_equal "XXXX", RedSnow::Binding.bp_name(blueprint)
+      assert_equal "XXXX", RedSnow::Binding.sc_blueprint_name(blueprint)
 
-      assert_equal "description for it", RedSnow::Binding.bp_desc(blueprint)
+      assert_equal "description for it", RedSnow::Binding.sc_blueprint_description(blueprint)
 
-      meta_data_col = RedSnow::Binding.bp_metadata_collection_handle(blueprint)
-      assert_equal 2, RedSnow::Binding.bp_metadata_collection_size(meta_data_col)
+      meta_data_col = RedSnow::Binding.sc_metadata_collection_handle(blueprint)
+      assert_equal 2, RedSnow::Binding.sc_metadata_collection_size(meta_data_col)
 
       warnings = RedSnow::Binding.sc_warnings_handler(result)
       assert_equal 0, RedSnow::Binding.sc_warnings_size(warnings)
 
-      RedSnow::Binding.bp_clean(blueprint)
-      RedSnow::Binding.rs_clean(result)
+      RedSnow::Binding.sc_blueprint_free(blueprint)
+      RedSnow::Binding.sc_result_free(result)
 
     end
   end
