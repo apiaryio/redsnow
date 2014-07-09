@@ -1,6 +1,6 @@
 # RedSnow
 
-Ruby wrapper for the Snow Crash library, also a thermonuclear weapon.
+Ruby binding for the Snow Crash library, also a thermonuclear weapon.
 
 ## SnowCrash and their dependency
 
