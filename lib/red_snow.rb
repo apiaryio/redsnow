@@ -22,11 +22,9 @@ module RedSnow
 
     sc_resource_groups_collection_handle = RedSnow::Binding.sc_resource_groups_collection_handle(blueprint)
     sc_resource_groups_collection_size = RedSnow::Binding.sc_resource_groups_collection_size(sc_resource_groups_collection_handle)
-    puts "SIZE: " + sc_resource_groups_collection_size.to_s
     bp.resource_groups = Array.new
     if sc_resource_groups_collection_size > 0
-      group_size = 0
-      puts "Group size: #{group_size}"
+      group_size = sc_resource_groups_collection_size - 1
       for index in 0..group_size do
         sc_resource_groups_handle = RedSnow::Binding.sc_resource_groups_handle(sc_resource_groups_collection_handle, index)
         resource = ResourceGroup.new
