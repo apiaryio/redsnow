@@ -42,6 +42,32 @@ module RedSnow
             res.name = RedSnow::Binding.sc_resource_name(sc_resource_handle)
             res.description = RedSnow::Binding.sc_resource_description(sc_resource_handle)
             res.uri_template = RedSnow::Binding.sc_resource_uritemplate(sc_resource_handle)
+
+            sc_payload_handle_resource = RedSnow::Binding.sc_payload_handle_resource(sc_resource_handle)
+            if sc_payload_handle_resource
+              res.model = Model.new
+              res.model.name = RedSnow::Binding.sc_payload_name(sc_payload_handle_resource)
+              res.model.description = RedSnow::Binding.sc_payload_description(sc_payload_handle_resource)
+              res.model.body = RedSnow::Binding.sc_payload_body(sc_payload_handle_resource)
+              res.model.schema = RedSnow::Binding.sc_payload_schema(sc_payload_handle_resource)
+              sc_header_collection_handle_payload = RedSnow::Binding.sc_header_collection_handle_payload(sc_payload_handle_resource)
+              sc_header_collection_size = RedSnow::Binding.sc_header_collection_size(sc_header_collection_handle_payload)
+              res.model.headers = Headers.new
+              if sc_header_collection_size > 0
+                headers_size = sc_header_collection_size - 1
+                collection = Array.new
+                for index in 0..headers_size do
+                  sc_header_handle = RedSnow::Binding.sc_header_handle(sc_header_collection_handle_payload, index)
+                  collection << Hash[:name => RedSnow::Binding.sc_header_key(sc_header_handle), :value => RedSnow::Binding.sc_header_value(sc_header_handle)]
+                end
+                res.model.headers.collection = collection
+              end
+
+            else
+              res.model = nil
+            end
+            res.parameters = Parameters.new
+            res.actions = Array.new
             resource.resources << res
           end
         end

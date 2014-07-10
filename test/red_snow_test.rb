@@ -28,7 +28,7 @@ class RedSnowTest < Test::Unit::TestCase
 
     end
   end
-
+  # https://github.com/apiaryio/protagonist/blob/master/test/parser-test.coffee
   context "API Blueprint parser" do
     should "parses API name" do
       result = RedSnow.parse("# My API")
@@ -110,6 +110,13 @@ class RedSnowTest < Test::Unit::TestCase
       assert_equal "/resource", resource.uri_template
       assert_equal "My Resource", resource.name
       assert_equal "Resource description\n\n", resource.description
+
+      assert_equal "My Resource", resource.model.name
+      assert_equal "", resource.model.description
+      assert_equal "Hello World\n", resource.model.body
+      assert_equal 1, resource.model.headers.collection.count
+      assert_equal "Content-Type", resource.model.headers.collection[0][:name]
+      assert_equal "text/plain", resource.model.headers.collection[0][:value]
 
     end
 

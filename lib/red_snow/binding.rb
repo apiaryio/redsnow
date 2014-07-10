@@ -34,7 +34,7 @@ module RedSnow
 
     attach_function("sc_resource_collection_handle", "sc_resource_collection_handle", [ :pointer ] , :pointer)
     attach_function("sc_resource_collection_size", "sc_resource_collection_size", [ :pointer ], :int)
-
+    # Resource
     attach_function("sc_resource_handle", "sc_resource_handle", [ :pointer, :int ] , :pointer)
     attach_function("sc_resource_uritemplate", "sc_resource_uritemplate", [ :pointer ], :string)
     attach_function("sc_resource_name", "sc_resource_name", [ :pointer ], :string)
@@ -43,7 +43,7 @@ module RedSnow
     attach_function("sc_payload_collection_handle_requests", "sc_payload_collection_handle_requests", [ :pointer ], :pointer)
     attach_function("sc_payload_collection_handle_responses", "sc_payload_collection_handle_responses", [ :pointer ], :pointer)
     attach_function("sc_payload_collection_size", "sc_payload_collection_size", [ :pointer ], :int)
-
+    # Resource.model
     attach_function("sc_payload_handle", "sc_payload_handle", [ :pointer, :int ], :pointer)
     attach_function("sc_payload_handle_resource", "sc_payload_handle_resource", [ :pointer ], :pointer)
     attach_function("sc_payload_name", "sc_payload_name", [ :pointer ], :string)
