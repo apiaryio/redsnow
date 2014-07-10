@@ -114,6 +114,7 @@ class RedSnowTest < Test::Unit::TestCase
         @result = RedSnow.parse(source.unindent)
         @resourceGroup = @result.resource_groups[0]
         @resource = @resourceGroup.resources[0]
+        @action = @resource.actions[0]
       end
 
       should "have resource group" do
@@ -137,6 +138,18 @@ class RedSnowTest < Test::Unit::TestCase
         assert_equal "Content-Type", @resource.model.headers.collection[0][:name]
         assert_equal "text/plain", @resource.model.headers.collection[0][:value]
       end
+
+      should "have actions" do
+        assert_equal 2, @resource.actions.count
+        assert_equal "GET", @action.method
+        assert_equal "Retrieve Resource", @action.name
+        assert_equal "Method description\n\n", @action.description
+      end
+
+      should "have parameters" do
+
+      end
+
     end
 
   end

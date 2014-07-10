@@ -50,6 +50,7 @@ module RedSnow
               res.model.description = RedSnow::Binding.sc_payload_description(sc_payload_handle_resource)
               res.model.body = RedSnow::Binding.sc_payload_body(sc_payload_handle_resource)
               res.model.schema = RedSnow::Binding.sc_payload_schema(sc_payload_handle_resource)
+
               sc_header_collection_handle_payload = RedSnow::Binding.sc_header_collection_handle_payload(sc_payload_handle_resource)
               sc_header_collection_size = RedSnow::Binding.sc_header_collection_size(sc_header_collection_handle_payload)
               res.model.headers = Headers.new
@@ -62,12 +63,26 @@ module RedSnow
                 end
                 res.model.headers.collection = collection
               end
-
             else
               res.model = nil
             end
-            res.parameters = Parameters.new
             res.actions = Array.new
+            sc_action_collection_handle = RedSnow::Binding.sc_action_collection_handle(sc_resource_handle)
+            sc_action_collection_size = RedSnow::Binding.sc_action_collection_size(sc_action_collection_handle)
+            if sc_action_collection_size > 0
+              action_size = sc_action_collection_size - 1
+              for index in 0..action_size do
+                action = Action.new
+                sc_action_handle = RedSnow::Binding.sc_action_handle(sc_action_collection_handle, index)
+                action.method = RedSnow::Binding.sc_action_httpmethod(sc_action_handle)
+                action.name = RedSnow::Binding.sc_action_name(sc_action_handle)
+                action.description = RedSnow::Binding.sc_action_description(sc_action_handle)
+                action.parameters = Parameters.new
+                action.examples = Array.new
+                res.actions << action
+              end
+            end
+            res.parameters = Parameters.new
             resource.resources << res
           end
         end
