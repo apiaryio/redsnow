@@ -30,94 +30,113 @@ class RedSnowTest < Test::Unit::TestCase
   end
   # https://github.com/apiaryio/protagonist/blob/master/test/parser-test.coffee
   context "API Blueprint parser" do
-    should "parses API name" do
-      result = RedSnow.parse("# My API")
-      assert_equal "My API", result.name
+
+    context "API" do
+      setup do
+        @result = RedSnow.parse("# My API")
+      end
+
+      should "have name" do
+        assert_equal "My API", @result.name
+      end
     end
 
-    should "parses API description" do
-
-      source = <<-STR
+    context "API" do
+      setup do
+        source = <<-STR
         **description**
         STR
 
-      result = RedSnow.parse(source.unindent)
-      assert_equal "", result.name
-      assert_equal "**description**\n", result.description
+        @result = RedSnow.parse(source.unindent)
+      end
+
+      should "have description" do
+        assert_equal "", @result.name
+        assert_equal "**description**\n", @result.description
+      end
     end
 
-    should "parses resource group" do
-
-      source = <<-STR
-        # Group Name
-        _description_
-      STR
-
-      result = RedSnow.parse(source.unindent)
-      assert_equal 1, result.resource_groups.count
-      assert_equal "Name", result.resource_groups[0].name
-      assert_equal "_description_\n", result.resource_groups[0].description
-    end
-
-    should "parses resource" do
-
-      source = <<-STR
-        # My Resource [/resource]
-        Resource description
-
-        + Model (text/plain)
-
-                Hello World
-
-        ## Retrieve Resource [GET]
-        Method description
-
-        + Response 200 (text/plain)
-
-          Response description
-
-          + Headers
-
-                    X-Response-Header: Fighter
-
-          + Body
-
-                    Y.T.
-
-          + Schema
-
-                    Kourier
-
-        ## Delete Resource [DELETE]
-
-        + Response 200
-
-            [My Resource][]
-
+    context "Group" do
+      setup do
+        source = <<-STR
+          # Group Name
+          _description_
         STR
 
-      result = RedSnow.parse(source.unindent)
+        @result = RedSnow.parse(source.unindent)
+      end
+      should "have resource group" do
+        assert_equal 1, @result.resource_groups.count
+        assert_equal "Name", @result.resource_groups[0].name
+        assert_equal "_description_\n", @result.resource_groups[0].description
+      end
+    end
 
-      assert_equal 1, result.resource_groups.count
+    context "Resource" do
 
-      resourceGroup = result.resource_groups[0]
-      assert_equal "", resourceGroup.name
-      assert_equal "", resourceGroup.description
+      setup do
 
-      assert_equal 1, resourceGroup.resources.count
+        source = <<-STR
+          # My Resource [/resource]
+          Resource description
 
-      resource = resourceGroup.resources[0]
-      assert_equal "/resource", resource.uri_template
-      assert_equal "My Resource", resource.name
-      assert_equal "Resource description\n\n", resource.description
+          + Model (text/plain)
 
-      assert_equal "My Resource", resource.model.name
-      assert_equal "", resource.model.description
-      assert_equal "Hello World\n", resource.model.body
-      assert_equal 1, resource.model.headers.collection.count
-      assert_equal "Content-Type", resource.model.headers.collection[0][:name]
-      assert_equal "text/plain", resource.model.headers.collection[0][:value]
+                  Hello World
 
+          ## Retrieve Resource [GET]
+          Method description
+
+          + Response 200 (text/plain)
+
+            Response description
+
+            + Headers
+
+                      X-Response-Header: Fighter
+
+            + Body
+
+                      Y.T.
+
+            + Schema
+
+                      Kourier
+
+          ## Delete Resource [DELETE]
+
+          + Response 200
+
+              [My Resource][]
+
+          STR
+
+        @result = RedSnow.parse(source.unindent)
+        @resourceGroup = @result.resource_groups[0]
+        @resource = @resourceGroup.resources[0]
+      end
+
+      should "have resource group" do
+        assert_equal 1, @result.resource_groups.count
+        assert_equal "", @resourceGroup.name
+        assert_equal "", @resourceGroup.description
+        assert_equal 1, @resourceGroup.resources.count
+      end
+
+      should "have resource" do
+        assert_equal "/resource", @resource.uri_template
+        assert_equal "My Resource", @resource.name
+        assert_equal "Resource description\n\n", @resource.description
+      end
+
+      should "have resource model" do
+        assert_equal "My Resource", @resource.model.name
+        assert_equal "", @resource.model.description
+        assert_equal "Hello World\n", @resource.model.body
+        assert_equal 1, @resource.model.headers.collection.count
+        assert_equal "Content-Type", @resource.model.headers.collection[0][:name]
+        assert_equal "text/plain", @resource.model.headers.collection[0][:value]
+      end
     end
 
   end
