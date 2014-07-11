@@ -97,6 +97,43 @@ module RedSnow
               end
             end
             res.parameters = Parameters.new
+            sc_parameter_collection_handle_resource = RedSnow::Binding.sc_parameter_collection_handle_resource(sc_resource_handle)
+            sc_parameter_collection_size = RedSnow::Binding.sc_parameter_collection_size(sc_parameter_collection_handle_resource)
+            collection = Array.new
+            if sc_parameter_collection_size > 0
+              parameters_size = sc_parameter_collection_size - 1
+              for index in 0..parameters_size do
+                sc_parameter_handle = RedSnow::Binding.sc_parameter_handle(sc_parameter_collection_handle_resource, index)
+                parameter = Parameter.new
+                parameter.name = RedSnow::Binding.sc_parameter_name(sc_parameter_handle)
+                parameter.description = RedSnow::Binding.sc_parameter_description(sc_parameter_handle)
+                parameter.type = RedSnow::Binding.sc_parameter_type(sc_parameter_handle)
+                use =  RedSnow::Binding.sc_parameter_parameter_use(sc_parameter_handle)
+                case use
+                  when 1
+                    parameter.use = :optional
+                  when 2
+                    parameter.use = :required
+                  else
+                    parameter.use = :undefined
+                end
+                parameter.default_value = RedSnow::Binding.sc_parameter_default_value(sc_parameter_handle)
+                parameter.example_value = RedSnow::Binding.sc_parameter_example_value(sc_parameter_handle)
+                parameter.values = Array.new
+                sc_value_collection_handle = RedSnow::Binding.sc_value_collection_handle(sc_parameter_handle)
+                sc_value_collection_size = RedSnow::Binding.sc_value_collection_size(sc_value_collection_handle)
+                if sc_value_collection_size > 0
+                  values_size = sc_value_collection_size - 1
+                  for valueIndex in 0..values_size do
+                    sc_value_handle = RedSnow::Binding.sc_value_handle(sc_value_collection_handle, valueIndex)
+                    value = RedSnow::Binding.sc_value_string(sc_value_handle)
+                    parameter.values << value
+                  end
+                end
+                collection << parameter
+              end
+              res.parameters.collection = collection
+            end
             resource.resources << res
           end
         end
