@@ -23,6 +23,11 @@ class RedSnowTest < Test::Unit::TestCase
       warnings = RedSnow::Binding.sc_warnings_handler(result)
       assert_equal 0, RedSnow::Binding.sc_warnings_size(warnings)
 
+      error = RedSnow::Binding.sc_error_handler(result)
+      assert_equal '', RedSnow::Binding.sc_error_message(error)
+      assert_equal 0, RedSnow::Binding.sc_error_code(error)
+      assert_equal 0, RedSnow::Binding.sc_error_ok(error)
+
       RedSnow::Binding.sc_blueprint_free(blueprint)
       RedSnow::Binding.sc_result_free(result)
 
@@ -238,6 +243,69 @@ class RedSnowTest < Test::Unit::TestCase
 
       should "have parameters" do
         assert_equal 'id', @parameter.name
+      end
+    end
+
+    context "parses multiple transactions" do
+      setup do
+        source = <<-STR
+        ## Notes Collection [/notes?id={id}&testingGroup={testtingGroup}&collection={collection}]
+        ### Create a Note [POST]
+        + Request Create a note
+
+            + Headers
+
+                    Content-Type: application/json
+                    Prefer: creating
+
+            + Body
+
+                    { "title": "Buy cheese and bread for breakfast." }
+
+        + Response 201 (application/json)
+
+                { "id": 3, "title": "Buy cheese and bread for breakfast." }
+
+        + Request Unable to create note
+
+            + Headers
+
+                    Content-Type: application/json
+                    Prefer: testing
+
+
+            + Body
+
+                    { "ti": "Buy cheese and bread for breakfast." }
+
+        + Response 500
+
+                { "error": "can't create record" }
+        STR
+        @result = RedSnow.parse(source.unindent)
+        @resourceGroup = @result.resource_groups[0]
+        @examples = @resourceGroup.resources[0].actions[0].examples
+      end
+
+      should "have multiple requests and responses" do
+        assert_equal 2, @examples.count
+        assert_equal 1, @examples[0].requests.count
+        assert_equal 1, @examples[0].responses.count
+        assert_equal "", @examples[0].name
+        assert_equal "", @examples[0].description
+        assert_equal "Create a note", @examples[0].requests[0].name
+        assert_equal "Content-Type", @examples[0].requests[0].headers.collection[0][:name]
+        assert_equal "application/json", @examples[0].requests[0].headers.collection[0][:value]
+        assert_equal "Prefer", @examples[0].requests[0].headers.collection[1][:name]
+        assert_equal "creating", @examples[0].requests[0].headers.collection[1][:value]
+        assert_equal "201", @examples[0].responses[0].name
+        assert_equal "Unable to create note", @examples[1].requests[0].name
+        assert_equal "Content-Type", @examples[1].requests[0].headers.collection[0][:name]
+        assert_equal "application/json", @examples[1].requests[0].headers.collection[0][:value]
+        assert_equal "Prefer", @examples[1].requests[0].headers.collection[1][:name]
+        assert_equal "testing", @examples[1].requests[0].headers.collection[1][:value]
+        assert_equal '{ "ti": "Buy cheese and bread for breakfast." }' + "\n", @examples[1].requests[0].body
+        assert_equal "500", @examples[1].responses[0].name
       end
     end
 

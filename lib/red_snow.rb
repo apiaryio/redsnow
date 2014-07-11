@@ -44,13 +44,34 @@ module RedSnow
     return collection
   end
 
-  def self.parse(rawBlueprint)
+  def self.get_payload(payload, sc_payload_handle_resource)
+    payload.name = RedSnow::Binding.sc_payload_name(sc_payload_handle_resource)
+    payload.description = RedSnow::Binding.sc_payload_description(sc_payload_handle_resource)
+    payload.body = RedSnow::Binding.sc_payload_body(sc_payload_handle_resource)
+    payload.schema = RedSnow::Binding.sc_payload_schema(sc_payload_handle_resource)
+
+    sc_header_collection_handle_payload = RedSnow::Binding.sc_header_collection_handle_payload(sc_payload_handle_resource)
+    sc_header_collection_size = RedSnow::Binding.sc_header_collection_size(sc_header_collection_handle_payload)
+    payload.headers = Headers.new
+    if sc_header_collection_size > 0
+      headers_size = sc_header_collection_size - 1
+      collection = Array.new
+      for index in 0..headers_size do
+        sc_header_handle = RedSnow::Binding.sc_header_handle(sc_header_collection_handle_payload, index)
+        collection << Hash[:name => RedSnow::Binding.sc_header_key(sc_header_handle), :value => RedSnow::Binding.sc_header_value(sc_header_handle)]
+      end
+      payload.headers.collection = collection
+    end
+    return payload
+  end
+
+  def self.parse(rawBlueprint, options = 0)
 
     bp = Blueprint.new
 
     blueprint = FFI::MemoryPointer.new :pointer
     result = FFI::MemoryPointer.new :pointer
-    ret = RedSnow::Binding.sc_c_parse(rawBlueprint, 0, result, blueprint)
+    ret = RedSnow::Binding.sc_c_parse(rawBlueprint, options, result, blueprint)
 
     blueprint = blueprint.get_pointer(0)
     result = result.get_pointer(0)
@@ -98,23 +119,7 @@ module RedSnow
             sc_payload_handle_resource = RedSnow::Binding.sc_payload_handle_resource(sc_resource_handle)
             if sc_payload_handle_resource
               res.model = Model.new
-              res.model.name = RedSnow::Binding.sc_payload_name(sc_payload_handle_resource)
-              res.model.description = RedSnow::Binding.sc_payload_description(sc_payload_handle_resource)
-              res.model.body = RedSnow::Binding.sc_payload_body(sc_payload_handle_resource)
-              res.model.schema = RedSnow::Binding.sc_payload_schema(sc_payload_handle_resource)
-
-              sc_header_collection_handle_payload = RedSnow::Binding.sc_header_collection_handle_payload(sc_payload_handle_resource)
-              sc_header_collection_size = RedSnow::Binding.sc_header_collection_size(sc_header_collection_handle_payload)
-              res.model.headers = Headers.new
-              if sc_header_collection_size > 0
-                headers_size = sc_header_collection_size - 1
-                collection = Array.new
-                for index in 0..headers_size do
-                  sc_header_handle = RedSnow::Binding.sc_header_handle(sc_header_collection_handle_payload, index)
-                  collection << Hash[:name => RedSnow::Binding.sc_header_key(sc_header_handle), :value => RedSnow::Binding.sc_header_value(sc_header_handle)]
-                end
-                res.model.headers.collection = collection
-              end
+              res.model = self.get_payload(res.model, sc_payload_handle_resource)
             else
               res.model = nil
             end
@@ -134,6 +139,42 @@ module RedSnow
                 sc_parameter_collection_size_action = RedSnow::Binding.sc_parameter_collection_size(sc_parameter_collection_handle_action)
                 action.parameters.collection = RedSnow.get_parameters(sc_parameter_collection_handle_action, sc_parameter_collection_size_action)
                 action.examples = Array.new
+                sc_transaction_example_collection_handle = RedSnow::Binding.sc_transaction_example_collection_handle(sc_action_handle)
+                sc_transaction_example_collection_size = RedSnow::Binding.sc_transaction_example_collection_size(sc_transaction_example_collection_handle)
+                if sc_transaction_example_collection_size > 0
+                  examples_size = sc_transaction_example_collection_size - 1
+                  for index in 0..examples_size do
+                    example = TransactionExample.new
+                    sc_transaction_example_handle = RedSnow::Binding.sc_transaction_example_handle(sc_transaction_example_collection_handle, index)
+                    example.name  = RedSnow::Binding.sc_transaction_example_name(sc_transaction_example_handle)
+                    example.description = RedSnow::Binding.sc_transaction_example_description(sc_transaction_example_handle)
+                    example.requests = Array.new
+                    sc_payload_collection_handle_requests = RedSnow::Binding.sc_payload_collection_handle_requests(sc_transaction_example_handle)
+                    sc_payload_collection_size_requests = RedSnow::Binding.sc_payload_collection_size(sc_payload_collection_handle_requests)
+                    if sc_payload_collection_size_requests > 0
+                      requests_size = sc_payload_collection_size_requests - 1
+                      for index in 0..requests_size do
+                        request = Request.new
+                        sc_payload_handle = RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_requests, index)
+                        request = RedSnow.get_payload(request, sc_payload_handle)
+                        example.requests << request
+                      end
+                    end
+                    example.responses = Array.new
+                    sc_payload_collection_handle_responses = RedSnow::Binding.sc_payload_collection_handle_responses(sc_transaction_example_handle)
+                    sc_payload_collection_size_responses = RedSnow::Binding.sc_payload_collection_size(sc_payload_collection_handle_responses)
+                    if sc_payload_collection_size_responses > 0
+                      responses_size = sc_payload_collection_size_responses - 1
+                      for index in 0..responses_size do
+                        response = Response.new
+                        sc_payload_handle = RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_responses, index)
+                        response = RedSnow.get_payload(response, sc_payload_handle)
+                        example.responses << response
+                      end
+                    end
+                    action.examples << example
+                  end
+                end
                 res.actions << action
               end
             end
