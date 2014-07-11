@@ -6,12 +6,12 @@ require "ffi"
 module RedSnow
   include Binding
 
-  def self.get_parameters(sc_parameter_collection_handle_resource, sc_parameter_collection_size)
+  def self.get_parameters(sc_parameter_collection_handle, sc_parameter_collection_size)
     collection = Array.new
     if sc_parameter_collection_size > 0
       parameters_size = sc_parameter_collection_size - 1
       for index in 0..parameters_size do
-        sc_parameter_handle = RedSnow::Binding.sc_parameter_handle(sc_parameter_collection_handle_resource, index)
+        sc_parameter_handle = RedSnow::Binding.sc_parameter_handle(sc_parameter_collection_handle, index)
         parameter = Parameter.new
         parameter.name = RedSnow::Binding.sc_parameter_name(sc_parameter_handle)
         parameter.description = RedSnow::Binding.sc_parameter_description(sc_parameter_handle)
@@ -130,14 +130,17 @@ module RedSnow
                 action.name = RedSnow::Binding.sc_action_name(sc_action_handle)
                 action.description = RedSnow::Binding.sc_action_description(sc_action_handle)
                 action.parameters = Parameters.new
+                sc_parameter_collection_handle_action = RedSnow::Binding.sc_parameter_collection_handle_action(sc_action_handle)
+                sc_parameter_collection_size_action = RedSnow::Binding.sc_parameter_collection_size(sc_parameter_collection_handle_action)
+                action.parameters.collection = RedSnow.get_parameters(sc_parameter_collection_handle_action, sc_parameter_collection_size_action)
                 action.examples = Array.new
                 res.actions << action
               end
             end
             res.parameters = Parameters.new
             sc_parameter_collection_handle_resource = RedSnow::Binding.sc_parameter_collection_handle_resource(sc_resource_handle)
-            sc_parameter_collection_size = RedSnow::Binding.sc_parameter_collection_size(sc_parameter_collection_handle_resource)
-            res.parameters.collection = RedSnow.get_parameters(sc_parameter_collection_handle_resource, sc_parameter_collection_size)
+            sc_parameter_collection_size_resource = RedSnow::Binding.sc_parameter_collection_size(sc_parameter_collection_handle_resource)
+            res.parameters.collection = RedSnow.get_parameters(sc_parameter_collection_handle_resource, sc_parameter_collection_size_resource)
             resource.resources << res
           end
         end

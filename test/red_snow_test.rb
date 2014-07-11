@@ -218,28 +218,28 @@ class RedSnowTest < Test::Unit::TestCase
       end
     end
 
-    # context "parses action parameters" do
-    #   setup do
-    #     source = <<-STR
-    #     # GET /coupons/{id}
-    #
-    #     + Parameters
-    #         + id (number, `1001`) ... Id of coupon
-    #
-    #     + Response 204
-    #     STR
-    #
-    #     @result = RedSnow.parse(source.unindent)
-    #     @resourceGroup = @result.resource_groups[0]
-    #     @resource = @resourceGroup.resources[0]
-    #     @action = @resource.actions[0]
-    #     @parameter = @action.parameters[0]
-    #   end
-    #
-    #   should "have parameters" do
-    #     assert_equal 'id', @parameter.name
-    #   end
-    # end
+    context "parses action parameters" do
+      setup do
+        source = <<-STR
+        # GET /coupons/{id}
+
+        + Parameters
+            + id (number, `1001`) ... Id of coupon
+
+        + Response 204
+        STR
+
+        @result = RedSnow.parse(source.unindent)
+        @resourceGroup = @result.resource_groups[0]
+        @resource = @resourceGroup.resources[0]
+        @action = @resource.actions[0]
+        @parameter = @action.parameters.collection[0]
+      end
+
+      should "have parameters" do
+        assert_equal 'id', @parameter.name
+      end
+    end
 
   end
 
