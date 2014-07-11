@@ -21,7 +21,7 @@ module RedSnow
     attach_function("sc_metadata_collection_handle", "sc_metadata_collection_handle", [ :pointer ], :pointer)
     attach_function("sc_metadata_collection_size", "sc_metadata_collection_size", [ :pointer ], :int)
 
-    attach_function("sc_metadata_handle", "sc_metadata_handle", [ :pointer, :int ], :string)
+    attach_function("sc_metadata_handle", "sc_metadata_handle", [ :pointer, :int ], :pointer)
     attach_function("sc_metadata_key", "sc_metadata_key", [ :pointer ], :string)
     attach_function("sc_metadata_value", "sc_metadata_value",[ :pointer ], :string)
 

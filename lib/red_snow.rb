@@ -19,10 +19,24 @@ module RedSnow
     # BP name, desc
     bp.name = RedSnow::Binding.sc_blueprint_name(blueprint)
     bp.description = RedSnow::Binding.sc_blueprint_description(blueprint)
+    # BP metadata
+    bp.metadata = Metadata.new
+    sc_metadata_collection_handle = RedSnow::Binding.sc_metadata_collection_handle(blueprint)
+    sc_metadata_collection_size = RedSnow::Binding.sc_metadata_collection_size(sc_metadata_collection_handle)
+    if sc_metadata_collection_size > 0
+      metadata_size = sc_metadata_collection_size - 1
+      metaCollection = Array.new
+      for index in 0..metadata_size do
+        sc_metadata_handle = RedSnow::Binding.sc_metadata_handle(sc_metadata_collection_handle, index)
+        metaCollection << Hash[:name => RedSnow::Binding.sc_metadata_key(sc_metadata_handle), :value => RedSnow::Binding.sc_metadata_value(sc_metadata_handle)]
+      end
+      bp.metadata.collection = metaCollection
+    end
     # BP resourceGroups
     sc_resource_groups_collection_handle = RedSnow::Binding.sc_resource_groups_collection_handle(blueprint)
     sc_resource_groups_collection_size = RedSnow::Binding.sc_resource_groups_collection_size(sc_resource_groups_collection_handle)
     bp.resource_groups = Array.new
+
     if sc_resource_groups_collection_size > 0
       group_size = sc_resource_groups_collection_size - 1
       for index in 0..group_size do

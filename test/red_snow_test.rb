@@ -146,10 +146,36 @@ class RedSnowTest < Test::Unit::TestCase
         assert_equal "Method description\n\n", @action.description
       end
 
-      should "have parameters" do
+    end
 
+    context "parses blueprint metadata" do
+      setup do
+        source = <<-STR
+          FORMAT: 1A
+          A: 1
+          B: 2
+          C: 3
+
+          # API Name
+        STR
+
+        @result = RedSnow.parse(source.unindent)
+        @metadata = @result.metadata.collection
       end
 
+      should "have metadata" do
+        assert_equal 'FORMAT', @metadata[0][:name]
+        assert_equal '1A', @metadata[0][:value]
+
+        assert_equal 'A', @metadata[1][:name]
+        assert_equal '1', @metadata[1][:value]
+
+        assert_equal 'B', @metadata[2][:name]
+        assert_equal '2', @metadata[2][:value]
+
+        assert_equal 'C', @metadata[3][:name]
+        assert_equal '3', @metadata[3][:value]
+      end
     end
 
   end
