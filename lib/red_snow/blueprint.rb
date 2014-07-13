@@ -25,12 +25,6 @@ module RedSnow
     def load_ast!(ast)
     end
 
-    # Serialize node to a Markdown string buffer
-    #
-    # @param level [Integer, 0] requested indentation level
-    # @return [String, nil] content of the node serialized into Markdown or nil
-    def serialize(level = 0)
-    end
   end
 
   # Blueprint AST node with name and description associated
@@ -54,7 +48,7 @@ module RedSnow
     # @param buffer [String] a buffer to check
     #   If the buffer does not ends with two newlines the newlines are added.
     def ensure_description_newlines(buffer)
-      return if description.blank?
+      return if description.empty?
 
       if description[-1, 1] != "\n"
         buffer << "\n\n"
@@ -80,22 +74,6 @@ module RedSnow
       end
     end
 
-    # Serialize key value collection node to a Markdown string buffer
-    #
-    # @param ignore_keys [Array<String>] array of keys that should be ignored (skipped) during the serialization
-    def serialize(level = 0, ignore_keys = nil)
-      buffer = ""
-      @collection.each do |hash|
-        unless ignore_keys && ignore_keys.include?(hash.keys.first)
-          level.times { buffer << ONE_INDENTATION_LEVEL }
-          buffer << "#{hash.keys.first}: #{hash.values.first}\n"
-        end
-      end
-
-      buffer << "\n" unless buffer.empty?
-      buffer
-    end
-
     # Filter collection keys
     #
     # @returns [Array<Hash>] collection without ignored keys
@@ -117,14 +95,6 @@ module RedSnow
     # HTTP 'Content-Type' header
     CONTENT_TYPE_HEADER_KEY = :'Content-Type'
 
-    def serialize(level = 0, ignore_keys = nil)
-      return "" if @collection.blank? || filter_collection(ignore_keys).blank?
-
-      buffer = ""
-      level.times { buffer << ONE_INDENTATION_LEVEL }
-      buffer << "+ Headers\n\n"
-      buffer << super(level + 2, ignore_keys)
-    end
 
     # @return [String] the value of 'Content-type' header if present or nil
     def content_type
@@ -166,69 +136,6 @@ module RedSnow
       end
     end
 
-    def serialize
-      # Parameter name
-      buffer = "#{ONE_INDENTATION_LEVEL}+ #{@name}"
-
-      # Default value
-      buffer << " = `#{@default_value}`" if @default_value
-
-      # Attributes
-      unless @type.blank? && @example_value.blank? && @use == :required
-        attribute_buffer = ""
-
-        buffer << " ("
-
-        # Type
-        attribute_buffer << @type unless @type.blank?
-
-        # Use
-        if (@use == :optional)
-          attribute_buffer << ", " unless attribute_buffer.empty?
-          attribute_buffer << "optional"
-        end
-
-        # Example value
-        unless (@example_value.blank?)
-          attribute_buffer << ", " unless attribute_buffer.empty?
-          attribute_buffer << "`#{@example_value}`"
-        end
-
-        buffer << attribute_buffer
-        buffer << ")"
-      end
-
-      # Description
-      if @description.blank?
-        buffer << "\n"
-      else
-        if @description.lines.count == 1
-          # One line description
-          buffer << " ... #{@description}"
-          buffer << "\n" if @description[-1, 1] != "\n" # Additional newline needed if no provided
-        else
-          # Multi-line description
-          buffer << "\n\n"
-          @description.each_line do |line|
-            2.times { buffer << ONE_INDENTATION_LEVEL }
-            buffer << "#{line}"
-          end
-        end
-      end
-
-      # Value
-      unless @values.blank?
-        buffer << "\n"
-        2.times { buffer << ONE_INDENTATION_LEVEL }
-        buffer << "+ Values\n"
-        @values.each do |value|
-          3.times { buffer << ONE_INDENTATION_LEVEL }
-          buffer << "+ `#{value}`\n"
-        end
-      end
-
-      buffer
-    end
   end
 
   # Collection of URI parameters Blueprint AST node
@@ -248,17 +155,6 @@ module RedSnow
       end
     end
 
-    def serialize
-      return "" if :collection.blank?
-
-      buffer = "+ Parameters\n"
-      @collection.each do |parameter|
-        buffer << parameter.serialize
-      end
-
-      buffer << "\n" unless @collection.blank?
-      buffer
-    end
   end
 
   # HTTP message payload Blueprint AST node
@@ -284,104 +180,6 @@ module RedSnow
       @schema = ast[:schema] unless ast[:schema].blank?
     end
 
-    def serialize
-      # Name is serialized in Payload successors
-      buffer = ""
-
-      unless @description.blank?
-        buffer << "\n"
-        @description.each_line { |line| buffer << "#{ONE_INDENTATION_LEVEL}#{line}" }
-        buffer << "\n"
-      end
-
-      unless @headers.blank?
-        buffer << @headers.serialize(1, [Headers::CONTENT_TYPE_HEADER_KEY])
-      end
-
-      unless @body.blank?
-        abbreviated_synax = (headers.blank? || headers.filter_collection([Headers::CONTENT_TYPE_HEADER_KEY]).blank?) \
-                              & description.blank? \
-                              & schema.blank?
-        asset_indent_level = 2
-        unless abbreviated_synax
-          asset_indent_level = 3
-          buffer << "#{ONE_INDENTATION_LEVEL}+ Body\n"
-        end
-        buffer << "\n"
-
-        got_new_line = false
-        @body.each_line do |line|
-          asset_indent_level.times { buffer << ONE_INDENTATION_LEVEL }
-          buffer << "#{line}"
-          got_new_line = line[-1, 1] == "\n"
-        end
-
-        buffer << "\n" unless got_new_line
-        buffer << "\n"
-      end
-
-      unless @schema.blank?
-        buffer << "#{ONE_INDENTATION_LEVEL}+ Schema\n\n"
-
-        got_new_line = false
-        @schema.each_line do |line|
-          3.times { buffer << ONE_INDENTATION_LEVEL }
-          buffer << "#{line}"
-          got_new_line = line[-1, 1] == "\n"
-        end
-
-        buffer << "\n" unless got_new_line
-        buffer << "\n"
-      end
-
-      buffer << "\n" if buffer.empty? # Separate empty payloads by a newline
-
-      buffer
-    end
-
-    # Serialize payaload's definition (lead-in)
-    #
-    # @param section [String] section type keyword
-    # @param ignore_name [Boolean] object to ignore section name in serialization, false otherwise
-    # @return [String] buffer with serialized section definition
-    def serialize_definition(section, ignore_name = false)
-      buffer = ""
-      buffer << "+ #{section}"
-      buffer << " #{@name}" unless ignore_name || @name.blank?
-
-      unless @headers.blank? || @headers.content_type.blank?
-        buffer << " (#{@headers.content_type})"
-      end
-
-      buffer << "\n"
-    end
-  end
-
-  # Model Payload Blueprint AST node
-  #   represents 'model section'
-  class Model < Payload
-    def serialize
-      buffer = serialize_definition("Model", true)
-      buffer << super
-    end
-  end
-
-  # Request Payload Blueprint AST node
-  #   represents 'request section'
-  class Request < Payload
-    def serialize
-      buffer = serialize_definition("Request")
-      buffer << super
-    end
-  end
-
-  # Response Payload
-  #   represents 'response section'
-  class Response < Payload;
-    def serialize
-      buffer = serialize_definition("Response")
-      buffer << super
-    end
   end
 
   # Transaction example Blueprint AST node
@@ -407,12 +205,6 @@ module RedSnow
       end
     end
 
-    def serialize
-      buffer = ""
-      @requests.each { |request| buffer << request.serialize } unless @requests.nil?
-      @responses.each { |response| buffer << response.serialize } unless @responses.nil?
-      buffer
-    end
   end
 
   # Action Blueprint AST node
@@ -439,22 +231,6 @@ module RedSnow
       end
     end
 
-    def serialize
-      buffer = ""
-      if @name.blank?
-        buffer << "### #{@method}\n"
-      else
-        buffer << "### #{@name} [#{@method}]\n"
-      end
-
-      buffer << "#{@description}" unless @description.blank?
-      ensure_description_newlines(buffer)
-
-      buffer << @parameters.serialize unless @parameters.nil?
-
-      @examples.each { |example| buffer << example.serialize } unless @examples.nil?
-      buffer
-    end
   end
 
   # Resource Blueprint AST node
@@ -490,23 +266,6 @@ module RedSnow
       end
     end
 
-    def serialize
-      buffer = ""
-      if @name.blank?
-        buffer << "## #{@uri_template}\n"
-      else
-        buffer << "## #{@name} [#{@uri_template}]\n"
-      end
-
-      buffer << "#{@description}" unless @description.blank?
-      ensure_description_newlines(buffer)
-
-      buffer << @model.serialize unless @model.nil?
-      buffer << @parameters.serialize unless @parameters.nil?
-
-      @actions.each { |action| buffer << action.serialize } unless @actions.nil?
-      buffer
-    end
   end
 
   # Resource group Blueprint AST node
@@ -526,15 +285,6 @@ module RedSnow
       end
     end
 
-    def serialize
-      buffer = ""
-      buffer << "# Group #{@name}\n" unless @name.blank?
-      buffer << "#{@description}" unless @description.blank?
-      ensure_description_newlines(buffer)
-
-      @resources.each { |resource| buffer << resource.serialize } unless @resources.nil?
-      buffer
-    end
   end
 
 
@@ -564,28 +314,6 @@ module RedSnow
         @resource_groups = Array.new
         ast[:resourceGroups].each { |group_ast| @resource_groups << ResourceGroup.new(group_ast) }
       end
-    end
-
-    def serialize(set_blueprint_format = false)
-      buffer = ""
-
-      if set_blueprint_format
-        buffer << "FORMAT: 1A\n"
-        if @metadata
-          buffer << "#{@metadata.serialize(0, [:FORMAT])}"
-        else
-          buffer << "\n"
-        end
-      else
-        buffer << "#{@metadata.serialize}" unless @metadata.nil?
-      end
-
-      buffer << "# #{@name}\n" unless @name.blank?
-      buffer << "#{@description}" unless @description.blank?
-      ensure_description_newlines(buffer)
-
-      @resource_groups.each { |group| buffer << group.serialize } unless @resource_groups.nil?
-      buffer
     end
 
   end

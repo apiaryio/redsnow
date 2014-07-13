@@ -110,7 +110,7 @@ module RedSnow
 
             sc_payload_handle_resource = RedSnow::Binding.sc_payload_handle_resource(sc_resource_handle)
             if sc_payload_handle_resource
-              res.model = Model.new
+              res.model = Payload.new
               res.model = self.get_payload(res.model, sc_payload_handle_resource)
             else
               res.model = nil
@@ -146,7 +146,7 @@ module RedSnow
                     if sc_payload_collection_size_requests > 0
                       requests_size = sc_payload_collection_size_requests - 1
                       for index in 0..requests_size do
-                        request = Request.new
+                        request = Payload.new
                         sc_payload_handle = RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_requests, index)
                         request = RedSnow.get_payload(request, sc_payload_handle)
                         example.requests << request
@@ -158,7 +158,7 @@ module RedSnow
                     if sc_payload_collection_size_responses > 0
                       responses_size = sc_payload_collection_size_responses - 1
                       for index in 0..responses_size do
-                        response = Response.new
+                        response = Payload.new
                         sc_payload_handle = RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_responses, index)
                         response = RedSnow.get_payload(response, sc_payload_handle)
                         example.responses << response
