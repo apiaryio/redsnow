@@ -12,7 +12,12 @@ module RedSnow
 
     ffi_lib File.expand_path("../../../ext/snowcrash/build/out/Release/#{prefix}libsnowcrash.#{FFI::Platform::LIBSUFFIX}", __FILE__)
 
-    attach_function("sc_c_parse", "sc_c_parse", [ :string, :int, :pointer, :pointer ], :int)
+    enum :option, [
+        :render_descriptions_option,
+        :require_blueprint_name_option
+    ]
+
+    attach_function("sc_c_parse", "sc_c_parse", [ :string, :option, :pointer, :pointer ], :int)
 
     attach_function("sc_blueprint_free", "sc_blueprint_free", [ :pointer ], :void)
     attach_function("sc_blueprint_name", "sc_blueprint_name", [ :pointer ], :string)
@@ -56,11 +61,16 @@ module RedSnow
     attach_function("sc_parameter_collection_handle_action", "sc_parameter_collection_handle_action", [ :pointer ], :pointer)
     attach_function("sc_parameter_collection_size", "sc_parameter_collection_size", [ :pointer ], :int)
 
+    enum :parameter_use, [:undefined,
+                          :optional,
+                          :required,
+                         ]
+
     attach_function("sc_parameter_handle", "sc_parameter_handle", [ :pointer, :int ], :pointer)
     attach_function("sc_parameter_name", "sc_parameter_name", [ :pointer ], :string)
     attach_function("sc_parameter_description", "sc_parameter_description", [ :pointer ], :string)
     attach_function("sc_parameter_type", "sc_parameter_type", [ :pointer ], :string)
-    attach_function("sc_parameter_parameter_use", "sc_parameter_parameter_use", [ :pointer ], :int)
+    attach_function("sc_parameter_parameter_use", "sc_parameter_parameter_use", [ :pointer ], :parameter_use)
     attach_function("sc_parameter_default_value", "sc_parameter_default_value", [ :pointer ], :string)
     attach_function("sc_parameter_example_value", "sc_parameter_example_value", [ :pointer ], :string)
 

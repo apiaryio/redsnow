@@ -16,15 +16,7 @@ module RedSnow
         parameter.name = RedSnow::Binding.sc_parameter_name(sc_parameter_handle)
         parameter.description = RedSnow::Binding.sc_parameter_description(sc_parameter_handle)
         parameter.type = RedSnow::Binding.sc_parameter_type(sc_parameter_handle)
-        use =  RedSnow::Binding.sc_parameter_parameter_use(sc_parameter_handle)
-        case use
-          when 1
-            parameter.use = :optional
-          when 2
-            parameter.use = :required
-          else
-            parameter.use = :undefined
-        end
+        parameter.use =  RedSnow::Binding.sc_parameter_parameter_use(sc_parameter_handle)
         parameter.default_value = RedSnow::Binding.sc_parameter_default_value(sc_parameter_handle)
         parameter.example_value = RedSnow::Binding.sc_parameter_example_value(sc_parameter_handle)
         parameter.values = Array.new
