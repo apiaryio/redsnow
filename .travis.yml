@@ -1,0 +1,19 @@
+language: ruby
+rvm:
+- 1.9.3
+- 2.1.0
+script:
+- rake test
+before_install:
+- git submodule update --init --recursive
+- gem update bundler
+- bundle
+notifications:
+  email:
+    recipients:
+    - ladislav@apiary.io
+    on_success: change
+    on_failure: always
+  hipchat:
+    rooms:
+      secure: d1RJSY+QU7y01wmqvxpgYsAyRzNzbAK2r1Ut9X87s5UOFB+5yxUgRocs4sKpGSpm0UVtD0u/G3H1wqbmWpxnYpmQYilTw9Qa04GDwJJ2/IraHU1fpGG+gZCsOMid7NjNl6jErbY8cfoUmCQdrUiYBgLowtxh5i8HbPT//Cb7mhU=
