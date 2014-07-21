@@ -107,7 +107,7 @@ module RedSnow
             res.name = RedSnow::Binding.sc_resource_name(sc_resource_handle)
             res.description = RedSnow::Binding.sc_resource_description(sc_resource_handle)
             res.uri_template = RedSnow::Binding.sc_resource_uritemplate(sc_resource_handle)
-
+            # BP Resource Payload Model
             sc_payload_handle_resource = RedSnow::Binding.sc_payload_handle_resource(sc_resource_handle)
             if sc_payload_handle_resource
               res.model = Payload.new
@@ -115,6 +115,7 @@ module RedSnow
             else
               res.model = nil
             end
+            # BP Resource Actions
             res.actions = Array.new
             sc_action_collection_handle = RedSnow::Binding.sc_action_collection_handle(sc_resource_handle)
             sc_action_collection_size = RedSnow::Binding.sc_action_collection_size(sc_action_collection_handle)
@@ -126,10 +127,12 @@ module RedSnow
                 action.method = RedSnow::Binding.sc_action_httpmethod(sc_action_handle)
                 action.name = RedSnow::Binding.sc_action_name(sc_action_handle)
                 action.description = RedSnow::Binding.sc_action_description(sc_action_handle)
+                # BP Resource Actions Parameters
                 action.parameters = Parameters.new
                 sc_parameter_collection_handle_action = RedSnow::Binding.sc_parameter_collection_handle_action(sc_action_handle)
                 sc_parameter_collection_size_action = RedSnow::Binding.sc_parameter_collection_size(sc_parameter_collection_handle_action)
                 action.parameters.collection = RedSnow.get_parameters(sc_parameter_collection_handle_action, sc_parameter_collection_size_action)
+                # BP Resource Actions Examples
                 action.examples = Array.new
                 sc_transaction_example_collection_handle = RedSnow::Binding.sc_transaction_example_collection_handle(sc_action_handle)
                 sc_transaction_example_collection_size = RedSnow::Binding.sc_transaction_example_collection_size(sc_transaction_example_collection_handle)
@@ -140,6 +143,7 @@ module RedSnow
                     sc_transaction_example_handle = RedSnow::Binding.sc_transaction_example_handle(sc_transaction_example_collection_handle, index)
                     example.name  = RedSnow::Binding.sc_transaction_example_name(sc_transaction_example_handle)
                     example.description = RedSnow::Binding.sc_transaction_example_description(sc_transaction_example_handle)
+                    # BP Resource Actions Examples Requests
                     example.requests = Array.new
                     sc_payload_collection_handle_requests = RedSnow::Binding.sc_payload_collection_handle_requests(sc_transaction_example_handle)
                     sc_payload_collection_size_requests = RedSnow::Binding.sc_payload_collection_size(sc_payload_collection_handle_requests)
@@ -152,6 +156,7 @@ module RedSnow
                         example.requests << request
                       end
                     end
+                    # BP Resource Actions Examples Responses
                     example.responses = Array.new
                     sc_payload_collection_handle_responses = RedSnow::Binding.sc_payload_collection_handle_responses(sc_transaction_example_handle)
                     sc_payload_collection_size_responses = RedSnow::Binding.sc_payload_collection_size(sc_payload_collection_handle_responses)
@@ -170,6 +175,7 @@ module RedSnow
                 res.actions << action
               end
             end
+            # BP Resource Parameters
             res.parameters = Parameters.new
             sc_parameter_collection_handle_resource = RedSnow::Binding.sc_parameter_collection_handle_resource(sc_resource_handle)
             sc_parameter_collection_size_resource = RedSnow::Binding.sc_parameter_collection_size(sc_parameter_collection_handle_resource)
