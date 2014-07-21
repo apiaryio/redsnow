@@ -5,12 +5,7 @@ module RedSnow
   module Binding
     extend FFI::Library
 
-    prefix = "lib.target/"
-    if FFI::Platform.mac?
-      prefix = ""
-    end
-
-    ffi_lib File.expand_path("../../../ext/snowcrash/build/out/Release/#{prefix}libsnowcrash.#{FFI::Platform::LIBSUFFIX}", __FILE__)
+    ffi_lib 'libsnowcrash'
 
     enum :option, [
         :render_descriptions_option,
