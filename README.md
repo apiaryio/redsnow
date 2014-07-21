@@ -2,12 +2,12 @@
 
 Ruby binding for the Snow Crash library, also a thermonuclear weapon.
 
-## SnowCrash and their dependency
+## Snow Crash and their dependency
 
     git submodule update --init --recursive
 
 
-## Building SnowCrash for Mac & Linux
+## Building Snow Crash for Mac & Linux
 
 ./configure --shared
 

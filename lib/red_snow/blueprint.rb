@@ -5,26 +5,10 @@ require "red_snow/object"
 module RedSnow
 
   # Blueprint AST node
-  #   Base class for API Blueprint AST nodes in Matter Compiler.
+  #   Base class for API Blueprint AST nodes
   #
   # @abstract
   class BlueprintNode
-
-    ONE_INDENTATION_LEVEL = "    "
-
-    # Initialize the node
-    #
-    # @param ast [Array, Hash, nil] a hash or array to initialize the node with or nil
-    def initialize(ast = nil)
-      load_ast!(ast) if ast
-    end
-
-    # Load AST object content into node
-    #
-    # @param ast [Array, Hash] an ast object to load
-    def load_ast!(ast)
-    end
-
   end
 
   # Blueprint AST node with name and description associated
@@ -86,6 +70,17 @@ module RedSnow
   # Metadata collection Blueprint AST node
   #   represents 'metadata section'
   class Metadata < KeyValueCollection
+    def initialize(sc_metadata_collection_handle)
+      sc_metadata_collection_size = RedSnow::Binding.sc_metadata_collection_size(sc_metadata_collection_handle)
+      if sc_metadata_collection_size > 0
+        metadata_size = sc_metadata_collection_size - 1
+        @collection = Array.new
+        for index in 0..metadata_size do
+          sc_metadata_handle = RedSnow::Binding.sc_metadata_handle(sc_metadata_collection_handle, index)
+          @collection << Hash[:name => RedSnow::Binding.sc_metadata_key(sc_metadata_handle), :value => RedSnow::Binding.sc_metadata_value(sc_metadata_handle)]
+        end
+      end
+    end
   end
 
   # Headers collection Blueprint AST node
@@ -101,7 +96,20 @@ module RedSnow
       content_type_header = @collection.detect { |header| header.has_key?(CONTENT_TYPE_HEADER_KEY) }
       return (content_type_header.nil?) ? nil : content_type_header[CONTENT_TYPE_HEADER_KEY]
     end
-  end;
+
+    def initialize(sc_header_collection_handle_payload)
+      sc_header_collection_size = RedSnow::Binding.sc_header_collection_size(sc_header_collection_handle_payload)
+      if sc_header_collection_size > 0
+        headers_size = sc_header_collection_size - 1
+        @collection = Array.new
+        for index in 0..headers_size do
+          sc_header_handle = RedSnow::Binding.sc_header_handle(sc_header_collection_handle_payload, index)
+          @collection << Hash[:name => RedSnow::Binding.sc_header_key(sc_header_handle), :value => RedSnow::Binding.sc_header_value(sc_header_handle)]
+        end
+      end
+    end
+
+  end
 
   # URI parameter Blueprint AST node
   #   represents one 'parameters section' parameter
@@ -120,18 +128,22 @@ module RedSnow
     attr_accessor :example_value
     attr_accessor :values
 
-    def load_ast!(ast)
-      super(ast)
-
-      @type = ast[:type] if ast[:type]
-      @use = (ast[:required] && ast[:required] == true) ? :required : :optional
-      @default_value = ast[:default] if ast[:default]
-      @example_value = ast[:example] if ast[:example]
-
-      unless ast[:values].blank?
-        @values = Array.new
-        ast[:values].each do |item|
-          @values << item[:value]
+    def initialize(sc_parameter_handle)
+      @name = RedSnow::Binding.sc_parameter_name(sc_parameter_handle)
+      @description = RedSnow::Binding.sc_parameter_description(sc_parameter_handle)
+      @type = RedSnow::Binding.sc_parameter_type(sc_parameter_handle)
+      @use =  RedSnow::Binding.sc_parameter_parameter_use(sc_parameter_handle)
+      @default_value = RedSnow::Binding.sc_parameter_default_value(sc_parameter_handle)
+      @example_value = RedSnow::Binding.sc_parameter_example_value(sc_parameter_handle)
+      @values = Array.new
+      sc_value_collection_handle = RedSnow::Binding.sc_value_collection_handle(sc_parameter_handle)
+      sc_value_collection_size = RedSnow::Binding.sc_value_collection_size(sc_value_collection_handle)
+      if sc_value_collection_size > 0
+        values_size = sc_value_collection_size - 1
+        for valueIndex in 0..values_size do
+          sc_value_handle = RedSnow::Binding.sc_value_handle(sc_value_collection_handle, valueIndex)
+          value = RedSnow::Binding.sc_value_string(sc_value_handle)
+          @values << value
         end
       end
     end
@@ -146,12 +158,16 @@ module RedSnow
 
     attr_accessor :collection
 
-    def load_ast!(ast)
-      return if ast.empty?
-
+    def initialize(sc_parameter_collection_handle)
+      sc_parameter_collection_size = RedSnow::Binding.sc_parameter_collection_size(sc_parameter_collection_handle)
       @collection = Array.new
-      ast.each do |item|
-        @collection << Parameter.new(item)
+      if sc_parameter_collection_size > 0
+        parameters_size = sc_parameter_collection_size - 1
+        for index in 0..parameters_size do
+          sc_parameter_handle = RedSnow::Binding.sc_parameter_handle(sc_parameter_collection_handle, index)
+          parameter = Parameter.new(sc_parameter_handle)
+          @collection << parameter
+        end
       end
     end
 
@@ -172,12 +188,14 @@ module RedSnow
     attr_accessor :body
     attr_accessor :schema
 
-    def load_ast!(ast)
-      super(ast)
+    def initialize(sc_payload_handle_resource)
+      @name = RedSnow::Binding.sc_payload_name(sc_payload_handle_resource)
+      @description = RedSnow::Binding.sc_payload_description(sc_payload_handle_resource)
+      @body = RedSnow::Binding.sc_payload_body(sc_payload_handle_resource)
+      @schema = RedSnow::Binding.sc_payload_schema(sc_payload_handle_resource)
 
-      @headers = Headers.new(ast[:headers]) unless ast[:headers].blank?
-      @body = ast[:body] unless ast[:body].blank?
-      @schema = ast[:schema] unless ast[:schema].blank?
+      sc_header_collection_handle_payload = RedSnow::Binding.sc_header_collection_handle_payload(sc_payload_handle_resource)
+      @headers = Headers.new(sc_header_collection_handle_payload)
     end
 
   end
@@ -191,18 +209,32 @@ module RedSnow
     attr_accessor :requests
     attr_accessor :responses
 
-    def load_ast!(ast)
-      super(ast)
-
-      unless ast[:requests].blank?
-        @requests = Array.new
-        ast[:requests].each { |request_ast| @requests << Request.new(request_ast) }
+    def initialize(sc_transaction_example_handle)
+      @name  = RedSnow::Binding.sc_transaction_example_name(sc_transaction_example_handle)
+      @description = RedSnow::Binding.sc_transaction_example_description(sc_transaction_example_handle)
+      # BP Resource Actions Examples Requests
+      @requests = Array.new
+      sc_payload_collection_handle_requests = RedSnow::Binding.sc_payload_collection_handle_requests(sc_transaction_example_handle)
+      sc_payload_collection_size_requests = RedSnow::Binding.sc_payload_collection_size(sc_payload_collection_handle_requests)
+      if sc_payload_collection_size_requests > 0
+        requests_size = sc_payload_collection_size_requests - 1
+        for index in 0..requests_size do
+          request = Payload.new(RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_requests, index))
+          @requests << request
+        end
+      end
+      # BP Resource Actions Examples Responses
+      @responses = Array.new
+      sc_payload_collection_handle_responses = RedSnow::Binding.sc_payload_collection_handle_responses(sc_transaction_example_handle)
+      sc_payload_collection_size_responses = RedSnow::Binding.sc_payload_collection_size(sc_payload_collection_handle_responses)
+      if sc_payload_collection_size_responses > 0
+        responses_size = sc_payload_collection_size_responses - 1
+        for index in 0..responses_size do
+          response = Payload.new(RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_responses, index))
+          @responses << response
+        end
       end
 
-      unless ast[:responses].blank?
-        @responses = Array.new
-        ast[:responses].each { |response_ast| @responses << Response.new(response_ast) }
-      end
     end
 
   end
@@ -219,15 +251,23 @@ module RedSnow
     attr_accessor :parameters
     attr_accessor :examples
 
-    def load_ast!(ast)
-      super(ast)
+    def initialize(sc_action_handle)
+      @name = RedSnow::Binding.sc_action_name(sc_action_handle)
+      @description = RedSnow::Binding.sc_action_description(sc_action_handle)
 
-      @method = ast[:method]
-      @parameters = Parameters.new(ast[:parameters]) unless ast[:parameters].blank?
+      @method = RedSnow::Binding.sc_action_httpmethod(sc_action_handle)
 
-      unless ast[:examples].blank?
-        @examples = Array.new
-        ast[:examples].each { |example_ast| @examples << TransactionExample.new(example_ast) }
+      @parameters = Parameters.new(RedSnow::Binding.sc_parameter_collection_handle_action(sc_action_handle))
+
+      @examples = Array.new
+      sc_transaction_example_collection_handle = RedSnow::Binding.sc_transaction_example_collection_handle(sc_action_handle)
+      sc_transaction_example_collection_size = RedSnow::Binding.sc_transaction_example_collection_size(sc_transaction_example_collection_handle)
+      if sc_transaction_example_collection_size > 0
+        examples_size = sc_transaction_example_collection_size - 1
+        for index in 0..examples_size do
+          example = TransactionExample.new(RedSnow::Binding.sc_transaction_example_handle(sc_transaction_example_collection_handle, index))
+          @examples << example
+        end
       end
     end
 
@@ -247,23 +287,24 @@ module RedSnow
     attr_accessor :parameters
     attr_accessor :actions
 
-    def load_ast!(ast)
-      super(ast)
+    def initialize(sc_resource_handle)
+      @name = RedSnow::Binding.sc_resource_name(sc_resource_handle)
+      @description = RedSnow::Binding.sc_resource_description(sc_resource_handle)
+      @uri_template = RedSnow::Binding.sc_resource_uritemplate(sc_resource_handle)
 
-      if ast[:uriTemplate].blank? || ast[:uriTemplate][0] != '/'
-        failure_message = "Invalid input: A resource is missing URI template"
-        failure_message << " ('#{ast[:name]}' resource)" unless ast[:name].blank?
-        abort(failure_message);
+      sc_payload_handle_resource = RedSnow::Binding.sc_payload_handle_resource(sc_resource_handle)
+      @model = Payload.new(sc_payload_handle_resource)
+
+      @actions = Array.new
+      sc_action_collection_handle = RedSnow::Binding.sc_action_collection_handle(sc_resource_handle)
+      sc_action_collection_size = RedSnow::Binding.sc_action_collection_size(sc_action_collection_handle)
+      if sc_action_collection_size > 0
+        action_size = sc_action_collection_size - 1
+        for index in 0..action_size do
+          @actions << Action.new(RedSnow::Binding.sc_action_handle(sc_action_collection_handle, index))
+        end
       end
-
-      @uri_template = ast[:uriTemplate]
-      @model = Model.new(ast[:model]) unless ast[:model].blank?
-      @parameters = Parameters.new(ast[:parameters]) unless ast[:parameters].blank?
-
-      unless ast[:actions].blank?
-        @actions = Array.new
-        ast[:actions].each { |action_ast| @actions << Action.new(action_ast) }
-      end
+      @parameters = Parameters.new(RedSnow::Binding.sc_parameter_collection_handle_resource(sc_resource_handle))
     end
 
   end
@@ -276,13 +317,21 @@ module RedSnow
 
     attr_accessor :resources
 
-    def load_ast!(ast)
-      super(ast)
+    def initialize(sc_resource_groups_handle)
+      @name = RedSnow::Binding.sc_resource_groups_name(sc_resource_groups_handle)
+      @description = RedSnow::Binding.sc_resource_groups_description(sc_resource_groups_handle)
 
-      unless ast[:resources].blank?
-        @resources = Array.new
-        ast[:resources].each { |resource_ast| @resources << Resource.new(resource_ast) }
+      @resources = Array.new
+      sc_resource_collection_handle = RedSnow::Binding.sc_resource_collection_handle(sc_resource_groups_handle)
+      sc_resource_collection_size = RedSnow::Binding.sc_resource_collection_size(sc_resource_collection_handle)
+      if sc_resource_collection_size > 0
+        resource_size = sc_resource_collection_size - 1
+        for index in 0..resource_size do
+          sc_resource_handle = RedSnow::Binding.sc_resource_handle(sc_resource_collection_handle, index)
+          res = Resource.new(sc_resource_handle)
+        end
       end
+      @resources << res
     end
 
   end
@@ -301,20 +350,26 @@ module RedSnow
     VERSION_KEY = :_version
     SUPPORTED_VERSIONS = ["2.0"]
 
-    def load_ast!(ast)
-      super(ast)
+    def initialize(handle)
+      # BP name, desc
+      @name = RedSnow::Binding.sc_blueprint_name(handle)
+      @description = RedSnow::Binding.sc_blueprint_description(handle)
 
-      # Load Metadata
-      unless ast[:metadata].blank?
-        @metadata = Metadata.new(ast[:metadata])
-      end
+      # BP metadata
+      sc_metadata_collection_handle = RedSnow::Binding.sc_metadata_collection_handle(handle)
+      @metadata = Metadata.new(sc_metadata_collection_handle)
 
-      # Load Resource Groups
-      unless ast[:resourceGroups].blank?
-        @resource_groups = Array.new
-        ast[:resourceGroups].each { |group_ast| @resource_groups << ResourceGroup.new(group_ast) }
+      # BP Resource Groups
+      sc_resource_groups_collection_handle = RedSnow::Binding.sc_resource_groups_collection_handle(handle)
+      sc_resource_groups_collection_size = RedSnow::Binding.sc_resource_groups_collection_size(sc_resource_groups_collection_handle)
+      @resource_groups = Array.new
+      if sc_resource_groups_collection_size > 0
+        group_size = sc_resource_groups_collection_size - 1
+        for index in 0..group_size do
+          sc_resource_groups_handle = RedSnow::Binding.sc_resource_groups_handle(sc_resource_groups_collection_handle, index)
+          @resource_groups << ResourceGroup.new(sc_resource_groups_handle)
+        end
       end
     end
-
   end
 end
