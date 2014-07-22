@@ -7,20 +7,17 @@ Ruby binding for the Snow Crash library, also a thermonuclear weapon.
     git submodule update --init --recursive
 
 
-## Building Snow Crash for Mac & Linux
+## Install
 
-./configure --shared
+    gem install redsnow
 
-Mac
-- ext/snowcrash/build/out/Release/libsnowcrash.dylib
 
-Linux
+```ruby
+    require 'redsnow'
 
-- ext/snowcrash/build/out/Release/lib.target/libsnowcrash.so
-
-## Win
-
-- not yet supported
+    bp = RedSnow::parse('# My API')
+    puts bp.name
+```
 
 ## Development & Testing at Linux
 
