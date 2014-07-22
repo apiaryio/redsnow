@@ -4,7 +4,7 @@ require 'rake/extensiontask'
 require 'ffi'
 
 
-task :default => :test
+task :default => :compile
 
 desc "Compile extension"
 task :compile do
@@ -30,5 +30,3 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
-spec = Gem::Specification.load('red_snow.gemspec')
-Rake::ExtensionTask.new('snowcrash', spec)
