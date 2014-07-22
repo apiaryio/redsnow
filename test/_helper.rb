@@ -4,7 +4,7 @@ require 'test/unit'
 require 'shoulda'
 require 'turn' unless ENV["TM_FILEPATH"] || ENV["CI"]
 require 'mocha'
-require File.join(File.expand_path('../../lib/red_snow.rb', __FILE__))
+require File.join(File.expand_path('../../lib/redsnow.rb', __FILE__))
 
 class Test::Unit::TestCase
 
