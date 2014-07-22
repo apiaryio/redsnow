@@ -1,9 +1,10 @@
 PATH
   remote: .
   specs:
-    red_snow (0.0.2)
+    redsnow (0.0.2)
       ffi
       rake
+      rake-compiler
 
 GEM
   remote: https://rubygems.org/
@@ -43,8 +44,7 @@ PLATFORMS
 
 DEPENDENCIES
   mocha
-  rake-compiler
-  red_snow!
+  redsnow!
   shoulda
   turn
   unindent

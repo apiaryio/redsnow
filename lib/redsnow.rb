@@ -1,6 +1,6 @@
-require "red_snow/version"
-require "red_snow/binding"
-require "red_snow/blueprint"
+require "redsnow/version"
+require "redsnow/binding"
+require "redsnow/blueprint"
 require "ffi"
 
 module RedSnow

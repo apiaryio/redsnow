@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'red_snow/version'
+require 'redsnow/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = "red_snow"
+  gem.name          = "redsnow"
   gem.version       = RedSnow::VERSION
   gem.authors       = ["Ladislav Prskavec"]
   gem.email         = ["ladislav@apiary.io"]
@@ -22,8 +22,8 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "ffi"
   gem.add_dependency "rake"
+  gem.add_dependency "rake-compiler"
 
-  gem.add_development_dependency "rake-compiler"
   gem.add_development_dependency "shoulda"
   gem.add_development_dependency "mocha"
   gem.add_development_dependency "turn"
