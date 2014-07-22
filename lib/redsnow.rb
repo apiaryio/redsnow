@@ -5,7 +5,12 @@ require "ffi"
 
 module RedSnow
   include Binding
-
+  # parse
+  #   parsing API Blueprint into Ruby objects
+  # @param rawBlueprint [String] API Blueprint
+  # @param options [Number] Parsing Options
+  #
+  # @return [Blueprint]
   def self.parse(rawBlueprint, options = 0)
     blueprint = FFI::MemoryPointer.new :pointer
     result = FFI::MemoryPointer.new :pointer

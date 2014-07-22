@@ -1,5 +1,4 @@
 # Essential extensions to base object class
-# used throughout MatterCompiler
 module RedSnow
   class Object
 
