@@ -335,8 +335,9 @@ module RedSnow
 
     attr_accessor :metadata
     attr_accessor :resource_groups
-
+    # Version key
     VERSION_KEY = :_version
+    # Supported version of Api Blueprint
     SUPPORTED_VERSIONS = ["2.0"]
     # @param handle [FFI:Pointer]
     def initialize(handle)
