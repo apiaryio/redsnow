@@ -1,6 +1,8 @@
 require "bundler/gem_tasks"
 require 'rake/testtask'
+require 'rake/extensiontask'
 require 'ffi'
+
 
 task :default => :test
 
@@ -27,3 +29,6 @@ Rake::TestTask.new(:test) do |test|
   test.test_files = FileList['test/*_test.rb']
   test.verbose = true
 end
+
+spec = Gem::Specification.load('red_snow.gemspec')
+Rake::ExtensionTask.new('snowcrash', spec)
