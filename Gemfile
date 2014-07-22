@@ -1,4 +1,4 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in red_snow.gemspec
+# Specify your gem's dependencies in redsnow.gemspec
 gemspec

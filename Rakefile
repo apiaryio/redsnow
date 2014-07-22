@@ -1,8 +1,10 @@
 require "bundler/gem_tasks"
 require 'rake/testtask'
+require 'rake/extensiontask'
 require 'ffi'
 
-task :default => :test
+
+task :default => :compile
 
 desc "Compile extension"
 task :compile do
@@ -27,3 +29,4 @@ Rake::TestTask.new(:test) do |test|
   test.test_files = FileList['test/*_test.rb']
   test.verbose = true
 end
+
