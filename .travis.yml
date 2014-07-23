@@ -4,6 +4,7 @@ rvm:
 - 2.1.0
 script:
 - rake test
+- rake install
 before_install:
 - git submodule update --init --recursive
 - gem update bundler
