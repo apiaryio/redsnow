@@ -19,6 +19,8 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib", "ext"]
 
+  gem.required_ruby_version = '>= 1.9.3'
+
   gem.extensions   = %w(Rakefile)
 
   gem.add_dependency "ffi"
