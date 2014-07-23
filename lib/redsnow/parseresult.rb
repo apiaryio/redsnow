@@ -21,7 +21,7 @@ module RedSnow
       warnings = RedSnow::Binding.sc_warnings_handler(result_handle)
       warningsSize = RedSnow::Binding.sc_warnings_size(warnings)
       @warnings = Array.new
-      for index in 0...warningsSize - 1 do
+      for index in 0..(warningsSize - 1) do
         sc_warning_handler = RedSnow::Binding.sc_warning_handler(warnings, index)
 
         warning = Hash.new
@@ -33,7 +33,7 @@ module RedSnow
         sc_location_size = RedSnow::Binding.sc_location_size(sc_location_handler)
         warning[:location] = Array.new
         if sc_location_size > 0
-          for index in 0...sc_location_size - 1
+          for index in 0..(sc_location_size - 1)
             location = Location.new(sc_location_handler, index)
             warning[:location] << location
           end
@@ -51,7 +51,7 @@ module RedSnow
       sc_location_size = RedSnow::Binding.sc_location_size(sc_location_handler)
       @error[:location] = Array.new
       if sc_location_size > 0
-        for index in 0...sc_location_size - 1 do
+        for index in 0..(sc_location_size - 1) do
           location = Location.new(sc_location_handler, index)
           @error[:location] << location
         end
@@ -59,8 +59,9 @@ module RedSnow
     end
   end
 
-  # @param index [Number]
-  # @param length [Number]
+  # Array of possibly non-continuous blocks of the source API Blueprint.
+  # @param index [Number] Zero-based index of the character where warning has occurred.
+  # @param length [Number] Number of the characters from index where warning has occurred.
   class Location
 
     attr_accessor :index
@@ -73,6 +74,30 @@ module RedSnow
       @index = RedSnow::Binding.sc_location_location(location_hander, index)
     end
 
+  end
+
+  class WarningCodes
+    NoWarning = 0
+    APINameWarning = 1
+    DuplicateWarning = 2
+    FormattingWarning = 3
+    RedefinitionWarning = 4
+    IgnoringWarning = 5
+    EmptyDefinitionWarning = 6
+    NotEmptyDefinitionWarning = 7
+    LogicalErrorWarning = 8
+    DeprecatedWarning = 9
+    IndentationWarning = 10
+    AmbiguityWarning = 11
+    URIWarning = 12
+
+  end
+
+  class ErrorCodes
+    NoError = 0
+    ApplicationError = 1
+    BusinessError = 2
+    SymbolError = 3
   end
 
 end
