@@ -1,3 +1,4 @@
 module RedSnow
-  VERSION = "0.0.6"
+  # Gem version
+  VERSION = "0.0.7"
 end

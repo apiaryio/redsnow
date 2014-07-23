@@ -22,11 +22,6 @@ module RedSnow
     attr_accessor :name
     attr_accessor :description
 
-    def load_ast!(ast)
-      @name = ast[:name]
-      @description = ast[:description]
-    end
-
     # Ensure the input string buffer ends with two newlines.
     #
     # @param buffer [String] a buffer to check
@@ -50,17 +45,9 @@ module RedSnow
 
     attr_accessor :collection
 
-    def load_ast!(ast)
-      return if ast.empty?
-      @collection = Array.new
-      ast.each do |item|
-        @collection << Hash[item[:name].to_sym, item[:value]]
-      end
-    end
-
     # Filter collection keys
     #
-    # @returns [Array<Hash>] collection without ignored keys
+    # @return [Array<Hash>] collection without ignored keys
     def filter_collection(ignore_keys)
       return @collection if ignore_keys.blank?
       @collection.select { |kv_item| !ignore_keys.include?(kv_item.keys.first) }
@@ -70,6 +57,8 @@ module RedSnow
   # Metadata collection Blueprint AST node
   #   represents 'metadata section'
   class Metadata < KeyValueCollection
+    # Constructor
+    # @param sc_metadata_collection_handle [FFI::Pointer]
     def initialize(sc_metadata_collection_handle)
       sc_metadata_collection_size = RedSnow::Binding.sc_metadata_collection_size(sc_metadata_collection_handle)
       if sc_metadata_collection_size > 0
@@ -96,7 +85,7 @@ module RedSnow
       content_type_header = @collection.detect { |header| header.has_key?(CONTENT_TYPE_HEADER_KEY) }
       return (content_type_header.nil?) ? nil : content_type_header[CONTENT_TYPE_HEADER_KEY]
     end
-
+    # @param sc_header_collection_handle_payload [FFI::Pointer]
     def initialize(sc_header_collection_handle_payload)
       sc_header_collection_size = RedSnow::Binding.sc_header_collection_size(sc_header_collection_handle_payload)
       if sc_header_collection_size > 0
@@ -127,7 +116,7 @@ module RedSnow
     attr_accessor :default_value
     attr_accessor :example_value
     attr_accessor :values
-
+    # @param sc_parameter_handle [FFI::Pointer]
     def initialize(sc_parameter_handle)
       @name = RedSnow::Binding.sc_parameter_name(sc_parameter_handle)
       @description = RedSnow::Binding.sc_parameter_description(sc_parameter_handle)
@@ -157,7 +146,7 @@ module RedSnow
   class Parameters < BlueprintNode
 
     attr_accessor :collection
-
+    # @param sc_parameter_collection_handle [FFI::Pointer]
     def initialize(sc_parameter_collection_handle)
       sc_parameter_collection_size = RedSnow::Binding.sc_parameter_collection_size(sc_parameter_collection_handle)
       @collection = Array.new
@@ -187,7 +176,7 @@ module RedSnow
     attr_accessor :headers
     attr_accessor :body
     attr_accessor :schema
-
+    # @param sc_payload_handle_resource [FFI::Pointer]
     def initialize(sc_payload_handle_resource)
       @name = RedSnow::Binding.sc_payload_name(sc_payload_handle_resource)
       @description = RedSnow::Binding.sc_payload_description(sc_payload_handle_resource)
@@ -208,7 +197,7 @@ module RedSnow
 
     attr_accessor :requests
     attr_accessor :responses
-
+    # @param sc_transaction_example_handle [FFI::Pointer]
     def initialize(sc_transaction_example_handle)
       @name  = RedSnow::Binding.sc_transaction_example_name(sc_transaction_example_handle)
       @description = RedSnow::Binding.sc_transaction_example_description(sc_transaction_example_handle)
@@ -250,7 +239,7 @@ module RedSnow
     attr_accessor :method
     attr_accessor :parameters
     attr_accessor :examples
-
+    # @param sc_action_handle [FFI::Pointer]
     def initialize(sc_action_handle)
       @name = RedSnow::Binding.sc_action_name(sc_action_handle)
       @description = RedSnow::Binding.sc_action_description(sc_action_handle)
@@ -286,7 +275,7 @@ module RedSnow
     attr_accessor :model
     attr_accessor :parameters
     attr_accessor :actions
-
+    # @param sc_resource_handle [FFI::Pointer]
     def initialize(sc_resource_handle)
       @name = RedSnow::Binding.sc_resource_name(sc_resource_handle)
       @description = RedSnow::Binding.sc_resource_description(sc_resource_handle)
@@ -316,7 +305,7 @@ module RedSnow
   class ResourceGroup < NamedBlueprintNode
 
     attr_accessor :resources
-
+    # @param sc_resource_groups_handle [FFI::Pointer]
     def initialize(sc_resource_groups_handle)
       @name = RedSnow::Binding.sc_resource_groups_name(sc_resource_groups_handle)
       @description = RedSnow::Binding.sc_resource_groups_description(sc_resource_groups_handle)
@@ -346,10 +335,11 @@ module RedSnow
 
     attr_accessor :metadata
     attr_accessor :resource_groups
-
+    # Version key
     VERSION_KEY = :_version
+    # Supported version of Api Blueprint
     SUPPORTED_VERSIONS = ["2.0"]
-
+    # @param handle [FFI:Pointer]
     def initialize(handle)
       # BP name, desc
       @name = RedSnow::Binding.sc_blueprint_name(handle)

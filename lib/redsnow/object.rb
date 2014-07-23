@@ -1,6 +1,6 @@
 # Essential extensions to base object class
-# used throughout MatterCompiler
 module RedSnow
+  # Class from MatterCompiler as ascendant
   class Object
 
     # Symbolizes keys of a hash

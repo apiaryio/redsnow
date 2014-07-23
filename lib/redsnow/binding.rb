@@ -1,7 +1,9 @@
 require "ffi"
 
 module RedSnow
-
+  # C-binding with Snow Crash Library using [FFI](https://github.com/ffi/ffi)
+  # @see https://github.com/apiaryio/snowcrash/blob/master/src/csnowcrash.cc
+  # @see https://github.com/apiaryio/snowcrash/blob/master/src/CBlueprint.cc
   module Binding
     extend FFI::Library
 
@@ -11,7 +13,7 @@ module RedSnow
     end
 
     ffi_lib File.expand_path("../../../ext/snowcrash/build/out/Release/#{prefix}libsnowcrash.#{FFI::Platform::LIBSUFFIX}", __FILE__)
-
+    # @see https://github.com/apiaryio/snowcrash/blob/master/src/BlueprintParserCore.h#L31
     enum :option, [
         :render_descriptions_option,
         :require_blueprint_name_option
@@ -61,6 +63,7 @@ module RedSnow
     attach_function("sc_parameter_collection_handle_action", "sc_parameter_collection_handle_action", [ :pointer ], :pointer)
     attach_function("sc_parameter_collection_size", "sc_parameter_collection_size", [ :pointer ], :int)
 
+    # @see https://github.com/apiaryio/snowcrash/blob/master/src/Blueprint.h#L85
     enum :parameter_use, [:undefined,
                           :optional,
                           :required,

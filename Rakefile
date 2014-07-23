@@ -27,3 +27,10 @@ Rake::TestTask.new(:test) do |test|
   test.test_files = FileList['test/*_test.rb']
   test.verbose = true
 end
+
+# ----- Documentation tasks ---------------------------------------------------
+
+require 'yard'
+YARD::Rake::YardocTask.new(:doc) do |t|
+  t.options = %w| --embed-mixins --markup=markdown |
+end
