@@ -17,8 +17,8 @@ The best way to install RedSnow is by using its [GEM package](https://rubygems.o
 ```ruby
 require 'redsnow'
 
-bp = RedSnow::parse('# My API')
-puts bp.name
+result = RedSnow::parse('# My API')
+puts result[0].name
 ```
 
 ## Hacking Redsnow

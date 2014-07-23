@@ -42,7 +42,7 @@ class RedSnowTest < Test::Unit::TestCase
       end
 
       should "have name" do
-        assert_equal "My API", @result.name
+        assert_equal "My API", @result[0].name
       end
     end
 
@@ -56,8 +56,8 @@ class RedSnowTest < Test::Unit::TestCase
       end
 
       should "have description" do
-        assert_equal "", @result.name
-        assert_equal "**description**\n", @result.description
+        assert_equal "", @result[0].name
+        assert_equal "**description**\n", @result[0].description
       end
     end
 
@@ -71,9 +71,9 @@ class RedSnowTest < Test::Unit::TestCase
         @result = RedSnow.parse(source.unindent)
       end
       should "have resource group" do
-        assert_equal 1, @result.resource_groups.count
-        assert_equal "Name", @result.resource_groups[0].name
-        assert_equal "_description_\n", @result.resource_groups[0].description
+        assert_equal 1, @result[0].resource_groups.count
+        assert_equal "Name", @result[0].resource_groups[0].name
+        assert_equal "_description_\n", @result[0].resource_groups[0].description
       end
     end
 
@@ -117,13 +117,13 @@ class RedSnowTest < Test::Unit::TestCase
           STR
 
         @result = RedSnow.parse(source.unindent)
-        @resourceGroup = @result.resource_groups[0]
+        @resourceGroup = @result[0].resource_groups[0]
         @resource = @resourceGroup.resources[0]
         @action = @resource.actions[0]
       end
 
       should "have resource group" do
-        assert_equal 1, @result.resource_groups.count
+        assert_equal 1, @result[0].resource_groups.count
         assert_equal "", @resourceGroup.name
         assert_equal "", @resourceGroup.description
         assert_equal 1, @resourceGroup.resources.count
@@ -165,7 +165,7 @@ class RedSnowTest < Test::Unit::TestCase
         STR
 
         @result = RedSnow.parse(source.unindent)
-        @metadata = @result.metadata.collection
+        @metadata = @result[0].metadata.collection
       end
 
       should "have metadata" do
@@ -201,7 +201,7 @@ class RedSnowTest < Test::Unit::TestCase
         STR
 
         @result = RedSnow.parse(source.unindent)
-        @resourceGroup = @result.resource_groups[0]
+        @resourceGroup = @result[0].resource_groups[0]
         @resource = @resourceGroup.resources[0]
         @parameter = @resource.parameters.collection[0]
         @values = @parameter.values
@@ -235,7 +235,7 @@ class RedSnowTest < Test::Unit::TestCase
         STR
 
         @result = RedSnow.parse(source.unindent)
-        @resourceGroup = @result.resource_groups[0]
+        @resourceGroup = @result[0].resource_groups[0]
         @resource = @resourceGroup.resources[0]
         @action = @resource.actions[0]
         @parameter = @action.parameters.collection[0]
@@ -284,7 +284,7 @@ class RedSnowTest < Test::Unit::TestCase
                 { "error": "can't create record" }
         STR
         @result = RedSnow.parse(source.unindent)
-        @resourceGroup = @result.resource_groups[0]
+        @resourceGroup = @result[0].resource_groups[0]
         @examples = @resourceGroup.resources[0].actions[0].examples
       end
 
