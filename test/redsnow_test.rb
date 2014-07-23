@@ -1,38 +1,8 @@
 require '_helper'
 require 'unindent'
 
-class RedSnowTest < Test::Unit::TestCase
+class RedSnowParsingTest < Test::Unit::TestCase
 
-  context "RedSnow Binding" do
-    should "convert API Blueprint to AST" do
-
-      blueprint = FFI::MemoryPointer.new :pointer
-      result = FFI::MemoryPointer.new :pointer
-
-      ret = RedSnow::Binding.sc_c_parse("meta: data\nfoo:bar\n#XXXX\ndescription for it", 0, result, blueprint)
-
-      blueprint = blueprint.get_pointer(0)
-      result = result.get_pointer(0)
-      assert_equal "XXXX", RedSnow::Binding.sc_blueprint_name(blueprint)
-
-      assert_equal "description for it", RedSnow::Binding.sc_blueprint_description(blueprint)
-
-      meta_data_col = RedSnow::Binding.sc_metadata_collection_handle(blueprint)
-      assert_equal 2, RedSnow::Binding.sc_metadata_collection_size(meta_data_col)
-
-      warnings = RedSnow::Binding.sc_warnings_handler(result)
-      assert_equal 0, RedSnow::Binding.sc_warnings_size(warnings)
-
-      error = RedSnow::Binding.sc_error_handler(result)
-      assert_equal '', RedSnow::Binding.sc_error_message(error)
-      assert_equal 0, RedSnow::Binding.sc_error_code(error)
-      assert_equal 0, RedSnow::Binding.sc_error_ok(error)
-
-      RedSnow::Binding.sc_blueprint_free(blueprint)
-      RedSnow::Binding.sc_result_free(result)
-
-    end
-  end
   # https://github.com/apiaryio/protagonist/blob/master/test/parser-test.coffee
   context "API Blueprint parser" do
 
@@ -42,7 +12,7 @@ class RedSnowTest < Test::Unit::TestCase
       end
 
       should "have name" do
-        assert_equal "My API", @result.name
+        assert_equal "My API", @result.ast.name
       end
     end
 
@@ -56,8 +26,8 @@ class RedSnowTest < Test::Unit::TestCase
       end
 
       should "have description" do
-        assert_equal "", @result.name
-        assert_equal "**description**\n", @result.description
+        assert_equal "", @result.ast.name
+        assert_equal "**description**\n", @result.ast.description
       end
     end
 
@@ -71,9 +41,9 @@ class RedSnowTest < Test::Unit::TestCase
         @result = RedSnow.parse(source.unindent)
       end
       should "have resource group" do
-        assert_equal 1, @result.resource_groups.count
-        assert_equal "Name", @result.resource_groups[0].name
-        assert_equal "_description_\n", @result.resource_groups[0].description
+        assert_equal 1, @result.ast.resource_groups.count
+        assert_equal "Name", @result.ast.resource_groups[0].name
+        assert_equal "_description_\n", @result.ast.resource_groups[0].description
       end
     end
 
@@ -117,13 +87,13 @@ class RedSnowTest < Test::Unit::TestCase
           STR
 
         @result = RedSnow.parse(source.unindent)
-        @resourceGroup = @result.resource_groups[0]
+        @resourceGroup = @result.ast.resource_groups[0]
         @resource = @resourceGroup.resources[0]
         @action = @resource.actions[0]
       end
 
       should "have resource group" do
-        assert_equal 1, @result.resource_groups.count
+        assert_equal 1, @result.ast.resource_groups.count
         assert_equal "", @resourceGroup.name
         assert_equal "", @resourceGroup.description
         assert_equal 1, @resourceGroup.resources.count
@@ -165,7 +135,7 @@ class RedSnowTest < Test::Unit::TestCase
         STR
 
         @result = RedSnow.parse(source.unindent)
-        @metadata = @result.metadata.collection
+        @metadata = @result.ast.metadata.collection
       end
 
       should "have metadata" do
@@ -201,7 +171,7 @@ class RedSnowTest < Test::Unit::TestCase
         STR
 
         @result = RedSnow.parse(source.unindent)
-        @resourceGroup = @result.resource_groups[0]
+        @resourceGroup = @result.ast.resource_groups[0]
         @resource = @resourceGroup.resources[0]
         @parameter = @resource.parameters.collection[0]
         @values = @parameter.values
@@ -235,7 +205,7 @@ class RedSnowTest < Test::Unit::TestCase
         STR
 
         @result = RedSnow.parse(source.unindent)
-        @resourceGroup = @result.resource_groups[0]
+        @resourceGroup = @result.ast.resource_groups[0]
         @resource = @resourceGroup.resources[0]
         @action = @resource.actions[0]
         @parameter = @action.parameters.collection[0]
@@ -284,7 +254,7 @@ class RedSnowTest < Test::Unit::TestCase
                 { "error": "can't create record" }
         STR
         @result = RedSnow.parse(source.unindent)
-        @resourceGroup = @result.resource_groups[0]
+        @resourceGroup = @result.ast.resource_groups[0]
         @examples = @resourceGroup.resources[0].actions[0].examples
       end
 

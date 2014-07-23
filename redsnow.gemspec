@@ -19,14 +19,17 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib", "ext"]
 
+  gem.required_ruby_version = '>= 1.9.3'
+
   gem.extensions   = %w(Rakefile)
 
-  gem.add_dependency "ffi"
-  gem.add_dependency "rake"
+  gem.add_dependency "ffi", "~> 1.9.3"
+  gem.add_dependency "rake", "~> 10.3.2"
+  gem.add_dependency "yard", "~> 0.8.7.4"
 
   gem.add_development_dependency "shoulda"
   gem.add_development_dependency "mocha"
   gem.add_development_dependency "turn"
   gem.add_development_dependency "unindent"
-  gem.add_development_dependency "yard"
+
 end
