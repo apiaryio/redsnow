@@ -11,7 +11,7 @@ module RedSnow
   # @param rawBlueprint [String] API Blueprint
   # @param options [Number] Parsing Options
   #
-  # @return [Blueprint, ParseResult]
+  # @return [ParseResult]
   def self.parse(rawBlueprint, options = 0)
     blueprint = FFI::MemoryPointer.new :pointer
     result = FFI::MemoryPointer.new :pointer
@@ -20,10 +20,9 @@ module RedSnow
     blueprint = blueprint.get_pointer(0)
     result = result.get_pointer(0)
 
-    bp = Blueprint.new(blueprint)
-    parseResult = ParseResult.new(result)
+    parseResult = ParseResult.new(blueprint, result)
 
-    return bp, parseResult
+    return parseResult
   ensure
     RedSnow::Binding.sc_blueprint_free(blueprint)
     RedSnow::Binding.sc_result_free(result)

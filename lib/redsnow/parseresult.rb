@@ -2,7 +2,7 @@ module RedSnow
 
   # Parse Result
   # @see https://github.com/apiaryio/api-blueprint-ast/blob/master/Parse%20Result.md
-  # @param ast [String] The structure under this key is defined by the []AST Blueprint serialization Media Type v2.0](https://github.com/apiaryio/api-blueprint-ast#json-serialization)
+  # @param ast [Blueprint]
   # @param error [Hash] Description of a parsing error as occurred during parsing. If this field is present and code different from 0 then the content of ast field should be ignored.
   # @param warnings [Array<Hash>] Ordered array of parser warnings as occurred during the parsing.
   class ParseResult
@@ -16,8 +16,9 @@ module RedSnow
     SUPPORTED_VERSIONS = ["2.0"]
 
     # @param result_handle [FFI::Pointer]
-    def initialize(result_handle)
+    def initialize(blueprint_handle, result_handle)
 
+      @ast = Blueprint.new(blueprint_handle)
       warnings = RedSnow::Binding.sc_warnings_handler(result_handle)
       warningsSize = RedSnow::Binding.sc_warnings_size(warnings)
       @warnings = Array.new
@@ -76,6 +77,8 @@ module RedSnow
 
   end
 
+  # Warnning Codes
+  # @see https://github.com/apiaryio/snowcrash/blob/master/src/SourceAnnotation.h#L128
   class WarningCodes
     NoWarning = 0
     APINameWarning = 1
@@ -92,7 +95,8 @@ module RedSnow
     URIWarning = 12
 
   end
-
+  # Error Codes
+  # @see https://github.com/apiaryio/snowcrash/blob/master/src/SourceAnnotation.h#L113
   class ErrorCodes
     NoError = 0
     ApplicationError = 1

@@ -12,7 +12,7 @@ class RedSnowParsingTest < Test::Unit::TestCase
       end
 
       should "have name" do
-        assert_equal "My API", @result[0].name
+        assert_equal "My API", @result.ast.name
       end
     end
 
@@ -26,8 +26,8 @@ class RedSnowParsingTest < Test::Unit::TestCase
       end
 
       should "have description" do
-        assert_equal "", @result[0].name
-        assert_equal "**description**\n", @result[0].description
+        assert_equal "", @result.ast.name
+        assert_equal "**description**\n", @result.ast.description
       end
     end
 
@@ -41,9 +41,9 @@ class RedSnowParsingTest < Test::Unit::TestCase
         @result = RedSnow.parse(source.unindent)
       end
       should "have resource group" do
-        assert_equal 1, @result[0].resource_groups.count
-        assert_equal "Name", @result[0].resource_groups[0].name
-        assert_equal "_description_\n", @result[0].resource_groups[0].description
+        assert_equal 1, @result.ast.resource_groups.count
+        assert_equal "Name", @result.ast.resource_groups[0].name
+        assert_equal "_description_\n", @result.ast.resource_groups[0].description
       end
     end
 
@@ -87,13 +87,13 @@ class RedSnowParsingTest < Test::Unit::TestCase
           STR
 
         @result = RedSnow.parse(source.unindent)
-        @resourceGroup = @result[0].resource_groups[0]
+        @resourceGroup = @result.ast.resource_groups[0]
         @resource = @resourceGroup.resources[0]
         @action = @resource.actions[0]
       end
 
       should "have resource group" do
-        assert_equal 1, @result[0].resource_groups.count
+        assert_equal 1, @result.ast.resource_groups.count
         assert_equal "", @resourceGroup.name
         assert_equal "", @resourceGroup.description
         assert_equal 1, @resourceGroup.resources.count
@@ -135,7 +135,7 @@ class RedSnowParsingTest < Test::Unit::TestCase
         STR
 
         @result = RedSnow.parse(source.unindent)
-        @metadata = @result[0].metadata.collection
+        @metadata = @result.ast.metadata.collection
       end
 
       should "have metadata" do
@@ -171,7 +171,7 @@ class RedSnowParsingTest < Test::Unit::TestCase
         STR
 
         @result = RedSnow.parse(source.unindent)
-        @resourceGroup = @result[0].resource_groups[0]
+        @resourceGroup = @result.ast.resource_groups[0]
         @resource = @resourceGroup.resources[0]
         @parameter = @resource.parameters.collection[0]
         @values = @parameter.values
@@ -205,7 +205,7 @@ class RedSnowParsingTest < Test::Unit::TestCase
         STR
 
         @result = RedSnow.parse(source.unindent)
-        @resourceGroup = @result[0].resource_groups[0]
+        @resourceGroup = @result.ast.resource_groups[0]
         @resource = @resourceGroup.resources[0]
         @action = @resource.actions[0]
         @parameter = @action.parameters.collection[0]
@@ -254,7 +254,7 @@ class RedSnowParsingTest < Test::Unit::TestCase
                 { "error": "can't create record" }
         STR
         @result = RedSnow.parse(source.unindent)
-        @resourceGroup = @result[0].resource_groups[0]
+        @resourceGroup = @result.ast.resource_groups[0]
         @examples = @resourceGroup.resources[0].actions[0].examples
       end
 
