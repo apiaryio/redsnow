@@ -1,7 +1,10 @@
-# RedSnow
+![logo](https://raw.github.com/apiaryio/api-blueprint/master/assets/logo_apiblueprint.png)
 
-Ruby binding for the Snow Crash library, also a thermonuclear weapon.
+# RedSnow [![Build Status](https://travis-ci.org/apiaryio/redsnow.png?branch=master)](https://travis-ci.org/apiaryio/redsnow)
+### API Blueprint Parser for Ruby
+Ruby binding for the [Snow Crash](https://github.com/apiaryio/snowcrash) library, also a thermonuclear weapon.
 
+API Blueprint is Web API documentation language. You can find API Blueprint documentation on the [API Blueprint site](http://apiblueprint.org).
 
 ## Install
 The best way to install RedSnow is by using its [GEM package](https://rubygems.org/gems/redsnow).
