@@ -36,14 +36,37 @@ class RedSnowParsingTest < Test::Unit::TestCase
         source = <<-STR
           # Group Name
           _description_
+
+          ## My Resource [/resource]
+          Resource description
+
+          ## My Alternative Resource [/alternative_resource]
+          Alternative resource description
+
         STR
 
         @result = RedSnow.parse(source.unindent)
+        @resource_group = @result.ast.resource_groups[0]
+        @resource = @resource_group.resources[0]
+        @alternative_resource = @resource_group.resources[1]
       end
+
       should "have resource group" do
         assert_equal 1, @result.ast.resource_groups.count
-        assert_equal "Name", @result.ast.resource_groups[0].name
-        assert_equal "_description_\n", @result.ast.resource_groups[0].description
+        assert_equal "Name", @resource_group.name
+        assert_equal "_description_\n\n", @resource_group.description
+      end
+
+      should "have resource" do
+        assert_equal "/resource", @resource.uri_template
+        assert_equal "My Resource", @resource.name
+        assert_equal "Resource description\n\n", @resource.description
+      end
+
+      should "have alternative resource" do
+        assert_equal "/alternative_resource", @alternative_resource.uri_template
+        assert_equal "My Alternative Resource", @alternative_resource.name
+        assert_equal "Alternative resource description\n\n", @alternative_resource.description
       end
     end
 

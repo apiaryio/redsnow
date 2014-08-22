@@ -317,10 +317,9 @@ module RedSnow
         resource_size = sc_resource_collection_size - 1
         for index in 0..resource_size do
           sc_resource_handle = RedSnow::Binding.sc_resource_handle(sc_resource_collection_handle, index)
-          res = Resource.new(sc_resource_handle)
+          @resources << Resource.new(sc_resource_handle)
         end
       end
-      @resources << res
     end
 
   end
