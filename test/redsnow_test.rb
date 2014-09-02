@@ -134,7 +134,7 @@ class RedSnowParsingTest < Test::Unit::TestCase
         assert_equal "Hello World\n", @resource.model.body
         assert_equal 1, @resource.model.headers.collection.count
         assert_equal "Content-Type", @resource.model.headers.collection[0][:name]
-        assert_equal "text/plain", @resource.model.headers.collection[0][:value]
+        assert_equal "text/plain", @resource.model.headers['Content-Type']
       end
 
       should "have actions" do
@@ -158,21 +158,30 @@ class RedSnowParsingTest < Test::Unit::TestCase
         STR
 
         @result = RedSnow.parse(source.unindent)
-        @metadata = @result.ast.metadata.collection
+        @metadata = @result.ast.metadata
+        @collection = @metadata.collection
       end
 
       should "have metadata" do
-        assert_equal 'FORMAT', @metadata[0][:name]
-        assert_equal '1A', @metadata[0][:value]
+        assert_equal 'FORMAT', @collection[0][:name]
+        assert_equal '1A', @collection[0][:value]
 
-        assert_equal 'A', @metadata[1][:name]
-        assert_equal '1', @metadata[1][:value]
+        assert_equal 'A', @collection[1][:name]
+        assert_equal '1', @collection[1][:value]
 
-        assert_equal 'B', @metadata[2][:name]
-        assert_equal '2', @metadata[2][:value]
+        assert_equal 'B', @collection[2][:name]
+        assert_equal '2', @collection[2][:value]
 
-        assert_equal 'C', @metadata[3][:name]
-        assert_equal '3', @metadata[3][:value]
+        assert_equal 'C', @collection[3][:name]
+        assert_equal '3', @collection[3][:value]
+      end
+      
+      should "return metadata values by element reference method" do
+        assert_equal '1A', @metadata['FORMAT']
+        assert_equal '1', @metadata['A']
+        assert_equal '2', @metadata['B']
+        assert_equal '3', @metadata['C']
+        assert_equal nil, @metadata['D']
       end
     end
 

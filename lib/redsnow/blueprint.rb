@@ -45,12 +45,29 @@ module RedSnow
 
     attr_accessor :collection
 
+    # Retrieves the value of the collection item by its key
+    #
+    # @param key [String] Name of the item key to retrieve
+    # @return [NilClass] if the collection does not have an item with the key
+    # @return [String] if the collection has an item with the key 
+    def [] key
+      return nil if @collection.nil?
+      return_item_value key
+    end
     # Filter collection keys
     #
     # @return [Array<Hash>] collection without ignored keys
     def filter_collection(ignore_keys)
       return @collection if ignore_keys.blank?
       @collection.select { |kv_item| !ignore_keys.include?(kv_item.keys.first) }
+    end
+    private
+    def return_item_value key
+      item = get_item(key.to_s)
+      item.nil? ? nil : item[:value]
+    end
+    def get_item key
+      @collection.select{|item| item[:name] == key }.first
     end
   end
 
