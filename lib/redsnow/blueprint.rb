@@ -67,7 +67,7 @@ module RedSnow
       item.nil? ? nil : item[:value]
     end
     def get_item key
-      @collection.select{|item| item[:name] == key }.first
+      @collection.select{|item| item[:name].downcase == key.downcase }.first
     end
   end
 

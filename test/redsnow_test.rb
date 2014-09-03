@@ -134,7 +134,7 @@ class RedSnowParsingTest < Test::Unit::TestCase
         assert_equal "Hello World\n", @resource.model.body
         assert_equal 1, @resource.model.headers.collection.count
         assert_equal "Content-Type", @resource.model.headers.collection[0][:name]
-        assert_equal "text/plain", @resource.model.headers['Content-Type']
+        assert_equal "text/plain", @resource.model.headers['content-type']
       end
 
       should "have actions" do
@@ -304,9 +304,9 @@ class RedSnowParsingTest < Test::Unit::TestCase
         assert_equal "201", @examples[0].responses[0].name
         assert_equal "Unable to create note", @examples[1].requests[0].name
         assert_equal "Content-Type", @examples[1].requests[0].headers.collection[0][:name]
-        assert_equal "application/json", @examples[1].requests[0].headers.collection[0][:value]
+        assert_equal "application/json", @examples[1].requests[0].headers['content-type']
         assert_equal "Prefer", @examples[1].requests[0].headers.collection[1][:name]
-        assert_equal "testing", @examples[1].requests[0].headers.collection[1][:value]
+        assert_equal "testing", @examples[1].requests[0].headers['prefer']
         assert_equal '{ "ti": "Buy cheese and bread for breakfast." }' + "\n", @examples[1].requests[0].body
         assert_equal "500", @examples[1].responses[0].name
       end
