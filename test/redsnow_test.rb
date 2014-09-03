@@ -135,6 +135,7 @@ class RedSnowParsingTest < Test::Unit::TestCase
         assert_equal 1, @resource.model.headers.collection.count
         assert_equal "Content-Type", @resource.model.headers.collection[0][:name]
         assert_equal "text/plain", @resource.model.headers['content-type']
+        assert_equal "text/plain", @resource.model.headers['Content-Type']
       end
 
       should "have actions" do
