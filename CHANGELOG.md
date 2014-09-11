@@ -1,4 +1,5 @@
 # Changelog
+- 0.1.4 - Fixed install process [PR#20](https://github.com/apiaryio/redsnow/pull/20)
 - 0.1.3 - Add Element Reference method to KeyValueCollection class [PR#17](https://github.com/apiaryio/redsnow/pull/17)
 - 0.1.2 - Fix collection of resources inside ResourceGroup [PR#13](https://github.com/apiaryio/redsnow/pull/13)
 - 0.1.1 - Add bundler to dependency
