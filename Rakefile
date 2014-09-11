@@ -15,6 +15,7 @@ task :compile do
   if !File.exists?(path) || ENV['RECOMPILE']
     puts "Compiling extension..."
     `cd #{File.expand_path("ext/snowcrash/")} && ./configure --shared && make`
+    exit $?.exitstatus
   else
     puts "Extension already compiled. To recompile set env variable RECOMPILE=true."
   end
