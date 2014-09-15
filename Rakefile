@@ -1,4 +1,9 @@
-require "bundler/gem_tasks"
+begin
+  require 'bundler/gem_tasks'
+rescue LoadError
+  puts "Cannot load bundler/gem_tasks"
+end
+
 require 'rake/testtask'
 require 'ffi'
 
