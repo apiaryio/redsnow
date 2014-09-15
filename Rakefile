@@ -18,6 +18,8 @@ task :compile do
   path = File.expand_path("ext/snowcrash/build/out/Release/#{prefix}libsnowcrash.#{FFI::Platform::LIBSUFFIX}", File.dirname(__FILE__))
   puts path
   if !File.exists?(path) || ENV['RECOMPILE']
+    puts "Initializing submodules (if required)..."
+    `git submodule update --init --recursive 2>/dev/null`
     puts "Compiling extension..."
     `cd #{File.expand_path("ext/snowcrash/")} && ./configure --shared && make`
     exit $?.exitstatus
