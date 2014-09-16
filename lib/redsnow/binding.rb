@@ -32,12 +32,12 @@ module RedSnow
     attach_function("sc_metadata_key", "sc_metadata_key", [ :pointer ], :string)
     attach_function("sc_metadata_value", "sc_metadata_value",[ :pointer ], :string)
 
-    attach_function("sc_resource_groups_collection_handle", "sc_resource_groups_collection_handle", [ :pointer ], :pointer)
-    attach_function("sc_resource_groups_collection_size", "sc_resource_groups_collection_size", [ :pointer ], :int)
+    attach_function("sc_resource_group_collection_handle", "sc_resource_group_collection_handle", [ :pointer ], :pointer)
+    attach_function("sc_resource_group_collection_size", "sc_resource_group_collection_size", [ :pointer ], :int)
 
-    attach_function("sc_resource_groups_handle", "sc_resource_groups_handle", [ :pointer, :int ], :pointer)
-    attach_function("sc_resource_groups_name", "sc_resource_groups_name", [ :pointer ], :string)
-    attach_function("sc_resource_groups_description", "sc_resource_groups_description", [ :pointer ], :string)
+    attach_function("sc_resource_group_handle", "sc_resource_group_handle", [ :pointer, :int ], :pointer)
+    attach_function("sc_resource_group_name", "sc_resource_group_name", [ :pointer ], :string)
+    attach_function("sc_resource_group_description", "sc_resource_group_description", [ :pointer ], :string)
 
     attach_function("sc_resource_collection_handle", "sc_resource_collection_handle", [ :pointer ] , :pointer)
     attach_function("sc_resource_collection_size", "sc_resource_collection_size", [ :pointer ], :int)

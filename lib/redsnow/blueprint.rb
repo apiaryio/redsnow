@@ -346,13 +346,13 @@ module RedSnow
 
     attr_accessor :resources
 
-    # @param sc_resource_groups_handle [FFI::Pointer]
-    def initialize(sc_resource_groups_handle)
-      @name = RedSnow::Binding.sc_resource_groups_name(sc_resource_groups_handle)
-      @description = RedSnow::Binding.sc_resource_groups_description(sc_resource_groups_handle)
+    # @param sc_resource_group_handle [FFI::Pointer]
+    def initialize(sc_resource_group_handle)
+      @name = RedSnow::Binding.sc_resource_group_name(sc_resource_group_handle)
+      @description = RedSnow::Binding.sc_resource_group_description(sc_resource_group_handle)
 
       @resources = Array.new
-      sc_resource_collection_handle = RedSnow::Binding.sc_resource_collection_handle(sc_resource_groups_handle)
+      sc_resource_collection_handle = RedSnow::Binding.sc_resource_collection_handle(sc_resource_group_handle)
       sc_resource_collection_size = RedSnow::Binding.sc_resource_collection_size(sc_resource_collection_handle)
 
       if sc_resource_collection_size > 0
@@ -395,16 +395,16 @@ module RedSnow
       @metadata = Metadata.new(sc_metadata_collection_handle)
 
       # BP Resource Groups
-      sc_resource_groups_collection_handle = RedSnow::Binding.sc_resource_groups_collection_handle(handle)
-      sc_resource_groups_collection_size = RedSnow::Binding.sc_resource_groups_collection_size(sc_resource_groups_collection_handle)
+      sc_resource_group_collection_handle = RedSnow::Binding.sc_resource_group_collection_handle(handle)
+      sc_resource_group_collection_size = RedSnow::Binding.sc_resource_group_collection_size(sc_resource_group_collection_handle)
       @resource_groups = Array.new
 
-      if sc_resource_groups_collection_size > 0
-        group_size = sc_resource_groups_collection_size - 1
+      if sc_resource_group_collection_size > 0
+        group_size = sc_resource_group_collection_size - 1
 
         for index in 0..group_size do
-          sc_resource_groups_handle = RedSnow::Binding.sc_resource_groups_handle(sc_resource_groups_collection_handle, index)
-          @resource_groups << ResourceGroup.new(sc_resource_groups_handle)
+          sc_resource_group_handle = RedSnow::Binding.sc_resource_group_handle(sc_resource_group_collection_handle, index)
+          @resource_groups << ResourceGroup.new(sc_resource_group_handle)
         end
       end
     end
