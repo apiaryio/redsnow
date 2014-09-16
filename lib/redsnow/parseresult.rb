@@ -5,10 +5,12 @@ module RedSnow
   # @param ast [Blueprint]
   # @param error [Hash] Description of a parsing error as occurred during parsing. If this field is present and code different from 0 then the content of ast field should be ignored.
   # @param warnings [Array<Hash>] Ordered array of parser warnings as occurred during the parsing.
+  # @param sourcemap [BlueprintSourcemap]
   class ParseResult
     attr_accessor :ast
     attr_accessor :error
     attr_accessor :warnings
+    attr_accessor :sourcemap
 
     # Version key
     VERSION_KEY = :_version
@@ -16,11 +18,14 @@ module RedSnow
     SUPPORTED_VERSIONS = ["2.0"]
 
     # @param report_handle [FFI::Pointer]
-    def initialize(blueprint_handle, report_handle)
+    def initialize(report_handle, blueprint_handle, sourcemap_handle)
 
       @ast = Blueprint.new(blueprint_handle)
+      @sourcemap = Sourcemap.new(sourcemap_handle)
+
       warnings = RedSnow::Binding.sc_warnings_handler(report_handle)
       warningsSize = RedSnow::Binding.sc_warnings_size(warnings)
+
       @warnings = Array.new
 
       for index in 0..(warningsSize - 1) do
