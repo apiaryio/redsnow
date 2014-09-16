@@ -14,18 +14,18 @@ module RedSnow
   # @return [ParseResult]
   def self.parse(rawBlueprint, options = 0)
     blueprint = FFI::MemoryPointer.new :pointer
-    result = FFI::MemoryPointer.new :pointer
-    ret = RedSnow::Binding.sc_c_parse(rawBlueprint, options, result, blueprint)
+    report = FFI::MemoryPointer.new :pointer
+    ret = RedSnow::Binding.sc_c_parse(rawBlueprint, options, report, blueprint)
 
     blueprint = blueprint.get_pointer(0)
-    result = result.get_pointer(0)
+    report = report.get_pointer(0)
 
-    parseResult = ParseResult.new(blueprint, result)
+    parseResult = ParseResult.new(blueprint, report)
 
     return parseResult
   ensure
     RedSnow::Binding.sc_blueprint_free(blueprint)
-    RedSnow::Binding.sc_result_free(result)
+    RedSnow::Binding.sc_report_free(report)
   end
 
 end

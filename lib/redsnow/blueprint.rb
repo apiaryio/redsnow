@@ -78,9 +78,11 @@ module RedSnow
     # @param sc_metadata_collection_handle [FFI::Pointer]
     def initialize(sc_metadata_collection_handle)
       sc_metadata_collection_size = RedSnow::Binding.sc_metadata_collection_size(sc_metadata_collection_handle)
+
       if sc_metadata_collection_size > 0
         metadata_size = sc_metadata_collection_size - 1
         @collection = Array.new
+
         for index in 0..metadata_size do
           sc_metadata_handle = RedSnow::Binding.sc_metadata_handle(sc_metadata_collection_handle, index)
           @collection << Hash[:name => RedSnow::Binding.sc_metadata_key(sc_metadata_handle), :value => RedSnow::Binding.sc_metadata_value(sc_metadata_handle)]
@@ -96,18 +98,20 @@ module RedSnow
     # HTTP 'Content-Type' header
     CONTENT_TYPE_HEADER_KEY = :'Content-Type'
 
-
     # @return [String] the value of 'Content-type' header if present or nil
     def content_type
       content_type_header = @collection.detect { |header| header.has_key?(CONTENT_TYPE_HEADER_KEY) }
       return (content_type_header.nil?) ? nil : content_type_header[CONTENT_TYPE_HEADER_KEY]
     end
+
     # @param sc_header_collection_handle_payload [FFI::Pointer]
     def initialize(sc_header_collection_handle_payload)
       sc_header_collection_size = RedSnow::Binding.sc_header_collection_size(sc_header_collection_handle_payload)
+
       if sc_header_collection_size > 0
         headers_size = sc_header_collection_size - 1
         @collection = Array.new
+
         for index in 0..headers_size do
           sc_header_handle = RedSnow::Binding.sc_header_handle(sc_header_collection_handle_payload, index)
           @collection << Hash[:name => RedSnow::Binding.sc_header_key(sc_header_handle), :value => RedSnow::Binding.sc_header_value(sc_header_handle)]
@@ -142,10 +146,13 @@ module RedSnow
       @default_value = RedSnow::Binding.sc_parameter_default_value(sc_parameter_handle)
       @example_value = RedSnow::Binding.sc_parameter_example_value(sc_parameter_handle)
       @values = Array.new
+
       sc_value_collection_handle = RedSnow::Binding.sc_value_collection_handle(sc_parameter_handle)
       sc_value_collection_size = RedSnow::Binding.sc_value_collection_size(sc_value_collection_handle)
+
       if sc_value_collection_size > 0
         values_size = sc_value_collection_size - 1
+
         for valueIndex in 0..values_size do
           sc_value_handle = RedSnow::Binding.sc_value_handle(sc_value_collection_handle, valueIndex)
           value = RedSnow::Binding.sc_value_string(sc_value_handle)
@@ -163,12 +170,15 @@ module RedSnow
   class Parameters < BlueprintNode
 
     attr_accessor :collection
+
     # @param sc_parameter_collection_handle [FFI::Pointer]
     def initialize(sc_parameter_collection_handle)
       sc_parameter_collection_size = RedSnow::Binding.sc_parameter_collection_size(sc_parameter_collection_handle)
       @collection = Array.new
+
       if sc_parameter_collection_size > 0
         parameters_size = sc_parameter_collection_size - 1
+
         for index in 0..parameters_size do
           sc_parameter_handle = RedSnow::Binding.sc_parameter_handle(sc_parameter_collection_handle, index)
           parameter = Parameter.new(sc_parameter_handle)
@@ -193,6 +203,7 @@ module RedSnow
     attr_accessor :headers
     attr_accessor :body
     attr_accessor :schema
+
     # @param sc_payload_handle_resource [FFI::Pointer]
     def initialize(sc_payload_handle_resource)
       @name = RedSnow::Binding.sc_payload_name(sc_payload_handle_resource)
@@ -214,6 +225,7 @@ module RedSnow
 
     attr_accessor :requests
     attr_accessor :responses
+
     # @param sc_transaction_example_handle [FFI::Pointer]
     def initialize(sc_transaction_example_handle)
       @name  = RedSnow::Binding.sc_transaction_example_name(sc_transaction_example_handle)
@@ -222,25 +234,29 @@ module RedSnow
       @requests = Array.new
       sc_payload_collection_handle_requests = RedSnow::Binding.sc_payload_collection_handle_requests(sc_transaction_example_handle)
       sc_payload_collection_size_requests = RedSnow::Binding.sc_payload_collection_size(sc_payload_collection_handle_requests)
+
       if sc_payload_collection_size_requests > 0
         requests_size = sc_payload_collection_size_requests - 1
+
         for index in 0..requests_size do
           request = Payload.new(RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_requests, index))
           @requests << request
         end
       end
+
       # BP Resource Actions Examples Responses
       @responses = Array.new
       sc_payload_collection_handle_responses = RedSnow::Binding.sc_payload_collection_handle_responses(sc_transaction_example_handle)
       sc_payload_collection_size_responses = RedSnow::Binding.sc_payload_collection_size(sc_payload_collection_handle_responses)
+
       if sc_payload_collection_size_responses > 0
         responses_size = sc_payload_collection_size_responses - 1
+
         for index in 0..responses_size do
           response = Payload.new(RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_responses, index))
           @responses << response
         end
       end
-
     end
 
   end
@@ -256,6 +272,7 @@ module RedSnow
     attr_accessor :method
     attr_accessor :parameters
     attr_accessor :examples
+
     # @param sc_action_handle [FFI::Pointer]
     def initialize(sc_action_handle)
       @name = RedSnow::Binding.sc_action_name(sc_action_handle)
@@ -268,8 +285,10 @@ module RedSnow
       @examples = Array.new
       sc_transaction_example_collection_handle = RedSnow::Binding.sc_transaction_example_collection_handle(sc_action_handle)
       sc_transaction_example_collection_size = RedSnow::Binding.sc_transaction_example_collection_size(sc_transaction_example_collection_handle)
+
       if sc_transaction_example_collection_size > 0
         examples_size = sc_transaction_example_collection_size - 1
+
         for index in 0..examples_size do
           example = TransactionExample.new(RedSnow::Binding.sc_transaction_example_handle(sc_transaction_example_collection_handle, index))
           @examples << example
@@ -292,6 +311,7 @@ module RedSnow
     attr_accessor :model
     attr_accessor :parameters
     attr_accessor :actions
+
     # @param sc_resource_handle [FFI::Pointer]
     def initialize(sc_resource_handle)
       @name = RedSnow::Binding.sc_resource_name(sc_resource_handle)
@@ -304,12 +324,15 @@ module RedSnow
       @actions = Array.new
       sc_action_collection_handle = RedSnow::Binding.sc_action_collection_handle(sc_resource_handle)
       sc_action_collection_size = RedSnow::Binding.sc_action_collection_size(sc_action_collection_handle)
+
       if sc_action_collection_size > 0
         action_size = sc_action_collection_size - 1
+
         for index in 0..action_size do
           @actions << Action.new(RedSnow::Binding.sc_action_handle(sc_action_collection_handle, index))
         end
       end
+
       @parameters = Parameters.new(RedSnow::Binding.sc_parameter_collection_handle_resource(sc_resource_handle))
     end
 
@@ -322,6 +345,7 @@ module RedSnow
   class ResourceGroup < NamedBlueprintNode
 
     attr_accessor :resources
+
     # @param sc_resource_groups_handle [FFI::Pointer]
     def initialize(sc_resource_groups_handle)
       @name = RedSnow::Binding.sc_resource_groups_name(sc_resource_groups_handle)
@@ -330,8 +354,10 @@ module RedSnow
       @resources = Array.new
       sc_resource_collection_handle = RedSnow::Binding.sc_resource_collection_handle(sc_resource_groups_handle)
       sc_resource_collection_size = RedSnow::Binding.sc_resource_collection_size(sc_resource_collection_handle)
+
       if sc_resource_collection_size > 0
         resource_size = sc_resource_collection_size - 1
+
         for index in 0..resource_size do
           sc_resource_handle = RedSnow::Binding.sc_resource_handle(sc_resource_collection_handle, index)
           @resources << Resource.new(sc_resource_handle)
@@ -351,10 +377,13 @@ module RedSnow
 
     attr_accessor :metadata
     attr_accessor :resource_groups
+
     # Version key
     VERSION_KEY = :_version
+
     # Supported version of Api Blueprint
     SUPPORTED_VERSIONS = ["2.0"]
+
     # @param handle [FFI:Pointer]
     def initialize(handle)
       # BP name, desc
@@ -369,8 +398,10 @@ module RedSnow
       sc_resource_groups_collection_handle = RedSnow::Binding.sc_resource_groups_collection_handle(handle)
       sc_resource_groups_collection_size = RedSnow::Binding.sc_resource_groups_collection_size(sc_resource_groups_collection_handle)
       @resource_groups = Array.new
+
       if sc_resource_groups_collection_size > 0
         group_size = sc_resource_groups_collection_size - 1
+
         for index in 0..group_size do
           sc_resource_groups_handle = RedSnow::Binding.sc_resource_groups_handle(sc_resource_groups_collection_handle, index)
           @resource_groups << ResourceGroup.new(sc_resource_groups_handle)
