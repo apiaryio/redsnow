@@ -1,17 +1,16 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "precise64"
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+  config.vm.box = "ffuenf/ubuntu-14.04-server-amd64"
 
   # VirtualBox
   config.vm.provider :virtualbox do |vb|
     vb.customize ["modifyvm", :id, "--memory", "2048"]
-    vb.customize ["modifyvm", :id, "--cpus", "1"]  
+    vb.customize ["modifyvm", :id, "--cpus", "1"]
   end
 
   # VMWare Fusion
   config.vm.provider :vmware_fusion do |vb|
     vb.vmx["memsize"] = "4096"
-    vb.vmx["numvcpus"] = "1" 
+    vb.vmx["numvcpus"] = "1"
   end
 
   config.vm.network :private_network, ip: "10.3.3.3"
