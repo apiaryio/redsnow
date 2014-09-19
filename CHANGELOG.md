@@ -1,5 +1,6 @@
 # Changelog
-
+- 0.1.6
+    - Fixing problem with submodules in Gem install [IS#25](https://github.com/apiaryio/redsnow/issues/25)
 - 0.1.5
     - Ensure submodules are initialised before building [PR#22](https://github.\
     - com/apiaryio/redsnow/pull/22)
