@@ -1,4 +1,6 @@
 # Changelog
+- 0.2.0
+    - New Parser Architecture [Snow Crash v0.14.0](https://github.com/apiaryio/snowcrash/releases)
 - 0.1.6
     - Fixing problem with submodules in Gem install [IS#25](https://github.com/apiaryio/redsnow/issues/25)
 - 0.1.5
