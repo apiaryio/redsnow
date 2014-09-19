@@ -37,7 +37,7 @@ class RedSnowParseResultTest < Test::Unit::TestCase
 
     should "have some warning" do
       assert_equal RedSnow::WarningCodes::EmptyDefinitionWarning, @result.warnings[0][:code]
-      assert_equal "no response defined for 'GET /'", @result.warnings[0][:message]
+      assert_equal "action is missing a response", @result.warnings[0][:message]
 
       assert_equal 20, @result.warnings[0][:location][0].index
       assert_equal 9, @result.warnings[0][:location][0].length

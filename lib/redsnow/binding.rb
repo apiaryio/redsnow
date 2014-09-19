@@ -107,7 +107,7 @@ module RedSnow
     attach_function("sc_transaction_example_name", "sc_transaction_example_name", [ :pointer ], :string)
     attach_function("sc_transaction_example_description", "sc_transaction_example_description", [ :pointer ], :string)
 
-    attach_function("sc_result_free", "sc_result_free", [ :pointer ], :void)
+    attach_function("sc_report_free", "sc_report_free", [ :pointer ], :void)
 
     attach_function("sc_location_handler", "sc_location_handler", [ :pointer ], :pointer)
     attach_function("sc_location_size", "sc_location_size", [ :pointer ], :int)

@@ -15,13 +15,14 @@ module RedSnow
     # Supported version of Api Blueprint
     SUPPORTED_VERSIONS = ["2.0"]
 
-    # @param result_handle [FFI::Pointer]
-    def initialize(blueprint_handle, result_handle)
+    # @param report_handle [FFI::Pointer]
+    def initialize(blueprint_handle, report_handle)
 
       @ast = Blueprint.new(blueprint_handle)
-      warnings = RedSnow::Binding.sc_warnings_handler(result_handle)
+      warnings = RedSnow::Binding.sc_warnings_handler(report_handle)
       warningsSize = RedSnow::Binding.sc_warnings_size(warnings)
       @warnings = Array.new
+
       for index in 0..(warningsSize - 1) do
         sc_warning_handler = RedSnow::Binding.sc_warning_handler(warnings, index)
 
@@ -33,6 +34,7 @@ module RedSnow
         sc_location_handler = RedSnow::Binding.sc_location_handler(sc_warning_handler)
         sc_location_size = RedSnow::Binding.sc_location_size(sc_location_handler)
         warning[:location] = Array.new
+
         if sc_location_size > 0
           for index in 0..(sc_location_size - 1)
             location = Location.new(sc_location_handler, index)
@@ -42,7 +44,7 @@ module RedSnow
         @warnings << warning
       end
 
-      error_handler = RedSnow::Binding.sc_error_handler(result_handle)
+      error_handler = RedSnow::Binding.sc_error_handler(report_handle)
       @error = Hash.new
       @error[:message] = RedSnow::Binding.sc_error_message(error_handler)
       @error[:code] = RedSnow::Binding.sc_error_code(error_handler)
@@ -51,6 +53,7 @@ module RedSnow
       sc_location_handler = RedSnow::Binding.sc_location_handler(error_handler)
       sc_location_size = RedSnow::Binding.sc_location_size(sc_location_handler)
       @error[:location] = Array.new
+
       if sc_location_size > 0
         for index in 0..(sc_location_size - 1) do
           location = Location.new(sc_location_handler, index)
