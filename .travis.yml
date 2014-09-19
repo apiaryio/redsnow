@@ -9,6 +9,7 @@ before_install:
 - git submodule update --init --recursive
 - gem update bundler
 - bundle
+env: RECOMPILE=true
 notifications:
   email:
     recipients:
