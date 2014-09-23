@@ -81,7 +81,7 @@ module RedSnow
     attach_function("sc_value_collection_size", "sc_value_collection_size", [ :pointer ], :int)
 
     attach_function("sc_value_handle", "sc_value_handle", [ :pointer, :int ], :pointer)
-    attach_function("sc_value_string", "sc_value_string", [ :pointer], :string)
+    attach_function("sc_value", "sc_value", [ :pointer], :string)
 
     attach_function("sc_header_collection_handle_payload", "sc_header_collection_handle_payload", [ :pointer ], :pointer)
     attach_function("sc_header_collection_handle_resource", "sc_header_collection_handle_resource", [ :pointer ], :pointer)

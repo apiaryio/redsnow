@@ -155,7 +155,7 @@ module RedSnow
 
         for valueIndex in 0..values_size do
           sc_value_handle = RedSnow::Binding.sc_value_handle(sc_value_collection_handle, valueIndex)
-          value = RedSnow::Binding.sc_value_string(sc_value_handle)
+          value = RedSnow::Binding.sc_value(sc_value_handle)
           @values << value
         end
       end
