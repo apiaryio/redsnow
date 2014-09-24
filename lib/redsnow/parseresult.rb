@@ -7,6 +7,7 @@ module RedSnow
   # @param warnings [Array<Hash>] Ordered array of parser warnings as occurred during the parsing.
   # @param sourcemap [BlueprintSourcemap]
   class ParseResult
+
     attr_accessor :ast
     attr_accessor :error
     attr_accessor :warnings
@@ -21,7 +22,7 @@ module RedSnow
     def initialize(report_handle, blueprint_handle, sourcemap_handle)
 
       @ast = Blueprint.new(blueprint_handle)
-      @sourcemap = Sourcemap.new(sourcemap_handle)
+      @sourcemap = RedSnow::Sourcemap::Blueprint.new(sourcemap_handle)
 
       warnings = RedSnow::Binding.sc_warnings_handler(report_handle)
       warningsSize = RedSnow::Binding.sc_warnings_size(warnings)

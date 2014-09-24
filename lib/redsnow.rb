@@ -1,6 +1,7 @@
 require "redsnow/version"
 require "redsnow/binding"
 require "redsnow/blueprint"
+require "redsnow/sourcemap"
 require "redsnow/parseresult"
 require "ffi"
 
