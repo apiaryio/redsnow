@@ -137,6 +137,7 @@ module RedSnow
     attr_accessor :default_value
     attr_accessor :example_value
     attr_accessor :values
+
     # @param sc_parameter_handle [FFI::Pointer]
     def initialize(sc_parameter_handle)
       @name = RedSnow::Binding.sc_parameter_name(sc_parameter_handle)
@@ -145,6 +146,7 @@ module RedSnow
       @use =  RedSnow::Binding.sc_parameter_parameter_use(sc_parameter_handle)
       @default_value = RedSnow::Binding.sc_parameter_default_value(sc_parameter_handle)
       @example_value = RedSnow::Binding.sc_parameter_example_value(sc_parameter_handle)
+
       @values = Array.new
 
       sc_value_collection_handle = RedSnow::Binding.sc_value_collection_handle(sc_parameter_handle)
@@ -155,8 +157,7 @@ module RedSnow
 
         for valueIndex in 0..values_size do
           sc_value_handle = RedSnow::Binding.sc_value_handle(sc_value_collection_handle, valueIndex)
-          value = RedSnow::Binding.sc_value_string(sc_value_handle)
-          @values << value
+          @values << RedSnow::Binding.sc_value(sc_value_handle)
         end
       end
     end
@@ -181,8 +182,7 @@ module RedSnow
 
         for index in 0..parameters_size do
           sc_parameter_handle = RedSnow::Binding.sc_parameter_handle(sc_parameter_collection_handle, index)
-          parameter = Parameter.new(sc_parameter_handle)
-          @collection << parameter
+          @collection << Parameter.new(sc_parameter_handle)
         end
       end
     end
@@ -194,7 +194,7 @@ module RedSnow
   #
   # @abstract
   # @attr parameters [Array] ignored
-  # @attr headers [Array<Headers>] array of HTTP header fields of the message or nil
+  # @attr headers [Headers] array of HTTP header fields of the message or nil
   # @attr body [String] HTTP-message body or nil
   # @attr schema [String] HTTP-message body validation schema or nil
   class Payload < NamedBlueprintNode
@@ -230,6 +230,7 @@ module RedSnow
     def initialize(sc_transaction_example_handle)
       @name  = RedSnow::Binding.sc_transaction_example_name(sc_transaction_example_handle)
       @description = RedSnow::Binding.sc_transaction_example_description(sc_transaction_example_handle)
+
       # BP Resource Actions Examples Requests
       @requests = Array.new
       sc_payload_collection_handle_requests = RedSnow::Binding.sc_payload_collection_handle_requests(sc_transaction_example_handle)
@@ -239,8 +240,8 @@ module RedSnow
         requests_size = sc_payload_collection_size_requests - 1
 
         for index in 0..requests_size do
-          request = Payload.new(RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_requests, index))
-          @requests << request
+          sc_payload_handle = RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_requests, index)
+          @requests << Payload.new(sc_payload_handle)
         end
       end
 
@@ -253,8 +254,8 @@ module RedSnow
         responses_size = sc_payload_collection_size_responses - 1
 
         for index in 0..responses_size do
-          response = Payload.new(RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_responses, index))
-          @responses << response
+          sc_payload_handle = RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_responses, index)
+          @responses << Payload.new(sc_payload_handle)
         end
       end
     end
@@ -290,8 +291,8 @@ module RedSnow
         examples_size = sc_transaction_example_collection_size - 1
 
         for index in 0..examples_size do
-          example = TransactionExample.new(RedSnow::Binding.sc_transaction_example_handle(sc_transaction_example_collection_handle, index))
-          @examples << example
+          sc_transaction_example_handle = RedSnow::Binding.sc_transaction_example_handle(sc_transaction_example_collection_handle, index)
+          @examples << TransactionExample.new(sc_transaction_example_handle)
         end
       end
     end
@@ -329,7 +330,8 @@ module RedSnow
         action_size = sc_action_collection_size - 1
 
         for index in 0..action_size do
-          @actions << Action.new(RedSnow::Binding.sc_action_handle(sc_action_collection_handle, index))
+          sc_action_handle = RedSnow::Binding.sc_action_handle(sc_action_collection_handle, index)
+          @actions << Action.new(sc_action_handle)
         end
       end
 
@@ -346,13 +348,13 @@ module RedSnow
 
     attr_accessor :resources
 
-    # @param sc_resource_groups_handle [FFI::Pointer]
-    def initialize(sc_resource_groups_handle)
-      @name = RedSnow::Binding.sc_resource_groups_name(sc_resource_groups_handle)
-      @description = RedSnow::Binding.sc_resource_groups_description(sc_resource_groups_handle)
+    # @param sc_resource_group_handle [FFI::Pointer]
+    def initialize(sc_resource_group_handle)
+      @name = RedSnow::Binding.sc_resource_group_name(sc_resource_group_handle)
+      @description = RedSnow::Binding.sc_resource_group_description(sc_resource_group_handle)
 
       @resources = Array.new
-      sc_resource_collection_handle = RedSnow::Binding.sc_resource_collection_handle(sc_resource_groups_handle)
+      sc_resource_collection_handle = RedSnow::Binding.sc_resource_collection_handle(sc_resource_group_handle)
       sc_resource_collection_size = RedSnow::Binding.sc_resource_collection_size(sc_resource_collection_handle)
 
       if sc_resource_collection_size > 0
@@ -395,16 +397,16 @@ module RedSnow
       @metadata = Metadata.new(sc_metadata_collection_handle)
 
       # BP Resource Groups
-      sc_resource_groups_collection_handle = RedSnow::Binding.sc_resource_groups_collection_handle(handle)
-      sc_resource_groups_collection_size = RedSnow::Binding.sc_resource_groups_collection_size(sc_resource_groups_collection_handle)
+      sc_resource_group_collection_handle = RedSnow::Binding.sc_resource_group_collection_handle(handle)
+      sc_resource_group_collection_size = RedSnow::Binding.sc_resource_group_collection_size(sc_resource_group_collection_handle)
       @resource_groups = Array.new
 
-      if sc_resource_groups_collection_size > 0
-        group_size = sc_resource_groups_collection_size - 1
+      if sc_resource_group_collection_size > 0
+        group_size = sc_resource_group_collection_size - 1
 
         for index in 0..group_size do
-          sc_resource_groups_handle = RedSnow::Binding.sc_resource_groups_handle(sc_resource_groups_collection_handle, index)
-          @resource_groups << ResourceGroup.new(sc_resource_groups_handle)
+          sc_resource_group_handle = RedSnow::Binding.sc_resource_group_handle(sc_resource_group_collection_handle, index)
+          @resource_groups << ResourceGroup.new(sc_resource_group_handle)
         end
       end
     end
