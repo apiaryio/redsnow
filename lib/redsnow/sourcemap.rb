@@ -159,6 +159,7 @@ module RedSnow
       attr_accessor :headers
       attr_accessor :body
       attr_accessor :schema
+      attr_accessor :symbol
 
       # @param sc_sm_payload_handle_resource [FFI::Pointer]
       def initialize(sc_sm_payload_handle_resource)
@@ -166,6 +167,13 @@ module RedSnow
         @description = SourceMap.new(RedSnow::Binding.sc_sm_payload_description(sc_sm_payload_handle_resource))
         @body = SourceMap.new(RedSnow::Binding.sc_sm_payload_body(sc_sm_payload_handle_resource))
         @schema = SourceMap.new(RedSnow::Binding.sc_sm_payload_schema(sc_sm_payload_handle_resource))
+
+        symbol_source_map_handle = RedSnow::Binding.sc_sm_payload_symbol(sc_sm_payload_handle_resource)
+        symbol_source_map_size = RedSnow::Binding.sc_source_map_size(symbol_source_map_handle)
+
+        if symbol_source_map_size != 0
+          @symbol = SourceMap.new(symbol_source_map_handle)
+        end
 
         sc_sm_header_collection_handle_payload = RedSnow::Binding.sc_sm_header_collection_handle_payload(sc_sm_payload_handle_resource)
         @headers = Headers.new(sc_sm_header_collection_handle_payload)

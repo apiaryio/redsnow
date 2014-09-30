@@ -197,12 +197,14 @@ module RedSnow
   # @attr headers [Headers] array of HTTP header fields of the message or nil
   # @attr body [String] HTTP-message body or nil
   # @attr schema [String] HTTP-message body validation schema or nil
+  # @attr symbol [String] Symbol name if the payload is a reference
   class Payload < NamedBlueprintNode
 
     attr_accessor :parameters
     attr_accessor :headers
     attr_accessor :body
     attr_accessor :schema
+    attr_accessor :symbol
 
     # @param sc_payload_handle_resource [FFI::Pointer]
     def initialize(sc_payload_handle_resource)
@@ -210,6 +212,12 @@ module RedSnow
       @description = RedSnow::Binding.sc_payload_description(sc_payload_handle_resource)
       @body = RedSnow::Binding.sc_payload_body(sc_payload_handle_resource)
       @schema = RedSnow::Binding.sc_payload_schema(sc_payload_handle_resource)
+
+      symbol = RedSnow::Binding.sc_payload_symbol(sc_payload_handle_resource)
+
+      if not symbol.empty?
+        @symbol = symbol
+      end
 
       sc_header_collection_handle_payload = RedSnow::Binding.sc_header_collection_handle_payload(sc_payload_handle_resource)
       @headers = Headers.new(sc_header_collection_handle_payload)
