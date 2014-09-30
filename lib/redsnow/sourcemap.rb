@@ -9,6 +9,21 @@ module RedSnow
     class Node
     end
 
+    class SourceMap < Array
+
+      def initialize(sc_source_map_handle)
+        source_map_size = RedSnow::Binding.sc_source_map_size(sc_source_map_handle) - 1
+
+        for index in 0..source_map_size do
+          location = RedSnow::Binding.sc_source_map_location(sc_source_map_handle, index)
+          length = RedSnow::Binding.sc_source_map_length(sc_source_map_handle, index)
+
+          self << [location, length]
+        end
+      end
+
+    end
+
     # Blueprint sourcemap node with name and description associated
     #
     # @attr name [SourceMap] name of the node
@@ -37,7 +52,7 @@ module RedSnow
 
           for index in 0..metadata_size do
             sc_sm_metadata_handle = RedSnow::Binding.sc_sm_metadata_handle(sc_sm_metadata_collection_handle, index)
-            @collection << RedSnow::Binding.sc_sm_metadata(sc_sm_metadata_handle)
+            @collection << SourceMap.new(RedSnow::Binding.sc_sm_metadata(sc_sm_metadata_handle))
           end
         end
       end
@@ -59,7 +74,7 @@ module RedSnow
 
           for index in 0..headers_size do
             sc_sm_header_handle = RedSnow::Binding.sc_sm_header_handle(sc_sm_header_collection_handle_payload, index)
-            @collection << RedSnow::Binding.sc_sm_header(sc_sm_header_handle)
+            @collection << SourceMap.new(RedSnow::Binding.sc_sm_header(sc_sm_header_handle))
           end
         end
       end
@@ -83,12 +98,12 @@ module RedSnow
 
       # @param sc_sm_parameter_handle [FFI::Pointer]
       def initialize(sc_sm_parameter_handle)
-        @name = RedSnow::Binding.sc_sm_parameter_name(sc_sm_parameter_handle)
-        @description = RedSnow::Binding.sc_sm_parameter_description(sc_sm_parameter_handle)
-        @type = RedSnow::Binding.sc_sm_parameter_type(sc_sm_parameter_handle)
-        @use =  RedSnow::Binding.sc_sm_parameter_parameter_use(sc_sm_parameter_handle)
-        @default_value = RedSnow::Binding.sc_sm_parameter_default_value(sc_sm_parameter_handle)
-        @example_value = RedSnow::Binding.sc_sm_parameter_example_value(sc_sm_parameter_handle)
+        @name = SourceMap.new(RedSnow::Binding.sc_sm_parameter_name(sc_sm_parameter_handle))
+        @description = SourceMap.new(RedSnow::Binding.sc_sm_parameter_description(sc_sm_parameter_handle))
+        @type = SourceMap.new(RedSnow::Binding.sc_sm_parameter_type(sc_sm_parameter_handle))
+        @use =  SourceMap.new(RedSnow::Binding.sc_sm_parameter_parameter_use(sc_sm_parameter_handle))
+        @default_value = SourceMap.new(RedSnow::Binding.sc_sm_parameter_default_value(sc_sm_parameter_handle))
+        @example_value = SourceMap.new(RedSnow::Binding.sc_sm_parameter_example_value(sc_sm_parameter_handle))
 
         @values = Array.new
 
@@ -100,7 +115,7 @@ module RedSnow
 
           for valueIndex in 0..values_size do
             sc_sm_value_handle = RedSnow::Binding.sc_sm_value_handle(sc_sm_value_collection_handle, valueIndex)
-            @values << RedSnow::Binding.sc_sm_value(sc_sm_value_handle)
+            @values << SourceMap.new(RedSnow::Binding.sc_sm_value(sc_sm_value_handle))
           end
         end
       end
@@ -147,10 +162,10 @@ module RedSnow
 
       # @param sc_sm_payload_handle_resource [FFI::Pointer]
       def initialize(sc_sm_payload_handle_resource)
-        @name = RedSnow::Binding.sc_sm_payload_name(sc_sm_payload_handle_resource)
-        @description = RedSnow::Binding.sc_sm_payload_description(sc_sm_payload_handle_resource)
-        @body = RedSnow::Binding.sc_sm_payload_body(sc_sm_payload_handle_resource)
-        @schema = RedSnow::Binding.sc_sm_payload_schema(sc_sm_payload_handle_resource)
+        @name = SourceMap.new(RedSnow::Binding.sc_sm_payload_name(sc_sm_payload_handle_resource))
+        @description = SourceMap.new(RedSnow::Binding.sc_sm_payload_description(sc_sm_payload_handle_resource))
+        @body = SourceMap.new(RedSnow::Binding.sc_sm_payload_body(sc_sm_payload_handle_resource))
+        @schema = SourceMap.new(RedSnow::Binding.sc_sm_payload_schema(sc_sm_payload_handle_resource))
 
         sc_sm_header_collection_handle_payload = RedSnow::Binding.sc_sm_header_collection_handle_payload(sc_sm_payload_handle_resource)
         @headers = Headers.new(sc_sm_header_collection_handle_payload)
@@ -169,8 +184,8 @@ module RedSnow
 
       # @param sc_sm_transaction_example_handle [FFI::Pointer]
       def initialize(sc_sm_transaction_example_handle)
-        @name  = RedSnow::Binding.sc_sm_transaction_example_name(sc_sm_transaction_example_handle)
-        @description = RedSnow::Binding.sc_sm_transaction_example_description(sc_sm_transaction_example_handle)
+        @name  = SourceMap.new(RedSnow::Binding.sc_sm_transaction_example_name(sc_sm_transaction_example_handle))
+        @description = SourceMap.new(RedSnow::Binding.sc_sm_transaction_example_description(sc_sm_transaction_example_handle))
 
         # BP Resource Actions Examples Requests
         @requests = Array.new
@@ -216,10 +231,10 @@ module RedSnow
 
       # @param sc_sm_action_handle [FFI::Pointer]
       def initialize(sc_sm_action_handle)
-        @name = RedSnow::Binding.sc_sm_action_name(sc_sm_action_handle)
-        @description = RedSnow::Binding.sc_sm_action_description(sc_sm_action_handle)
+        @name = SourceMap.new(RedSnow::Binding.sc_sm_action_name(sc_sm_action_handle))
+        @description = SourceMap.new(RedSnow::Binding.sc_sm_action_description(sc_sm_action_handle))
 
-        @method = RedSnow::Binding.sc_sm_action_httpmethod(sc_sm_action_handle)
+        @method = SourceMap.new(RedSnow::Binding.sc_sm_action_httpmethod(sc_sm_action_handle))
 
         @parameters = Parameters.new(RedSnow::Binding.sc_sm_parameter_collection_handle_action(sc_sm_action_handle))
 
@@ -254,15 +269,15 @@ module RedSnow
 
       # @param sc_sm_resource_handle [FFI::Pointer]
       def initialize(sc_sm_resource_handle)
-        @name = RedSnow::Binding.sc_sm_resource_name(sc_sm_resource_handle)
-        @description = RedSnow::Binding.sc_sm_resource_description(sc_sm_resource_handle)
-        @uri_template = RedSnow::Binding.sc_sm_resource_uritemplate(sc_sm_resource_handle)
+        @name = SourceMap.new(RedSnow::Binding.sc_sm_resource_name(sc_sm_resource_handle))
+        @description = SourceMap.new(RedSnow::Binding.sc_sm_resource_description(sc_sm_resource_handle))
+        @uri_template = SourceMap.new(RedSnow::Binding.sc_sm_resource_uritemplate(sc_sm_resource_handle))
 
         sc_sm_payload_handle_resource = RedSnow::Binding.sc_sm_payload_handle_resource(sc_sm_resource_handle)
         @model = Payload.new(sc_sm_payload_handle_resource)
 
         @actions = Array.new
-        sc_sm_action_collection_handle = RedSnow::Binding.sc_sm_action_collection_handle(sc_resource_handle)
+        sc_sm_action_collection_handle = RedSnow::Binding.sc_sm_action_collection_handle(sc_sm_resource_handle)
         sc_sm_action_collection_size = RedSnow::Binding.sc_sm_action_collection_size(sc_sm_action_collection_handle)
 
         if sc_sm_action_collection_size > 0
@@ -288,8 +303,8 @@ module RedSnow
 
       # @param sc_sm_resource_group_handle [FFI::Pointer]
       def initialize(sc_sm_resource_group_handle)
-        @name = RedSnow::Binding.sc_sm_resource_group_name(sc_sm_resource_group_handle)
-        @description = RedSnow::Binding.sc_sm_resource_group_description(sc_sm_resource_group_handle)
+        @name = SourceMap.new(RedSnow::Binding.sc_sm_resource_group_name(sc_sm_resource_group_handle))
+        @description = SourceMap.new(RedSnow::Binding.sc_sm_resource_group_description(sc_sm_resource_group_handle))
 
         @resources = Array.new
         sc_sm_resource_collection_handle = RedSnow::Binding.sc_sm_resource_collection_handle(sc_sm_resource_group_handle)
@@ -320,8 +335,8 @@ module RedSnow
       # @param handle [FFI:Pointer]
       def initialize(handle)
         # BP name, desc
-        @name = RedSnow::Binding.sc_sm_blueprint_name(handle)
-        @description = RedSnow::Binding.sc_sm_blueprint_description(handle)
+        @name = SourceMap.new(RedSnow::Binding.sc_sm_blueprint_name(handle))
+        @description = SourceMap.new(RedSnow::Binding.sc_sm_blueprint_description(handle))
 
         # BP metadata
         sc_sm_metadata_collection_handle = RedSnow::Binding.sc_sm_metadata_collection_handle(handle)
