@@ -153,13 +153,13 @@ module RedSnow
     # @attr headers [Headers] array of HTTP header fields of the message or nil
     # @attr body [Sourcemap] HTTP-message body or nil
     # @attr schema [Sourcemap] HTTP-message body validation schema or nil
+    # @attr reference [Sourcemap] Symbol Reference sourcemap if the payload is a reference
     class Payload < NamedNode
 
-      attr_accessor :parameters
       attr_accessor :headers
       attr_accessor :body
       attr_accessor :schema
-      attr_accessor :symbol
+      attr_accessor :reference
 
       # @param sc_sm_payload_handle_resource [FFI::Pointer]
       def initialize(sc_sm_payload_handle_resource)
@@ -172,7 +172,7 @@ module RedSnow
         symbol_source_map_size = RedSnow::Binding.sc_source_map_size(symbol_source_map_handle)
 
         if symbol_source_map_size != 0
-          @symbol = SourceMap.new(symbol_source_map_handle)
+          @reference = SourceMap.new(symbol_source_map_handle)
         end
 
         sc_sm_header_collection_handle_payload = RedSnow::Binding.sc_sm_header_collection_handle_payload(sc_sm_payload_handle_resource)

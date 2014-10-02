@@ -11,6 +11,20 @@ module RedSnow
   class BlueprintNode
   end
 
+  # Blueprint AST Reference node
+  #
+  # @attr id [String] identifier of the reference
+  #
+  # @abstrac
+  class ReferenceNode < BlueprintNode
+
+    attr_accessor :id
+
+    def initialize(id)
+      @id = id
+    end
+  end
+
   # Blueprint AST node with name and description associated
   #
   # @attr name [String] name of the node
@@ -197,14 +211,13 @@ module RedSnow
   # @attr headers [Headers] array of HTTP header fields of the message or nil
   # @attr body [String] HTTP-message body or nil
   # @attr schema [String] HTTP-message body validation schema or nil
-  # @attr symbol [String] Symbol name if the payload is a reference
+  # @attr reference [Hash] Symbol Reference if the payload is a reference
   class Payload < NamedBlueprintNode
 
-    attr_accessor :parameters
     attr_accessor :headers
     attr_accessor :body
     attr_accessor :schema
-    attr_accessor :symbol
+    attr_accessor :reference
 
     # @param sc_payload_handle_resource [FFI::Pointer]
     def initialize(sc_payload_handle_resource)
@@ -216,7 +229,7 @@ module RedSnow
       symbol = RedSnow::Binding.sc_payload_symbol(sc_payload_handle_resource)
 
       if not symbol.empty?
-        @symbol = symbol
+        @reference = ReferenceNode.new(symbol)
       end
 
       sc_header_collection_handle_payload = RedSnow::Binding.sc_header_collection_handle_payload(sc_payload_handle_resource)

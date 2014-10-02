@@ -146,8 +146,8 @@ class RedSnowParsingTest < Test::Unit::TestCase
         assert_equal "Method description\n\n", @action.description
       end
 
-      should "have symbol" do
-        assert_equal "My Resource", @response.symbol
+      should "have reference" do
+        assert_equal "My Resource", @response.reference.id
       end
 
     end
