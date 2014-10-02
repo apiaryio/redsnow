@@ -14,11 +14,13 @@ module RedSnow
   #
   # @return [ParseResult]
   def self.parse(rawBlueprint, options = 0)
+
+
     blueprint = FFI::MemoryPointer.new :pointer
     sourcemap = FFI::MemoryPointer.new :pointer
     report = FFI::MemoryPointer.new :pointer
 
-    ret = RedSnow::Binding.sc_c_parse(rawBlueprint, options, report, blueprint, sourcemap)
+    ret = RedSnow::Binding.sc_c_parse(rawBlueprint.to_s, options, report, blueprint, sourcemap)
 
     blueprint = blueprint.get_pointer(0)
     sourcemap = sourcemap.get_pointer(0)

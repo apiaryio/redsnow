@@ -8,6 +8,16 @@ class RedSnowParsingTest < Test::Unit::TestCase
 
     context "API" do
       setup do
+        @result = RedSnow.parse(1)
+      end
+
+      should "haven't name" do
+        assert_equal "", @result.ast.name
+      end
+    end
+
+    context "API" do
+      setup do
         @result = RedSnow.parse("# My API")
       end
 
