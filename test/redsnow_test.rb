@@ -123,6 +123,7 @@ class RedSnowParsingTest < Test::Unit::TestCase
         @resourceGroup = @result.ast.resource_groups[0]
         @resource = @resourceGroup.resources[0]
         @action = @resource.actions[0]
+        @response = @resource.actions[1].examples[0].responses[0]
       end
 
       should "have resource group" do
@@ -153,6 +154,10 @@ class RedSnowParsingTest < Test::Unit::TestCase
         assert_equal "GET", @action.method
         assert_equal "Retrieve Resource", @action.name
         assert_equal "Method description\n\n", @action.description
+      end
+
+      should "have reference" do
+        assert_equal "My Resource", @response.reference.id
       end
 
     end
