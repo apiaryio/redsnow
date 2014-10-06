@@ -24,7 +24,7 @@ class RedSnowParseResultTest < Test::Unit::TestCase
         # My API
         ## GET /
       STR
-      @result = RedSnow.parse(@source.unindent)
+      @result = RedSnow.parse(@source.unindent, 4)
     end
 
     should "have name" do
@@ -33,6 +33,10 @@ class RedSnowParseResultTest < Test::Unit::TestCase
 
     should "don't have error" do
       assert_equal 0, @result.error[:code]
+    end
+
+    should "have source map for api name" do
+      assert_equal [[11,9]], @result.sourcemap.name
     end
 
     should "have some warning" do
