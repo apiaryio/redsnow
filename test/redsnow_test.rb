@@ -7,13 +7,6 @@ class RedSnowParsingTest < Test::Unit::TestCase
   context "API Blueprint parser" do
 
     context "API" do
-      should "raise error if first parameter isn't String" do
-        exception = assert_raise(ArgumentError) {RedSnow.parse(1)}
-        assert_equal("Expected string value", exception.message)
-      end
-    end
-
-    context "API" do
       setup do
         @result = RedSnow.parse("# My API")
       end
