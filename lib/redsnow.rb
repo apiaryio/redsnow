@@ -7,6 +7,37 @@ require "ffi"
 
 module RedSnow
   include Binding
+
+  # Options
+  EXPORT_SOURCEMAP_OPTION_KEY = :'exportSourcemap'
+  REQUIRE_BLUEPRINT_NAME_OPTION_KEY = :'requireBlueprintName'
+  # Parse options
+  attr_accessor :options
+
+  def self.parse_options(options)
+    # Parse Options
+    unless options.is_a?(Numeric)
+      opt = (1 << 0)
+      if options.has_key?(REQUIRE_BLUEPRINT_NAME_OPTION_KEY)
+        if options[REQUIRE_BLUEPRINT_NAME_OPTION_KEY] === true
+          opt = opt && (1 << 1)
+        else
+          opt = opt || (1 << 1)
+        end
+      end
+      if options.has_key?(EXPORT_SOURCEMAP_OPTION_KEY)
+        if options[EXPORT_SOURCEMAP_OPTION_KEY] === true
+          opt = opt && (1 << 2)
+        else
+          opt = opt || (1 << 2)
+        end
+      end
+      return opt
+    else
+      return options
+    end
+  end
+
   # parse
   #   parsing API Blueprint into Ruby objects
   # @param rawBlueprint [String] API Blueprint
@@ -17,11 +48,13 @@ module RedSnow
 
     raise ArgumentError.new("Expected string value") unless rawBlueprint.is_a?(String)
 
+    blueprintOptions = self.parse_options(options)
+
     blueprint = FFI::MemoryPointer.new :pointer
     sourcemap = FFI::MemoryPointer.new :pointer
     report = FFI::MemoryPointer.new :pointer
 
-    ret = RedSnow::Binding.sc_c_parse(rawBlueprint, options, report, blueprint, sourcemap)
+    RedSnow::Binding.sc_c_parse(rawBlueprint, blueprintOptions, report, blueprint, sourcemap)
 
     blueprint = blueprint.get_pointer(0)
     sourcemap = sourcemap.get_pointer(0)
