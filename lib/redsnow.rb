@@ -11,27 +11,25 @@ module RedSnow
   # Options
   EXPORT_SOURCEMAP_OPTION_KEY = :'exportSourcemap'
   REQUIRE_BLUEPRINT_NAME_OPTION_KEY = :'requireBlueprintName'
+
   # Parse options
   attr_accessor :options
-
   def self.parse_options(options)
     # Parse Options
     unless options.is_a?(Numeric)
-      opt = (1 << 0)
+      opt = 0
       if options.has_key?(REQUIRE_BLUEPRINT_NAME_OPTION_KEY)
         if options[REQUIRE_BLUEPRINT_NAME_OPTION_KEY] === true
-          opt = opt && (1 << 1)
-        else
-          opt = opt || (1 << 1)
+          opt = opt | (1 << 1)
         end
       end
+
       if options.has_key?(EXPORT_SOURCEMAP_OPTION_KEY)
         if options[EXPORT_SOURCEMAP_OPTION_KEY] === true
-          opt = opt && (1 << 2)
-        else
-          opt = opt || (1 << 2)
+          opt = opt | (1 << 2)
         end
       end
+
       return opt
     else
       return options
