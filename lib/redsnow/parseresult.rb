@@ -15,8 +15,9 @@ module RedSnow
 
     # Version key
     VERSION_KEY = :_version
+
     # Supported version of Api Blueprint
-    SUPPORTED_VERSIONS = ["2.0"]
+    SUPPORTED_VERSIONS = ["2.1"]
 
     # @param report_handle [FFI::Pointer]
     def initialize(report_handle, blueprint_handle, sourcemap_handle)
