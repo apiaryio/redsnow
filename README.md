@@ -26,7 +26,7 @@ puts result.ast.name
 
 ## Parsing options
 
-Options can be number or hash. We support :requireBlueprintName and :exportSourcemap option.
+Options can be number or hash. We support `:requireBlueprintName` and `:exportSourcemap` option.
 
 ```ruby
 require 'redsnow'

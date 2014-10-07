@@ -1,6 +1,8 @@
 # Changelog
+- 0.2.1
+    - Support for source maps [Snow Crash v0.15.0](https://github.com/apiaryio/snowcrash/releases/tag/v0.15.0) and [AST Serialization Format 2.1](https://github.com/apiaryio/api-blueprint-ast/releases/tag/v2.1).
 - 0.2.0
-    - New Parser Architecture [Snow Crash v0.14.0](https://github.com/apiaryio/snowcrash/releases)
+    - New Parser Architecture [Snow Crash v0.14.0](https://github.com/apiaryio/snowcrash/releases/tag/v0.14.0)
 - 0.1.6
     - Fixing problem with submodules in Gem install [IS#25](https://github.com/apiaryio/redsnow/issues/25)
 - 0.1.5
