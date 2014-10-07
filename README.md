@@ -24,6 +24,18 @@ result = RedSnow::parse('# My API')
 puts result.ast.name
 ```
 
+## Parsing options
+
+Options can be number or hash. We support :requireBlueprintName and :exportSourcemap option.
+
+```ruby
+require 'redsnow'
+
+result = RedSnow::parse('# My API', { :exportSourcemap => true })
+puts result.ast.name
+puts result.sourcemap.name
+```
+
 ## Hacking Redsnow
 You are welcome to contribute. Use following steps to build & test Redsnow.
 
