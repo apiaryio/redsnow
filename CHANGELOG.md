@@ -1,4 +1,6 @@
 # Changelog
+- 0.3.0
+    - [Format 1A7](https://github.com/apiaryio/api-blueprint/releases/tag/format-1A7) support. [Snow Crash v0.16.0](https://github.com/apiaryio/snowcrash/releases/tag/v0.16.0)
 - 0.2.1
     - Support for source maps [Snow Crash v0.15.0](https://github.com/apiaryio/snowcrash/releases/tag/v0.15.0) and [AST Serialization Format 2.1](https://github.com/apiaryio/api-blueprint-ast/releases/tag/v2.1).
 - 0.2.0
