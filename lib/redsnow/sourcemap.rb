@@ -168,11 +168,13 @@ module RedSnow
         @body = SourceMap.new(RedSnow::Binding.sc_sm_payload_body(sc_sm_payload_handle_resource))
         @schema = SourceMap.new(RedSnow::Binding.sc_sm_payload_schema(sc_sm_payload_handle_resource))
 
-        symbol_source_map_handle = RedSnow::Binding.sc_sm_payload_symbol(sc_sm_payload_handle_resource)
-        symbol_source_map_size = RedSnow::Binding.sc_source_map_size(symbol_source_map_handle)
+        # Handle to reference source map
+        sc_sm_reference_handle = RedSnow::Binding.sc_sm_reference_handle(sc_sm_payload_handle_resource)
+        sc_sm_reference = RedSnow::Binding.sc_sm_reference(sc_sm_reference_handle)
+        reference_source_map_size = RedSnow::Binding.sc_source_map_size(sc_sm_reference)
 
-        if symbol_source_map_size != 0
-          @reference = SourceMap.new(symbol_source_map_handle)
+        if reference_source_map_size != 0
+          @reference = SourceMap.new(sc_sm_reference)
         end
 
         sc_sm_header_collection_handle_payload = RedSnow::Binding.sc_sm_header_collection_handle_payload(sc_sm_payload_handle_resource)
