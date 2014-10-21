@@ -55,10 +55,13 @@ module RedSnow
     attach_function("sc_payload_handle", "sc_payload_handle", [ :pointer, :int ], :pointer)
     attach_function("sc_payload_handle_resource", "sc_payload_handle_resource", [ :pointer ], :pointer)
     attach_function("sc_payload_name", "sc_payload_name", [ :pointer ], :string)
-    attach_function("sc_payload_symbol", "sc_payload_symbol", [ :pointer ], :string)
     attach_function("sc_payload_description", "sc_payload_description", [ :pointer ], :string)
     attach_function("sc_payload_body", "sc_payload_body", [ :pointer ], :string)
     attach_function("sc_payload_schema", "sc_payload_schema", [ :pointer ], :string)
+
+    # Payload Reference
+    attach_function("sc_reference_handle_payload", "sc_reference_handle_payload", [ :pointer ], :pointer)
+    attach_function("sc_reference_id", "sc_reference_id", [ :pointer ], :string)
 
     attach_function("sc_parameter_collection_handle_payload", "sc_parameter_collection_handle_payload", [ :pointer ], :pointer)
     attach_function("sc_parameter_collection_handle_resource", "sc_parameter_collection_handle_resource", [ :pointer ], :pointer)
@@ -165,10 +168,13 @@ module RedSnow
     attach_function("sc_sm_payload_handle", "sc_sm_payload_handle", [ :pointer, :int ], :pointer)
     attach_function("sc_sm_payload_handle_resource", "sc_sm_payload_handle_resource", [ :pointer ], :pointer)
     attach_function("sc_sm_payload_name", "sc_sm_payload_name", [ :pointer ], :pointer)
-    attach_function("sc_sm_payload_symbol", "sc_sm_payload_symbol", [ :pointer ], :pointer)
     attach_function("sc_sm_payload_description", "sc_sm_payload_description", [ :pointer ], :pointer)
     attach_function("sc_sm_payload_body", "sc_sm_payload_body", [ :pointer ], :pointer)
     attach_function("sc_sm_payload_schema", "sc_sm_payload_schema", [ :pointer ], :pointer)
+
+    # Payload Reference Soure Map
+    attach_function("sc_sm_reference_handle", "sc_sm_reference_handle", [ :pointer ], :pointer)
+    attach_function("sc_sm_reference", "sc_sm_reference", [ :pointer ], :pointer)    
 
     attach_function("sc_sm_parameter_collection_handle_payload", "sc_sm_parameter_collection_handle_payload", [ :pointer ], :pointer)
     attach_function("sc_sm_parameter_collection_handle_resource", "sc_sm_parameter_collection_handle_resource", [ :pointer ], :pointer)
