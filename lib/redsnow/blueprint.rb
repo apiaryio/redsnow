@@ -226,11 +226,11 @@ module RedSnow
       @body = RedSnow::Binding.sc_payload_body(sc_payload_handle_resource)
       @schema = RedSnow::Binding.sc_payload_schema(sc_payload_handle_resource)
 
-      reference_handle = RedSnow::Binding.sc_reference_handle_payload(sc_payload_handle_resource)
-      reference_id = RedSnow::Binding.sc_reference_id(reference_handle)
+      sc_reference_handle_payload = RedSnow::Binding.sc_reference_handle_payload(sc_payload_handle_resource)
+      sc_reference_id = RedSnow::Binding.sc_reference_id(sc_reference_handle_payload)
 
-      if not reference_id.empty?
-        @reference = ReferenceNode.new(reference_id)
+      if not sc_reference_id.empty?
+        @reference = ReferenceNode.new(sc_reference_id)
       end
 
       sc_header_collection_handle_payload = RedSnow::Binding.sc_header_collection_handle_payload(sc_payload_handle_resource)

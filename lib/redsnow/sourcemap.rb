@@ -170,11 +170,11 @@ module RedSnow
 
         # Handle to reference source map
         sc_sm_reference_handle = RedSnow::Binding.sc_sm_reference_handle(sc_sm_payload_handle_resource)
-        reference_source_map_handle = RedSnow::Binding.sc_sm_reference(sc_sm_reference_handle)
-        reference_source_map_size = RedSnow::Binding.sc_source_map_size(reference_source_map_handle)
+        sc_sm_reference = RedSnow::Binding.sc_sm_reference(sc_sm_reference_handle)
+        reference_source_map_size = RedSnow::Binding.sc_source_map_size(sc_sm_reference)
 
         if reference_source_map_size != 0
-          @reference = SourceMap.new(reference_source_map_handle)
+          @reference = SourceMap.new(sc_sm_reference)
         end
 
         sc_sm_header_collection_handle_payload = RedSnow::Binding.sc_sm_header_collection_handle_payload(sc_sm_payload_handle_resource)
