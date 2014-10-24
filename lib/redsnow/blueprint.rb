@@ -160,6 +160,7 @@ module RedSnow
       @use =  RedSnow::Binding.sc_parameter_parameter_use(sc_parameter_handle)
       @default_value = RedSnow::Binding.sc_parameter_default_value(sc_parameter_handle)
       @example_value = RedSnow::Binding.sc_parameter_example_value(sc_parameter_handle)
+      @use = :required if @use == :undefined
 
       @values = Array.new
 
