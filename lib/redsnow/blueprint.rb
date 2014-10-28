@@ -139,7 +139,8 @@ module RedSnow
   #   represents one 'parameters section' parameter
   #
   # @attr type [String] an arbitrary type of the parameter or nil
-  # @attr use [Symbol] parameter necessity flag, `:required` or `:optional`
+  # @attr use [Symbol] parameter necessity flag, `:required`, `:optional` or :undefined
+  #    Where `:undefined` implies `:required` according to the API Blueprint Specification
   # @attr default_value [String] default value of the parameter or nil
   #   This is a value used when the parameter is ommited in the request.
   # @attr example_value [String] example value of the parameter or nil
