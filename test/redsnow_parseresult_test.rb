@@ -35,11 +35,11 @@ class RedSnowParseResultTest < Test::Unit::TestCase
     end
 
     should "have source map for api name" do
-      assert_equal [[11,9]], @result.sourcemap.name
+      assert_equal [[11, 9]], @result.sourcemap.name
     end
 
     should "have some warning" do
-      assert_equal RedSnow::WarningCodes::EmptyDefinitionWarning, @result.warnings[0][:code]
+      assert_equal RedSnow::WarningCodes::EMPTY_DEFINITION_WARNING, @result.warnings[0][:code]
       assert_equal "action is missing a response", @result.warnings[0][:message]
 
       assert_equal 20, @result.warnings[0][:location][0].index
