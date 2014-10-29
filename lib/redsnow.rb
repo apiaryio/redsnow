@@ -16,7 +16,9 @@ module RedSnow
   attr_accessor :options
   def self.parse_options(options)
     # Parse Options
-    unless options.is_a?(Numeric)
+    if options.is_a?(Numeric)
+      return options
+    else
       opt = 0
       if options.key?(REQUIRE_BLUEPRINT_NAME_OPTION_KEY)
         opt = opt | (1 << 1) if options[REQUIRE_BLUEPRINT_NAME_OPTION_KEY]
@@ -25,10 +27,7 @@ module RedSnow
       if options.key?(EXPORT_SOURCEMAP_OPTION_KEY)
         opt = opt | (1 << 2) if options[EXPORT_SOURCEMAP_OPTION_KEY]
       end
-
       return opt
-    else
-      return options
     end
   end
 

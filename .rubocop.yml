@@ -65,10 +65,6 @@ Style/SelfAssignment:
 Style/SingleLineBlockParams:
   Enabled: false
 
-# Offense count: 1
-Style/UnlessElse:
-  Enabled: false
-
 # Offense count: 2
 # Configuration parameters: AllowAsExpressionSeparator.
 Style/Semicolon:
