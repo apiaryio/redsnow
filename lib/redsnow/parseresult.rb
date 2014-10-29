@@ -25,19 +25,19 @@ module RedSnow
       warnings = RedSnow::Binding.sc_warnings_handler(report_handle)
       warningsSize = RedSnow::Binding.sc_warnings_size(warnings)
 
-      @warnings = Array.new
+      @warnings = []
 
       for index in 0..(warningsSize - 1) do
         sc_warning_handler = RedSnow::Binding.sc_warning_handler(warnings, index)
 
-        warning = Hash.new
+        warning = {}
         warning[:message] = RedSnow::Binding.sc_warning_message(sc_warning_handler)
         warning[:code] = RedSnow::Binding.sc_warning_code(sc_warning_handler)
         warning[:ok] = RedSnow::Binding.sc_warning_ok(sc_warning_handler)
 
         sc_location_handler = RedSnow::Binding.sc_location_handler(sc_warning_handler)
         sc_location_size = RedSnow::Binding.sc_location_size(sc_location_handler)
-        warning[:location] = Array.new
+        warning[:location] = []
 
         if sc_location_size > 0
           for index in 0..(sc_location_size - 1)
@@ -49,14 +49,14 @@ module RedSnow
       end
 
       error_handler = RedSnow::Binding.sc_error_handler(report_handle)
-      @error = Hash.new
+      @error = {}
       @error[:message] = RedSnow::Binding.sc_error_message(error_handler)
       @error[:code] = RedSnow::Binding.sc_error_code(error_handler)
       @error[:ok] = RedSnow::Binding.sc_error_ok(error_handler)
 
       sc_location_handler = RedSnow::Binding.sc_location_handler(error_handler)
       sc_location_size = RedSnow::Binding.sc_location_size(sc_location_handler)
-      @error[:location] = Array.new
+      @error[:location] = []
 
       if sc_location_size > 0
         for index in 0..(sc_location_size - 1) do

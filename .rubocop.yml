@@ -95,7 +95,7 @@ Style/EmptyLinesAroundBody:
 # Offense count: 25
 # Cop supports --auto-correct.
 Style/EmptyLiteral:
-  Enabled: false
+  Enabled: true
 
 # Offense count: 24
 # Configuration parameters: SupportedStyles.
