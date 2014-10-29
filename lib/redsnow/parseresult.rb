@@ -90,28 +90,28 @@ module RedSnow
   # Warnning Codes
   # @see https://github.com/apiaryio/snowcrash/blob/master/src/SourceAnnotation.h#L128
   class WarningCodes
-    NoWarning = 0
-    APINameWarning = 1
-    DuplicateWarning = 2
-    FormattingWarning = 3
-    RedefinitionWarning = 4
-    IgnoringWarning = 5
-    EmptyDefinitionWarning = 6
-    NotEmptyDefinitionWarning = 7
-    LogicalErrorWarning = 8
-    DeprecatedWarning = 9
-    IndentationWarning = 10
-    AmbiguityWarning = 11
-    URIWarning = 12
+    NO_WARNING = 0
+    API_NAME_WARNING = 1
+    DUPLICATE_WARNING = 2
+    FORMATTING_WARNING = 3
+    REDEFINITION_WARNING = 4
+    IGNORING_WARNING = 5
+    EMPTY_DEFINITION_WARNING = 6
+    NOT_EMPTY_DEFINITION_WARNING = 7
+    LOGICAL_ERROR_WARNING = 8
+    DEPRECATED_WARNING = 9
+    INDENTATION_WARNING = 10
+    AMBIGUITY_WARNING = 11
+    URI_WARNING = 12
 
   end
   # Error Codes
   # @see https://github.com/apiaryio/snowcrash/blob/master/src/SourceAnnotation.h#L113
   class ErrorCodes
-    NoError = 0
-    ApplicationError = 1
-    BusinessError = 2
-    SymbolError = 3
+    NO_ERROR = 0
+    APPLICATION_ERROR = 1
+    BUSINESS_ERROR = 2
+    SYMBOL_ERROR = 3
   end
 
 end

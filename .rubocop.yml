@@ -56,7 +56,7 @@ Style/CollectionMethods:
 
 # Offense count: 17
 Style/ConstantName:
-  Enabled: false
+  Enabled: true
 
 # Offense count: 3
 # Cop supports --auto-correct.
