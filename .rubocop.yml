@@ -75,22 +75,22 @@ Style/EachWithObject:
 # Cop supports --auto-correct.
 # Configuration parameters: AllowAdjacentOneLineDefs.
 Style/EmptyLineBetweenDefs:
-  Enabled: false
+  Enabled: true
 
 # Offense count: 3
 # Cop supports --auto-correct.
 Style/EmptyLines:
-  Enabled: false
+  Enabled: true
 
 # Offense count: 1
 # Cop supports --auto-correct.
 Style/EmptyLinesAroundAccessModifier:
-  Enabled: false
+  Enabled: true
 
 # Offense count: 66
 # Cop supports --auto-correct.
 Style/EmptyLinesAroundBody:
-  Enabled: false
+  Enabled: true
 
 # Offense count: 25
 # Cop supports --auto-correct.

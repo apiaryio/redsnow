@@ -1,5 +1,4 @@
 module RedSnow
-
   # Parse Result
   # @see https://github.com/apiaryio/api-blueprint-ast/blob/master/Parse%20Result.md
   # @param ast [Blueprint]
@@ -7,7 +6,6 @@ module RedSnow
   # @param warnings [Array<Hash>] Ordered array of parser warnings as occurred during the parsing.
   # @param sourcemap [BlueprintSourcemap]
   class ParseResult
-
     attr_accessor :ast
     attr_accessor :error
     attr_accessor :warnings
@@ -21,7 +19,6 @@ module RedSnow
 
     # @param report_handle [FFI::Pointer]
     def initialize(report_handle, blueprint_handle, sourcemap_handle)
-
       @ast = Blueprint.new(blueprint_handle)
       @sourcemap = RedSnow::Sourcemap::Blueprint.new(sourcemap_handle)
 
@@ -74,7 +71,6 @@ module RedSnow
   # @param index [Number] Zero-based index of the character where warning has occurred.
   # @param length [Number] Number of the characters from index where warning has occurred.
   class Location
-
     attr_accessor :index
     attr_accessor :length
 
@@ -84,7 +80,6 @@ module RedSnow
       @length = RedSnow::Binding.sc_location_length(location_hander, index)
       @index = RedSnow::Binding.sc_location_location(location_hander, index)
     end
-
   end
 
   # Warnning Codes
@@ -103,7 +98,6 @@ module RedSnow
     INDENTATION_WARNING = 10
     AMBIGUITY_WARNING = 11
     URI_WARNING = 12
-
   end
   # Error Codes
   # @see https://github.com/apiaryio/snowcrash/blob/master/src/SourceAnnotation.h#L113
@@ -113,5 +107,4 @@ module RedSnow
     BUSINESS_ERROR = 2
     SYMBOL_ERROR = 3
   end
-
 end

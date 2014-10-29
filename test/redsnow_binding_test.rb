@@ -1,7 +1,6 @@
 require '_helper'
 
 class RedSnowBindingTest < Test::Unit::TestCase
-
   context "RedSnow Binding" do
     should "convert API Blueprint to AST" do
 

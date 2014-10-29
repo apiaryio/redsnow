@@ -43,7 +43,6 @@ module RedSnow
   #
   # @return [ParseResult]
   def self.parse(rawBlueprint, options = 0)
-
     raise ArgumentError.new("Expected string value") unless rawBlueprint.is_a?(String)
 
     blueprintOptions = self.parse_options(options)
@@ -66,5 +65,4 @@ module RedSnow
     RedSnow::Binding.sc_blueprint_free(blueprint)
     RedSnow::Binding.sc_report_free(report)
   end
-
 end

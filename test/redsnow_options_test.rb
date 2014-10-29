@@ -1,7 +1,6 @@
 require '_helper'
 
 class RedSnowOptionsTest < Test::Unit::TestCase
-
   context "Test arguments" do
 
     context "Arguments" do
@@ -38,5 +37,4 @@ class RedSnowOptionsTest < Test::Unit::TestCase
     end
 
   end
-
 end

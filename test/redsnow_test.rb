@@ -2,7 +2,6 @@ require '_helper'
 require 'unindent'
 
 class RedSnowParsingTest < Test::Unit::TestCase
-
   # https://github.com/apiaryio/protagonist/blob/master/test/parser-test.coffee
   context "API Blueprint parser" do
 
@@ -224,7 +223,6 @@ class RedSnowParsingTest < Test::Unit::TestCase
         assert_equal '42', @parameter.example_value
         assert_equal 3, @parameter.values.count
 
-
         assert_equal '20', @values[0]
         assert_equal '42', @values[1]
         assert_equal '53', @values[2]
@@ -319,5 +317,4 @@ class RedSnowParsingTest < Test::Unit::TestCase
     end
 
   end
-
 end

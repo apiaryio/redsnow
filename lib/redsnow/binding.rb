@@ -217,7 +217,5 @@ module RedSnow
     attach_function("sc_sm_transaction_example_handle", "sc_sm_transaction_example_handle", [ :pointer, :int ], :pointer)
     attach_function("sc_sm_transaction_example_name", "sc_sm_transaction_example_name", [ :pointer ], :pointer)
     attach_function("sc_sm_transaction_example_description", "sc_sm_transaction_example_description", [ :pointer ], :pointer)
-
   end
-
 end

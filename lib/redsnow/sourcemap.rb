@@ -3,14 +3,11 @@ require "redsnow/object"
 # The classes in this module should be 1:1 with the Snow Crash Blueprint sourcemap
 # counterparts (https://github.com/apiaryio/snowcrash/blob/master/src/BlueprintSourcemap.h).
 module RedSnow
-
   module Sourcemap
-
     class Node
     end
 
     class SourceMap < Array
-
       def initialize(sc_source_map_handle)
         source_map_size = RedSnow::Binding.sc_source_map_size(sc_source_map_handle) - 1
 
@@ -21,7 +18,6 @@ module RedSnow
           self << [location, length]
         end
       end
-
     end
 
     # Blueprint sourcemap node with name and description associated
@@ -31,15 +27,12 @@ module RedSnow
     #
     # @abstract
     class NamedNode < Node
-
       attr_accessor :name
       attr_accessor :description
-
     end
 
     # Metadata source map collection node
     class Metadata < Node
-
       attr_accessor :collection
 
       # @param sc_sm_metadata_collection_handle [FFI::Pointer]
@@ -56,12 +49,10 @@ module RedSnow
           end
         end
       end
-
     end
 
     # Headers source map collection node
     class Headers < Node
-
       attr_accessor :collection
 
       # @param sc_header_collection_handle_payload [FFI::Pointer]
@@ -78,7 +69,6 @@ module RedSnow
           end
         end
       end
-
     end
 
     # Parameter source map node
@@ -89,7 +79,6 @@ module RedSnow
     # @attr example_value [Sourcemap] example value of the parameter or nil
     # @attr values [Array<Sourcemap>] an enumeration of possible parameter values
     class Parameter < NamedNode
-
       attr_accessor :type
       attr_accessor :use
       attr_accessor :default_value
@@ -119,14 +108,12 @@ module RedSnow
           end
         end
       end
-
     end
 
     # Parameters source map collection node
     #
     # @attr collection [Array<Parameter>] an array of URI parameters
     class Parameters < Node
-
       attr_accessor :collection
 
       # @param sc_sm_parameter_collection_handle [FFI::Pointer]
@@ -143,7 +130,6 @@ module RedSnow
           end
         end
       end
-
     end
 
     # Payload source map node
@@ -155,7 +141,6 @@ module RedSnow
     # @attr schema [Sourcemap] HTTP-message body validation schema or nil
     # @attr reference [Sourcemap] Symbol Reference sourcemap if the payload is a reference
     class Payload < NamedNode
-
       attr_accessor :headers
       attr_accessor :body
       attr_accessor :schema
@@ -180,7 +165,6 @@ module RedSnow
         sc_sm_header_collection_handle_payload = RedSnow::Binding.sc_sm_header_collection_handle_payload(sc_sm_payload_handle_resource)
         @headers = Headers.new(sc_sm_header_collection_handle_payload)
       end
-
     end
 
     # Transaction example source map node
@@ -188,7 +172,6 @@ module RedSnow
     # @attr requests [Array<Request>] example request payloads
     # @attr response [Array<Response>] example response payloads
     class TransactionExample < NamedNode
-
       attr_accessor :requests
       attr_accessor :responses
 
@@ -225,7 +208,6 @@ module RedSnow
           end
         end
       end
-
     end
 
     # Action source map node
@@ -234,7 +216,6 @@ module RedSnow
     # @attr parameters [Parameters] action-specific URI parameters or nil
     # @attr examples [Array<TransactionExample>] action transaction examples
     class Action < NamedNode
-
       attr_accessor :method
       attr_accessor :parameters
       attr_accessor :examples
@@ -261,7 +242,6 @@ module RedSnow
           end
         end
       end
-
     end
 
     # Resource source map node
@@ -271,7 +251,6 @@ module RedSnow
     # @attr parameters [Parameters] action-specific URI parameters or nil
     # @attr actions [Array<Action>] array of resource actions or nil
     class Resource < NamedNode
-
       attr_accessor :uri_template
       attr_accessor :model
       attr_accessor :parameters
@@ -301,14 +280,12 @@ module RedSnow
 
         @parameters = Parameters.new(RedSnow::Binding.sc_sm_parameter_collection_handle_resource(sc_sm_resource_handle))
       end
-
     end
 
     # Resource group source map node
     #
     # @attr resources [Array<Resource>] array of resources in the group
     class ResourceGroup < NamedNode
-
       attr_accessor :resources
 
       # @param sc_sm_resource_group_handle [FFI::Pointer]
@@ -329,16 +306,13 @@ module RedSnow
           end
         end
       end
-
     end
-
 
     # Blueprint source map node
     #
     # @attr metadata [Metadata] tool-specific metadata collection or nil
     # @attr resource_groups [Array<ResourceGroup>] array of resource groups
     class Blueprint < NamedNode
-
       attr_accessor :metadata
       attr_accessor :resource_groups
 

@@ -2,7 +2,6 @@
 module RedSnow
   # Class from MatterCompiler as ascendant
   class Object
-
     # Symbolizes keys of a hash
     def deep_symbolize_keys
       return self.reduce({}){|memo, (k,v)| memo[k.to_sym] = v.deep_symbolize_keys; memo} if self.is_a? Hash
