@@ -49,8 +49,8 @@ Style/GuardClause:
 
 # Offense count: 1
 # Configuration parameters: SupportedStyles.
-Style/RaiseArgs:
-  EnforcedStyle: compact
+# Style/RaiseArgs:
+#   EnforcedStyle: compact
 
 # Offense count: 2
 Style/RegexpLiteral:

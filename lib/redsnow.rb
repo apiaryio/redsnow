@@ -38,7 +38,7 @@ module RedSnow
   #
   # @return [ParseResult]
   def self.parse(raw_blueprint, options = 0)
-    fail ArgumentError.new('Expected string value') unless raw_blueprint.is_a?(String)
+    fail ArgumentError, 'Expected string value' unless raw_blueprint.is_a?(String)
 
     blueprint_options = parse_options(options)
 
