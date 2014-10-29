@@ -1,5 +1,5 @@
 require '_helper'
-
+# RedSnowOptionsTest
 class RedSnowOptionsTest < Test::Unit::TestCase
   context 'Test arguments' do
 

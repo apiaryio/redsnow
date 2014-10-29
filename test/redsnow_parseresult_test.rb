@@ -1,6 +1,6 @@
 require '_helper'
 require 'unindent'
-
+# RedSnowParseResultTest
 class RedSnowParseResultTest < Test::Unit::TestCase
   context 'Simple API' do
     setup do

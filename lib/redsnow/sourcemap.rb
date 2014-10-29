@@ -6,7 +6,7 @@ module RedSnow
   module Sourcemap
     class Node
     end
-
+    # SourceMap
     class SourceMap < Array
       def initialize(sc_source_map_handle)
         source_map_size = RedSnow::Binding.sc_source_map_size(sc_source_map_handle) - 1

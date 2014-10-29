@@ -29,10 +29,6 @@ Metrics/MethodLength:
 Style/ClassAndModuleChildren:
   Enabled: false
 
-# Offense count: 9
-Style/Documentation:
-  Enabled: false
-
 # Offense count: 2
 Style/EachWithObject:
   Enabled: false
@@ -50,15 +46,6 @@ Style/GuardClause:
 # Offense count: 2
 Style/RegexpLiteral:
   MaxSlashes: 0
-
-# Offense count: 2
-Style/SelfAssignment:
-  Enabled: true
-
-# Offense count: 1
-# Configuration parameters: Methods.
-Style/SingleLineBlockParams:
-  Enabled: false
 
 # Offense count: 2
 # Configuration parameters: AllowAsExpressionSeparator.
