@@ -9,7 +9,7 @@ class RedSnowBindingTest < Test::Unit::TestCase
       blueprint = FFI::MemoryPointer.new :pointer
       sourcemap = FFI::MemoryPointer.new :pointer
 
-      ret = RedSnow::Binding.sc_c_parse("meta: data\nfoo:bar\n#XXXX\ndescription for it", 4, report, blueprint, sourcemap)
+      RedSnow::Binding.sc_c_parse("meta: data\nfoo:bar\n#XXXX\ndescription for it", 4, report, blueprint, sourcemap)
 
       blueprint = blueprint.get_pointer(0)
       report = report.get_pointer(0)

@@ -11,22 +11,22 @@ class RedSnowOptionsTest < Test::Unit::TestCase
       end
 
       should "get option for sourcemaps" do
-        options = RedSnow.parse_options({ :exportSourcemap => true })
+        options = RedSnow.parse_options(:exportSourcemap => true)
         assert_equal 4, options
       end
 
       should "get option for required Blueprint name" do
-        options = RedSnow.parse_options({ :requireBlueprintName => true })
+        options = RedSnow.parse_options(:requireBlueprintName => true)
         assert_equal 2, options
       end
 
       should "get option for required Blueprint name and sourcemaps" do
-        options = RedSnow.parse_options({ :requireBlueprintName => true, :exportSourcemap => true })
+        options = RedSnow.parse_options(:requireBlueprintName => true, :exportSourcemap => true)
         assert_equal 6, options
       end
 
       should "get option for required Blueprint name and not sourcemaps" do
-        options = RedSnow.parse_options({ :requireBlueprintName => true, :exportSourcemap => false })
+        options = RedSnow.parse_options(:requireBlueprintName => true, :exportSourcemap => false)
         assert_equal 2, options
       end
 

@@ -5,6 +5,7 @@ rvm:
 script:
 - rake test
 - rake install
+- bundle exec rubocop
 before_install:
 - git submodule update --init --recursive
 - gem update bundler

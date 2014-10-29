@@ -33,7 +33,7 @@ task :compile do
   # Path to compiled snowcrash library
   path = File.expand_path("ext/snowcrash/build/out/Release/#{prefix}libsnowcrash.#{FFI::Platform::LIBSUFFIX}", File.dirname(__FILE__))
   puts "Path to library #{path}"
-  if !File.exists?(path) || ENV['RECOMPILE']
+  if !File.exist?(path) || ENV['RECOMPILE']
     unless File.directory?(File.expand_path("ext/snowcrash/src"))
       puts "Initializing submodules (if required)..."
       `git submodule update --init --recursive 2>/dev/null`
