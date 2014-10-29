@@ -15,9 +15,9 @@ module RedSnow
     ffi_lib File.expand_path("../../../ext/snowcrash/build/out/Release/#{prefix}libsnowcrash.#{FFI::Platform::LIBSUFFIX}", __FILE__)
     # @see https://github.com/apiaryio/snowcrash/blob/master/src/BlueprintParserCore.h#L31
     enum :option, [
-        :render_descriptions_option,
-        :require_blueprint_name_option,
-        :export_sourcemap_option
+      :render_descriptions_option,
+      :require_blueprint_name_option,
+      :export_sourcemap_option
     ]
 
     attach_function('sc_c_parse', 'sc_c_parse', [:string, :option, :pointer, :pointer, :pointer], :int)

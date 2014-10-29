@@ -60,7 +60,7 @@ module RedSnow
     # @param key [String] Name of the item key to retrieve
     # @return [NilClass] if the collection does not have an item with the key
     # @return [String] if the collection has an item with the key
-    def [] key
+    def [](key)
       return nil if @collection.nil?
       return_item_value key
     end
@@ -74,12 +74,12 @@ module RedSnow
 
     private
 
-    def return_item_value key
+    def return_item_value(key)
       item = get_item(key.to_s)
       item.nil? ? nil : item[:value]
     end
 
-    def get_item key
+    def get_item(key)
       @collection.select { |item| item[:name].downcase == key.downcase }.first
     end
   end
@@ -113,7 +113,7 @@ module RedSnow
     # @return [String] the value of 'Content-type' header if present or nil
     def content_type
       content_type_header = @collection.find { |header| header.key?(CONTENT_TYPE_HEADER_KEY) }
-      return (content_type_header.nil?) ? nil : content_type_header[CONTENT_TYPE_HEADER_KEY]
+      (content_type_header.nil?) ? nil : content_type_header[CONTENT_TYPE_HEADER_KEY]
     end
 
     # @param sc_header_collection_handle_payload [FFI::Pointer]
@@ -222,7 +222,7 @@ module RedSnow
       sc_reference_handle_payload = RedSnow::Binding.sc_reference_handle_payload(sc_payload_handle_resource)
       sc_reference_id = RedSnow::Binding.sc_reference_id(sc_reference_handle_payload)
 
-      if not sc_reference_id.empty?
+      unless sc_reference_id.empty?
         @reference = ReferenceNode.new(sc_reference_id)
       end
 

@@ -43,9 +43,9 @@ module RedSnow
   #
   # @return [ParseResult]
   def self.parse(rawBlueprint, options = 0)
-    raise ArgumentError.new('Expected string value') unless rawBlueprint.is_a?(String)
+    fail ArgumentError.new('Expected string value') unless rawBlueprint.is_a?(String)
 
-    blueprintOptions = self.parse_options(options)
+    blueprintOptions = parse_options(options)
 
     blueprint = FFI::MemoryPointer.new :pointer
     sourcemap = FFI::MemoryPointer.new :pointer

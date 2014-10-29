@@ -64,5 +64,5 @@ end
 # ----- Documentation tasks ---------------------------------------------------
 
 YARD::Rake::YardocTask.new(:doc) do |t|
-  t.options = %w| --embed-mixins --markup=markdown |
+  t.options = %w( --embed-mixins --markup=markdown )
 end
