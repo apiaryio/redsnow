@@ -5,7 +5,7 @@ class RedSnowOptionsTest < Test::Unit::TestCase
 
     context "Arguments" do
       should "raise error if first parameter isn't String" do
-        exception = assert_raise(ArgumentError) {RedSnow.parse(1)}
+        exception = assert_raise(ArgumentError) { RedSnow.parse(1) }
         assert_equal("Expected string value", exception.message)
       end
 

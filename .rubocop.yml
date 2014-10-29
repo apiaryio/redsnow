@@ -189,29 +189,29 @@ Style/SingleLineBlockParams:
 # Offense count: 3
 # Cop supports --auto-correct.
 Style/SpaceAfterComma:
-  Enabled: false
+  Enabled: true
 
 # Offense count: 4
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 Style/SpaceBeforeBlockBraces:
-  Enabled: false
+  Enabled: true
 
 # Offense count: 4
 # Cop supports --auto-correct.
 Style/SpaceBeforeComma:
-  Enabled: false
+  Enabled: true
 
 # Offense count: 7
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, EnforcedStyleForEmptyBraces, SpaceBeforeBlockParameters.
 Style/SpaceInsideBlockBraces:
-  Enabled: false
+  Enabled: true
 
 # Offense count: 275
 # Cop supports --auto-correct.
 Style/SpaceInsideBrackets:
-  Enabled: false
+  Enabled: true
 
 # Offense count: 2
 # Cop supports --auto-correct.

@@ -80,7 +80,7 @@ module RedSnow
     end
 
     def get_item key
-      @collection.select{|item| item[:name].downcase == key.downcase }.first
+      @collection.select { |item| item[:name].downcase == key.downcase }.first
     end
   end
 
