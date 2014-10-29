@@ -8,9 +8,7 @@ module RedSnow
     extend FFI::Library
 
     prefix = 'lib.target/'
-    if FFI::Platform.mac?
-      prefix = ''
-    end
+    prefix = '' if FFI::Platform.mac?
 
     ffi_lib File.expand_path("../../../ext/snowcrash/build/out/Release/#{prefix}libsnowcrash.#{FFI::Platform::LIBSUFFIX}", __FILE__)
     # @see https://github.com/apiaryio/snowcrash/blob/master/src/BlueprintParserCore.h#L31

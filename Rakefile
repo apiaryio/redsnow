@@ -27,9 +27,7 @@ task default: :compile
 desc 'Compile extension'
 task :compile do
   prefix = 'lib.target/'
-  if FFI::Platform.mac?
-    prefix = ''
-  end
+  prefix = '' if FFI::Platform.mac?
   # Path to compiled snowcrash library
   path = File.expand_path("ext/snowcrash/build/out/Release/#{prefix}libsnowcrash.#{FFI::Platform::LIBSUFFIX}", File.dirname(__FILE__))
   puts "Path to library #{path}"

@@ -47,11 +47,6 @@ Style/For:
 Style/GuardClause:
   Enabled: false
 
-# Offense count: 3
-# Configuration parameters: MaxLineLength.
-Style/IfUnlessModifier:
-  Enabled: false
-
 # Offense count: 1
 # Configuration parameters: SupportedStyles.
 Style/RaiseArgs:
