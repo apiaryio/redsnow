@@ -18,13 +18,13 @@ module RedSnow
     # Parse Options
     unless options.is_a?(Numeric)
       opt = 0
-      if options.has_key?(REQUIRE_BLUEPRINT_NAME_OPTION_KEY)
+      if options.key?(REQUIRE_BLUEPRINT_NAME_OPTION_KEY)
         if options[REQUIRE_BLUEPRINT_NAME_OPTION_KEY]
           opt = opt | (1 << 1)
         end
       end
 
-      if options.has_key?(EXPORT_SOURCEMAP_OPTION_KEY)
+      if options.key?(EXPORT_SOURCEMAP_OPTION_KEY)
         if options[EXPORT_SOURCEMAP_OPTION_KEY]
           opt = opt | (1 << 2)
         end

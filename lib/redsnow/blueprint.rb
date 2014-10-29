@@ -114,7 +114,7 @@ module RedSnow
 
     # @return [String] the value of 'Content-type' header if present or nil
     def content_type
-      content_type_header = @collection.find { |header| header.has_key?(CONTENT_TYPE_HEADER_KEY) }
+      content_type_header = @collection.find { |header| header.key?(CONTENT_TYPE_HEADER_KEY) }
       return (content_type_header.nil?) ? nil : content_type_header[CONTENT_TYPE_HEADER_KEY]
     end
 
