@@ -138,8 +138,3 @@ Style/UnneededPercentQ:
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 Style/VariableName:
   Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/WordArray:
-  MinSize: 2

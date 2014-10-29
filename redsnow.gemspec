@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
   gem.files         << Dir['ext/snowcrash/**/*' ].reject { |f| f =~ /cmdline|test|features|README*|LICENSE|Gemfile*|\.xcode*/ }
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
-  gem.require_paths = ['lib', 'ext']
+  gem.require_paths = %w(lib ext)
 
   gem.required_ruby_version = '>= 1.9.3'
 
