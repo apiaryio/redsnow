@@ -120,18 +120,8 @@ Style/SignalException:
 Style/SingleLineBlockParams:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/SpecialGlobalVars:
-  Enabled: false
-
 # Offense count: 1
 Style/UnlessElse:
-  Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/UnneededPercentQ:
   Enabled: false
 
 # Offense count: 9

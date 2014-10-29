@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = RedSnow::VERSION
   gem.authors       = ['Ladislav Prskavec']
   gem.email         = ['ladislav@apiary.io']
-  gem.description   = %q{Ruby bindings for Snow Crash}
-  gem.summary       = %q{Ruby bindings for Snow Crash}
+  gem.description   = 'Ruby bindings for Snow Crash'
+  gem.summary       = 'Ruby bindings for Snow Crash'
   gem.homepage      = 'https://github.com/apiaryio/redsnow'
   gem.license       = 'MIT'
   gem.files         = Dir['lib/**/*']
