@@ -40,7 +40,7 @@ task :compile do
     end
     puts 'Compiling extension...'
     `cd #{File.expand_path('ext/snowcrash/')} && ./configure --shared && make`
-    status = $CHILD_STATUS.exitstatus
+    status = $CHILD_STATUS.to_i
     if status == 0
       puts 'Compiling done.'
     else
