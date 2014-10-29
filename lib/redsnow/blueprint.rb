@@ -59,7 +59,7 @@ module RedSnow
     #
     # @param key [String] Name of the item key to retrieve
     # @return [NilClass] if the collection does not have an item with the key
-    # @return [String] if the collection has an item with the key 
+    # @return [String] if the collection has an item with the key
     def [] key
       return nil if @collection.nil?
       return_item_value key

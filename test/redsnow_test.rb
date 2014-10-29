@@ -180,7 +180,7 @@ class RedSnowParsingTest < Test::Unit::TestCase
         assert_equal 'C', @collection[3][:name]
         assert_equal '3', @collection[3][:value]
       end
-      
+
       should "return metadata values by element reference method" do
         assert_equal '1A', @metadata['FORMAT']
         assert_equal '1', @metadata['A']

@@ -228,18 +228,18 @@ Style/StringLiterals:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 Style/TrailingBlankLines:
-  Enabled: false
+  Enabled: true
 
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyleForMultiline, SupportedStyles.
 Style/TrailingComma:
-  Enabled: false
+  Enabled: true
 
 # Offense count: 8
 # Cop supports --auto-correct.
 Style/TrailingWhitespace:
-  Enabled: false
+  Enabled: true
 
 # Offense count: 1
 Style/UnlessElse:

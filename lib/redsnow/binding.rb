@@ -71,7 +71,7 @@ module RedSnow
     # @see https://github.com/apiaryio/snowcrash/blob/master/src/Blueprint.h#L85
     enum :parameter_use, [:undefined,
                           :optional,
-                          :required,
+                          :required
                          ]
 
     attach_function("sc_parameter_handle", "sc_parameter_handle", [:pointer, :int], :pointer)
@@ -174,7 +174,7 @@ module RedSnow
 
     # Payload Reference Soure Map
     attach_function("sc_sm_reference_handle", "sc_sm_reference_handle", [:pointer], :pointer)
-    attach_function("sc_sm_reference", "sc_sm_reference", [:pointer], :pointer)    
+    attach_function("sc_sm_reference", "sc_sm_reference", [:pointer], :pointer)
 
     attach_function("sc_sm_parameter_collection_handle_payload", "sc_sm_parameter_collection_handle_payload", [:pointer], :pointer)
     attach_function("sc_sm_parameter_collection_handle_resource", "sc_sm_parameter_collection_handle_resource", [:pointer], :pointer)
