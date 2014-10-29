@@ -22,19 +22,9 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Max: 36
 
-# Offense count: 1
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/ClassAndModuleChildren:
-  Enabled: true
-
 # Offense count: 2
 Style/EachWithObject:
   Enabled: false
-
-# Offense count: 24
-# Configuration parameters: SupportedStyles.
-Style/For:
-  EnforcedStyle: for
 
 # Offense count: 17
 # Configuration parameters: MinBodyLength.

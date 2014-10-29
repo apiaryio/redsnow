@@ -27,7 +27,7 @@ module RedSnow
 
       @warnings = []
 
-      for index in 0..(warnings_size - 1) do
+      (0..(warnings_size - 1)).each do |index|
         sc_warning_handler = RedSnow::Binding.sc_warning_handler(warnings, index)
 
         warning = {}
@@ -40,8 +40,8 @@ module RedSnow
         warning[:location] = []
 
         if sc_location_size > 0
-          for index in 0..(sc_location_size - 1)
-            location = Location.new(sc_location_handler, index)
+          (0..(sc_location_size - 1)).each do |index_size|
+            location = Location.new(sc_location_handler, index_size)
             warning[:location] << location
           end
         end
@@ -59,7 +59,7 @@ module RedSnow
       @error[:location] = []
 
       if sc_location_size > 0
-        for index in 0..(sc_location_size - 1) do
+        (0..(sc_location_size - 1)).each do |index|
           location = Location.new(sc_location_handler, index)
           @error[:location] << location
         end
