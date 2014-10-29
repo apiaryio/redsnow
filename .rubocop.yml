@@ -52,7 +52,7 @@ Style/ClassAndModuleChildren:
 # Cop supports --auto-correct.
 # Configuration parameters: PreferredMethods.
 Style/CollectionMethods:
-  Enabled: false
+  Enabled: true
 
 # Offense count: 17
 Style/ConstantName:
