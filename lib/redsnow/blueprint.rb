@@ -98,7 +98,7 @@ module RedSnow
 
         for index in 0..metadata_size do
           sc_metadata_handle = RedSnow::Binding.sc_metadata_handle(sc_metadata_collection_handle, index)
-          @collection << Hash[:name => RedSnow::Binding.sc_metadata_key(sc_metadata_handle), :value => RedSnow::Binding.sc_metadata_value(sc_metadata_handle)]
+          @collection << Hash[name: RedSnow::Binding.sc_metadata_key(sc_metadata_handle), value: RedSnow::Binding.sc_metadata_value(sc_metadata_handle)]
         end
       end
     end
@@ -126,7 +126,7 @@ module RedSnow
 
         for index in 0..headers_size do
           sc_header_handle = RedSnow::Binding.sc_header_handle(sc_header_collection_handle_payload, index)
-          @collection << Hash[:name => RedSnow::Binding.sc_header_key(sc_header_handle), :value => RedSnow::Binding.sc_header_value(sc_header_handle)]
+          @collection << Hash[name: RedSnow::Binding.sc_header_key(sc_header_handle), value: RedSnow::Binding.sc_header_value(sc_header_handle)]
         end
       end
     end

@@ -22,7 +22,7 @@ rescue LoadError
   puts 'Cannot load yard'
 end
 
-task :default => :compile
+task default: :compile
 
 desc 'Compile extension'
 task :compile do

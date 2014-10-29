@@ -15,5 +15,5 @@ Vagrant.configure('2') do |config|
 
   config.vm.network :private_network, ip: '10.3.3.3'
   config.vm.synced_folder '.', '/vagrant', id: 'vagrant-root', type: 'nfs'
-  config.vm.provision :shell, :path => './provisioning.sh'
+  config.vm.provision :shell, path: './provisioning.sh'
 end
