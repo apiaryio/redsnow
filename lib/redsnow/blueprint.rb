@@ -1,4 +1,4 @@
-require "redsnow/object"
+require 'redsnow/object'
 
 # The classes in this module should be 1:1 with the Snow Crash AST
 # counterparts (https://github.com/apiaryio/snowcrash/blob/master/src/Blueprint.h).
@@ -388,7 +388,7 @@ module RedSnow
     VERSION_KEY = :_version
 
     # Supported version of Api Blueprint
-    SUPPORTED_VERSIONS = ["2.1"]
+    SUPPORTED_VERSIONS = ['2.1']
 
     # @param handle [FFI:Pointer]
     def initialize(handle)

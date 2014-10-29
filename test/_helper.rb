@@ -2,7 +2,7 @@ require 'bundler/setup'
 
 require 'test/unit'
 require 'shoulda'
-require 'turn' unless ENV["TM_FILEPATH"] || ENV["CI"]
+require 'turn' unless ENV['TM_FILEPATH'] || ENV['CI']
 require 'mocha'
 require File.join(File.expand_path('../../lib/redsnow.rb', __FILE__))
 

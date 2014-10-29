@@ -1,4 +1,4 @@
-require "redsnow/object"
+require 'redsnow/object'
 
 # The classes in this module should be 1:1 with the Snow Crash Blueprint sourcemap
 # counterparts (https://github.com/apiaryio/snowcrash/blob/master/src/BlueprintSourcemap.h).

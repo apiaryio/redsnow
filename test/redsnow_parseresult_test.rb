@@ -2,13 +2,13 @@ require '_helper'
 require 'unindent'
 
 class RedSnowParseResultTest < Test::Unit::TestCase
-  context "Simple API" do
+  context 'Simple API' do
     setup do
-      @result = RedSnow.parse("# My API")
+      @result = RedSnow.parse('# My API')
     end
 
-    should "have name" do
-      assert_equal "My API", @result.ast.name
+    should 'have name' do
+      assert_equal 'My API', @result.ast.name
     end
 
     should "don't have error" do
@@ -16,7 +16,7 @@ class RedSnowParseResultTest < Test::Unit::TestCase
     end
   end
 
-  context "Simple API with warning" do
+  context 'Simple API with warning' do
     setup do
       @source = <<-STR
         FORMAT: 1A
@@ -26,21 +26,21 @@ class RedSnowParseResultTest < Test::Unit::TestCase
       @result = RedSnow.parse(@source.unindent, 4)
     end
 
-    should "have name" do
-      assert_equal "My API", @result.ast.name
+    should 'have name' do
+      assert_equal 'My API', @result.ast.name
     end
 
     should "don't have error" do
       assert_equal 0, @result.error[:code]
     end
 
-    should "have source map for api name" do
+    should 'have source map for api name' do
       assert_equal [[11, 9]], @result.sourcemap.name
     end
 
-    should "have some warning" do
+    should 'have some warning' do
       assert_equal RedSnow::WarningCodes::EMPTY_DEFINITION_WARNING, @result.warnings[0][:code]
-      assert_equal "action is missing a response", @result.warnings[0][:message]
+      assert_equal 'action is missing a response', @result.warnings[0][:message]
 
       assert_equal 20, @result.warnings[0][:location][0].index
       assert_equal 9, @result.warnings[0][:location][0].length

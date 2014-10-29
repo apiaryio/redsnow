@@ -1,8 +1,8 @@
 require '_helper'
 
 class RedSnowBindingTest < Test::Unit::TestCase
-  context "RedSnow Binding" do
-    should "convert API Blueprint to AST" do
+  context 'RedSnow Binding' do
+    should 'convert API Blueprint to AST' do
 
       report = FFI::MemoryPointer.new :pointer
       blueprint = FFI::MemoryPointer.new :pointer
@@ -14,14 +14,14 @@ class RedSnowBindingTest < Test::Unit::TestCase
       report = report.get_pointer(0)
       sourcemap = sourcemap.get_pointer(0)
 
-      assert_equal "XXXX", RedSnow::Binding.sc_blueprint_name(blueprint)
+      assert_equal 'XXXX', RedSnow::Binding.sc_blueprint_name(blueprint)
 
       sm_bluperint_name = RedSnow::Binding.sc_sm_blueprint_name(sourcemap)
       assert_equal 1, RedSnow::Binding.sc_source_map_size(sm_bluperint_name)
       assert_equal 19, RedSnow::Binding.sc_source_map_location(sm_bluperint_name, 0)
       assert_equal 6, RedSnow::Binding.sc_source_map_length(sm_bluperint_name, 0)
 
-      assert_equal "description for it", RedSnow::Binding.sc_blueprint_description(blueprint)
+      assert_equal 'description for it', RedSnow::Binding.sc_blueprint_description(blueprint)
 
       sm_bluperint_description = RedSnow::Binding.sc_sm_blueprint_description(sourcemap)
       assert_equal 1, RedSnow::Binding.sc_source_map_size(sm_bluperint_description)

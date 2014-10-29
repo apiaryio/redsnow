@@ -1,9 +1,9 @@
-require "redsnow/version"
-require "redsnow/binding"
-require "redsnow/blueprint"
-require "redsnow/sourcemap"
-require "redsnow/parseresult"
-require "ffi"
+require 'redsnow/version'
+require 'redsnow/binding'
+require 'redsnow/blueprint'
+require 'redsnow/sourcemap'
+require 'redsnow/parseresult'
+require 'ffi'
 
 module RedSnow
   include Binding
@@ -43,7 +43,7 @@ module RedSnow
   #
   # @return [ParseResult]
   def self.parse(rawBlueprint, options = 0)
-    raise ArgumentError.new("Expected string value") unless rawBlueprint.is_a?(String)
+    raise ArgumentError.new('Expected string value') unless rawBlueprint.is_a?(String)
 
     blueprintOptions = self.parse_options(options)
 
