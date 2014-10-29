@@ -47,18 +47,13 @@ Style/For:
 Style/GuardClause:
   Enabled: false
 
-# Offense count: 1
-# Configuration parameters: SupportedStyles.
-# Style/RaiseArgs:
-#   EnforcedStyle: compact
-
 # Offense count: 2
 Style/RegexpLiteral:
   MaxSlashes: 0
 
 # Offense count: 2
 Style/SelfAssignment:
-  Enabled: false
+  Enabled: true
 
 # Offense count: 1
 # Configuration parameters: Methods.

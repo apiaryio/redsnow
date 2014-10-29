@@ -21,11 +21,11 @@ module RedSnow
     else
       opt = 0
       if options.key?(REQUIRE_BLUEPRINT_NAME_OPTION_KEY)
-        opt = opt | (1 << 1) if options[REQUIRE_BLUEPRINT_NAME_OPTION_KEY]
+        opt |= (1 << 1) if options[REQUIRE_BLUEPRINT_NAME_OPTION_KEY]
       end
 
       if options.key?(EXPORT_SOURCEMAP_OPTION_KEY)
-        opt = opt | (1 << 2) if options[EXPORT_SOURCEMAP_OPTION_KEY]
+        opt |= (1 << 2) if options[EXPORT_SOURCEMAP_OPTION_KEY]
       end
       return opt
     end
