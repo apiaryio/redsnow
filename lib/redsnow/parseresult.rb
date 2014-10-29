@@ -23,11 +23,11 @@ module RedSnow
       @sourcemap = RedSnow::Sourcemap::Blueprint.new(sourcemap_handle)
 
       warnings = RedSnow::Binding.sc_warnings_handler(report_handle)
-      warningsSize = RedSnow::Binding.sc_warnings_size(warnings)
+      warnings_size = RedSnow::Binding.sc_warnings_size(warnings)
 
       @warnings = []
 
-      for index in 0..(warningsSize - 1) do
+      for index in 0..(warnings_size - 1) do
         sc_warning_handler = RedSnow::Binding.sc_warning_handler(warnings, index)
 
         warning = {}

@@ -74,7 +74,7 @@ Style/SingleLineBlockParams:
 Style/UnlessElse:
   Enabled: false
 
-# Offense count: 9
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/VariableName:
+# Offense count: 2
+# Configuration parameters: AllowAsExpressionSeparator.
+Style/Semicolon:
   Enabled: false

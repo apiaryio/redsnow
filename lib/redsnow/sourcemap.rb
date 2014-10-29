@@ -102,8 +102,8 @@ module RedSnow
         if sc_sm_value_collection_size > 0
           values_size = sc_sm_value_collection_size - 1
 
-          for valueIndex in 0..values_size do
-            sc_sm_value_handle = RedSnow::Binding.sc_sm_value_handle(sc_sm_value_collection_handle, valueIndex)
+          for value_index in 0..values_size do
+            sc_sm_value_handle = RedSnow::Binding.sc_sm_value_handle(sc_sm_value_collection_handle, value_index)
             @values << SourceMap.new(RedSnow::Binding.sc_sm_value(sc_sm_value_handle))
           end
         end

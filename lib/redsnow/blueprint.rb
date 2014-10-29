@@ -166,8 +166,8 @@ module RedSnow
       if sc_value_collection_size > 0
         values_size = sc_value_collection_size - 1
 
-        for valueIndex in 0..values_size do
-          sc_value_handle = RedSnow::Binding.sc_value_handle(sc_value_collection_handle, valueIndex)
+        for value_index in 0..values_size do
+          sc_value_handle = RedSnow::Binding.sc_value_handle(sc_value_collection_handle, value_index)
           @values << RedSnow::Binding.sc_value(sc_value_handle)
         end
       end

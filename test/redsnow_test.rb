@@ -109,17 +109,17 @@ class RedSnowParsingTest < Test::Unit::TestCase
           STR
 
         @result = RedSnow.parse(source.unindent)
-        @resourceGroup = @result.ast.resource_groups[0]
-        @resource = @resourceGroup.resources[0]
+        @resource_group = @result.ast.resource_groups[0]
+        @resource = @resource_group.resources[0]
         @action = @resource.actions[0]
         @response = @resource.actions[1].examples[0].responses[0]
       end
 
       should 'have resource group' do
         assert_equal 1, @result.ast.resource_groups.count
-        assert_equal '', @resourceGroup.name
-        assert_equal '', @resourceGroup.description
-        assert_equal 1, @resourceGroup.resources.count
+        assert_equal '', @resource_group.name
+        assert_equal '', @resource_group.description
+        assert_equal 1, @resource_group.resources.count
       end
 
       should 'have resource' do
@@ -208,8 +208,8 @@ class RedSnowParsingTest < Test::Unit::TestCase
         STR
 
         @result = RedSnow.parse(source.unindent)
-        @resourceGroup = @result.ast.resource_groups[0]
-        @resource = @resourceGroup.resources[0]
+        @resource_group = @result.ast.resource_groups[0]
+        @resource = @resource_group.resources[0]
         @parameter = @resource.parameters.collection[0]
         @values = @parameter.values
       end
@@ -241,8 +241,8 @@ class RedSnowParsingTest < Test::Unit::TestCase
         STR
 
         @result = RedSnow.parse(source.unindent)
-        @resourceGroup = @result.ast.resource_groups[0]
-        @resource = @resourceGroup.resources[0]
+        @resource_group = @result.ast.resource_groups[0]
+        @resource = @resource_group.resources[0]
         @action = @resource.actions[0]
         @parameter = @action.parameters.collection[0]
       end
@@ -290,8 +290,8 @@ class RedSnowParsingTest < Test::Unit::TestCase
                 { "error": "can't create record" }
         STR
         @result = RedSnow.parse(source.unindent)
-        @resourceGroup = @result.ast.resource_groups[0]
-        @examples = @resourceGroup.resources[0].actions[0].examples
+        @resource_group = @result.ast.resource_groups[0]
+        @examples = @resource_group.resources[0].actions[0].examples
       end
 
       should 'have multiple requests and responses' do
