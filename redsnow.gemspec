@@ -13,7 +13,8 @@ Gem::Specification.new do |gem|
   gem.homepage      = "https://github.com/apiaryio/redsnow"
   gem.license       = "MIT"
 
-  gem.files         = Dir[ '**/*']
+  gem.files         = Dir[ 'lib/**/*']
+  gem.files         << Dir[ '*']
   gem.files         << Dir[ 'ext/snowcrash/**/*' ].reject { |f| f =~ /cmdline|test|features|README*|LICENSE|Gemfile*|\.xcode*/   }
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
