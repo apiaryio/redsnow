@@ -39,14 +39,14 @@ module RedSnow
       def initialize(sc_sm_metadata_collection_handle)
         sc_sm_metadata_collection_size = RedSnow::Binding.sc_sm_metadata_collection_size(sc_sm_metadata_collection_handle)
 
-        if sc_sm_metadata_collection_size > 0
-          metadata_size = sc_sm_metadata_collection_size - 1
-          @collection = []
+        @collection = []
+        return if sc_sm_metadata_collection_size == 0
 
-          (0..metadata_size).each do |index|
-            sc_sm_metadata_handle = RedSnow::Binding.sc_sm_metadata_handle(sc_sm_metadata_collection_handle, index)
-            @collection << SourceMap.new(RedSnow::Binding.sc_sm_metadata(sc_sm_metadata_handle))
-          end
+        metadata_size = sc_sm_metadata_collection_size - 1
+
+        (0..metadata_size).each do |index|
+          sc_sm_metadata_handle = RedSnow::Binding.sc_sm_metadata_handle(sc_sm_metadata_collection_handle, index)
+          @collection << SourceMap.new(RedSnow::Binding.sc_sm_metadata(sc_sm_metadata_handle))
         end
       end
     end
@@ -59,14 +59,14 @@ module RedSnow
       def initialize(sc_sm_header_collection_handle_payload)
         sc_sm_header_collection_size = RedSnow::Binding.sc_sm_header_collection_size(sc_sm_header_collection_handle_payload)
 
-        if sc_sm_header_collection_size > 0
-          headers_size = sc_sm_header_collection_size - 1
-          @collection = []
+        @collection = []
 
-          (0..headers_size).each do |index|
-            sc_sm_header_handle = RedSnow::Binding.sc_sm_header_handle(sc_sm_header_collection_handle_payload, index)
-            @collection << SourceMap.new(RedSnow::Binding.sc_sm_header(sc_sm_header_handle))
-          end
+        return if sc_sm_header_collection_size == 0
+        headers_size = sc_sm_header_collection_size - 1
+
+        (0..headers_size).each do |index|
+          sc_sm_header_handle = RedSnow::Binding.sc_sm_header_handle(sc_sm_header_collection_handle_payload, index)
+          @collection << SourceMap.new(RedSnow::Binding.sc_sm_header(sc_sm_header_handle))
         end
       end
     end
@@ -99,13 +99,13 @@ module RedSnow
         sc_sm_value_collection_handle = RedSnow::Binding.sc_sm_value_collection_handle(sc_sm_parameter_handle)
         sc_sm_value_collection_size = RedSnow::Binding.sc_sm_value_collection_size(sc_sm_value_collection_handle)
 
-        if sc_sm_value_collection_size > 0
-          values_size = sc_sm_value_collection_size - 1
+        return if sc_sm_value_collection_size == 0
 
-          (0..values_size).each do |value_index|
-            sc_sm_value_handle = RedSnow::Binding.sc_sm_value_handle(sc_sm_value_collection_handle, value_index)
-            @values << SourceMap.new(RedSnow::Binding.sc_sm_value(sc_sm_value_handle))
-          end
+        values_size = sc_sm_value_collection_size - 1
+
+        (0..values_size).each do |value_index|
+          sc_sm_value_handle = RedSnow::Binding.sc_sm_value_handle(sc_sm_value_collection_handle, value_index)
+          @values << SourceMap.new(RedSnow::Binding.sc_sm_value(sc_sm_value_handle))
         end
       end
     end
@@ -121,13 +121,13 @@ module RedSnow
         sc_sm_parameter_collection_size = RedSnow::Binding.sc_sm_parameter_collection_size(sc_sm_parameter_collection_handle)
         @collection = []
 
-        if sc_sm_parameter_collection_size > 0
-          parameters_size = sc_sm_parameter_collection_size - 1
+        return if sc_sm_parameter_collection_size == 0
 
-          (0..parameters_size).each do |index|
-            sc_sm_parameter_handle = RedSnow::Binding.sc_sm_parameter_handle(sc_sm_parameter_collection_handle, index)
-            @collection << Parameter.new(sc_sm_parameter_handle)
-          end
+        parameters_size = sc_sm_parameter_collection_size - 1
+
+        (0..parameters_size).each do |index|
+          sc_sm_parameter_handle = RedSnow::Binding.sc_sm_parameter_handle(sc_sm_parameter_collection_handle, index)
+          @collection << Parameter.new(sc_sm_parameter_handle)
         end
       end
     end
@@ -199,13 +199,12 @@ module RedSnow
         sc_sm_payload_collection_handle_responses = RedSnow::Binding.sc_sm_payload_collection_handle_responses(sc_sm_transaction_example_handle)
         sc_sm_payload_collection_size_responses = RedSnow::Binding.sc_sm_payload_collection_size(sc_sm_payload_collection_handle_responses)
 
-        if sc_sm_payload_collection_size_responses > 0
-          responses_size = sc_sm_payload_collection_size_responses - 1
+        return if sc_sm_payload_collection_size_responses == 0
+        responses_size = sc_sm_payload_collection_size_responses - 1
 
-          (0..responses_size).each do |index|
-            sc_sm_payload_handle = RedSnow::Binding.sc_sm_payload_handle(sc_sm_payload_collection_handle_responses, index)
-            @responses << Payload.new(sc_sm_payload_handle)
-          end
+        (0..responses_size).each do |index|
+          sc_sm_payload_handle = RedSnow::Binding.sc_sm_payload_handle(sc_sm_payload_collection_handle_responses, index)
+          @responses << Payload.new(sc_sm_payload_handle)
         end
       end
     end
@@ -233,13 +232,13 @@ module RedSnow
         sc_sm_transaction_example_collection_handle = RedSnow::Binding.sc_sm_transaction_example_collection_handle(sc_sm_action_handle)
         sc_sm_transaction_example_collection_size = RedSnow::Binding.sc_sm_transaction_example_collection_size(sc_sm_transaction_example_collection_handle)
 
-        if sc_sm_transaction_example_collection_size > 0
-          examples_size = sc_sm_transaction_example_collection_size - 1
+        return if sc_sm_transaction_example_collection_size == 0
 
-          (0..examples_size).each do |index|
-            sc_sm_transaction_example_handle = RedSnow::Binding.sc_sm_transaction_example_handle(sc_sm_transaction_example_collection_handle, index)
-            @examples << TransactionExample.new(sc_sm_transaction_example_handle)
-          end
+        examples_size = sc_sm_transaction_example_collection_size - 1
+
+        (0..examples_size).each do |index|
+          sc_sm_transaction_example_handle = RedSnow::Binding.sc_sm_transaction_example_handle(sc_sm_transaction_example_collection_handle, index)
+          @examples << TransactionExample.new(sc_sm_transaction_example_handle)
         end
       end
     end
@@ -269,16 +268,16 @@ module RedSnow
         sc_sm_action_collection_handle = RedSnow::Binding.sc_sm_action_collection_handle(sc_sm_resource_handle)
         sc_sm_action_collection_size = RedSnow::Binding.sc_sm_action_collection_size(sc_sm_action_collection_handle)
 
-        if sc_sm_action_collection_size > 0
-          action_size = sc_sm_action_collection_size - 1
-
-          (0..action_size).each do |index|
-            sc_sm_action_handle = RedSnow::Binding.sc_sm_action_handle(sc_sm_action_collection_handle, index)
-            @actions << Action.new(sc_sm_action_handle)
-          end
-        end
-
         @parameters = Parameters.new(RedSnow::Binding.sc_sm_parameter_collection_handle_resource(sc_sm_resource_handle))
+
+        return if sc_sm_action_collection_size == 0
+
+        action_size = sc_sm_action_collection_size - 1
+
+        (0..action_size).each do |index|
+          sc_sm_action_handle = RedSnow::Binding.sc_sm_action_handle(sc_sm_action_collection_handle, index)
+          @actions << Action.new(sc_sm_action_handle)
+        end
       end
     end
 
@@ -297,13 +296,13 @@ module RedSnow
         sc_sm_resource_collection_handle = RedSnow::Binding.sc_sm_resource_collection_handle(sc_sm_resource_group_handle)
         sc_sm_resource_collection_size = RedSnow::Binding.sc_sm_resource_collection_size(sc_sm_resource_collection_handle)
 
-        if sc_sm_resource_collection_size > 0
-          resource_size = sc_sm_resource_collection_size - 1
+        return if sc_sm_resource_collection_size == 0
 
-          (0..resource_size).each do |index|
-            sc_sm_resource_handle = RedSnow::Binding.sc_sm_resource_handle(sc_sm_resource_collection_handle, index)
-            @resources << Resource.new(sc_sm_resource_handle)
-          end
+        resource_size = sc_sm_resource_collection_size - 1
+
+        (0..resource_size).each do |index|
+          sc_sm_resource_handle = RedSnow::Binding.sc_sm_resource_handle(sc_sm_resource_collection_handle, index)
+          @resources << Resource.new(sc_sm_resource_handle)
         end
       end
     end
@@ -331,13 +330,12 @@ module RedSnow
         sc_sm_resource_group_collection_size = RedSnow::Binding.sc_sm_resource_group_collection_size(sc_sm_resource_group_collection_handle)
         @resource_groups = []
 
-        if sc_sm_resource_group_collection_size > 0
-          group_size = sc_sm_resource_group_collection_size - 1
+        return if sc_sm_resource_group_collection_size == 0
+        group_size = sc_sm_resource_group_collection_size - 1
 
-          (0..group_size).each do |index|
-            sc_sm_resource_group_handle = RedSnow::Binding.sc_sm_resource_group_handle(sc_sm_resource_group_collection_handle, index)
-            @resource_groups << ResourceGroup.new(sc_sm_resource_group_handle)
-          end
+        (0..group_size).each do |index|
+          sc_sm_resource_group_handle = RedSnow::Binding.sc_sm_resource_group_handle(sc_sm_resource_group_collection_handle, index)
+          @resource_groups << ResourceGroup.new(sc_sm_resource_group_handle)
         end
       end
     end

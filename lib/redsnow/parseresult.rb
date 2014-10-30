@@ -58,11 +58,10 @@ module RedSnow
       sc_location_size = RedSnow::Binding.sc_location_size(sc_location_handler)
       @error[:location] = []
 
-      if sc_location_size > 0
-        (0..(sc_location_size - 1)).each do |index|
-          location = Location.new(sc_location_handler, index)
-          @error[:location] << location
-        end
+      return if sc_location_size == 0
+      (0..(sc_location_size - 1)).each do |index|
+        location = Location.new(sc_location_handler, index)
+        @error[:location] << location
       end
     end
   end

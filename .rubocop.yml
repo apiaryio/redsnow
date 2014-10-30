@@ -21,8 +21,3 @@ Metrics/LineLength:
 # Configuration parameters: CountComments.
 Metrics/MethodLength:
   Max: 36
-
-# Offense count: 17
-# Configuration parameters: MinBodyLength.
-Style/GuardClause:
-  Enabled: false
