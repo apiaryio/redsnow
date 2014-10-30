@@ -26,7 +26,3 @@ Metrics/MethodLength:
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:
   Enabled: false
-
-# Offense count: 2
-Style/RegexpLiteral:
-  MaxSlashes: 0
