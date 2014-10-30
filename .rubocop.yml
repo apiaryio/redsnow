@@ -22,10 +22,6 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Max: 36
 
-# Offense count: 2
-Style/EachWithObject:
-  Enabled: false
-
 # Offense count: 17
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:
@@ -34,8 +30,3 @@ Style/GuardClause:
 # Offense count: 2
 Style/RegexpLiteral:
   MaxSlashes: 0
-
-# Offense count: 2
-# Configuration parameters: AllowAsExpressionSeparator.
-Style/Semicolon:
-  Enabled: false
