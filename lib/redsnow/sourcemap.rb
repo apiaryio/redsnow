@@ -62,6 +62,7 @@ module RedSnow
         @collection = []
 
         return if sc_sm_header_collection_size == 0
+
         headers_size = sc_sm_header_collection_size - 1
 
         (0..headers_size).each do |index|
@@ -200,6 +201,7 @@ module RedSnow
         sc_sm_payload_collection_size_responses = RedSnow::Binding.sc_sm_payload_collection_size(sc_sm_payload_collection_handle_responses)
 
         return if sc_sm_payload_collection_size_responses == 0
+
         responses_size = sc_sm_payload_collection_size_responses - 1
 
         (0..responses_size).each do |index|
@@ -331,6 +333,7 @@ module RedSnow
         @resource_groups = []
 
         return if sc_sm_resource_group_collection_size == 0
+
         group_size = sc_sm_resource_group_collection_size - 1
 
         (0..group_size).each do |index|

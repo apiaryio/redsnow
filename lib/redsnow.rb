@@ -4,6 +4,7 @@ require 'redsnow/blueprint'
 require 'redsnow/sourcemap'
 require 'redsnow/parseresult'
 require 'ffi'
+
 # RedSnow
 module RedSnow
   include Binding

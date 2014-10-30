@@ -59,6 +59,7 @@ module RedSnow
       @error[:location] = []
 
       return if sc_location_size == 0
+
       (0..(sc_location_size - 1)).each do |index|
         location = Location.new(sc_location_handler, index)
         @error[:location] << location
