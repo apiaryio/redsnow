@@ -21,13 +21,8 @@ module RedSnow
       return options
     else
       opt = 0
-      if options.key?(REQUIRE_BLUEPRINT_NAME_OPTION_KEY)
-        opt |= (1 << 1) if options[REQUIRE_BLUEPRINT_NAME_OPTION_KEY]
-      end
-
-      if options.key?(EXPORT_SOURCEMAP_OPTION_KEY)
-        opt |= (1 << 2) if options[EXPORT_SOURCEMAP_OPTION_KEY]
-      end
+      opt |= (1 << 1) if options[REQUIRE_BLUEPRINT_NAME_OPTION_KEY]
+      opt |= (1 << 2) if options[EXPORT_SOURCEMAP_OPTION_KEY]
       return opt
     end
   end
@@ -53,9 +48,7 @@ module RedSnow
     sourcemap = sourcemap.get_pointer(0)
     report = report.get_pointer(0)
 
-    parse_result = ParseResult.new(report, blueprint, sourcemap)
-
-    return parse_result
+    ParseResult.new(report, blueprint, sourcemap)
   ensure
     RedSnow::Binding.sc_sm_blueprint_free(sourcemap)
     RedSnow::Binding.sc_blueprint_free(blueprint)

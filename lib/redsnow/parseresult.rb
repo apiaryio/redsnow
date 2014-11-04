@@ -41,8 +41,7 @@ module RedSnow
 
         if sc_location_size > 0
           (0..(sc_location_size - 1)).each do |index_size|
-            location = Location.new(sc_location_handler, index_size)
-            warning[:location] << location
+            warning[:location] << Location.new(sc_location_handler, index_size)
           end
         end
         @warnings << warning
@@ -61,8 +60,7 @@ module RedSnow
       return if sc_location_size == 0
 
       (0..(sc_location_size - 1)).each do |index|
-        location = Location.new(sc_location_handler, index)
-        @error[:location] << location
+        @error[:location] << Location.new(sc_location_handler, index)
       end
     end
   end

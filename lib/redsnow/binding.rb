@@ -7,8 +7,7 @@ module RedSnow
   module Binding
     extend FFI::Library
 
-    prefix = 'lib.target/'
-    prefix = '' if FFI::Platform.mac?
+    prefix = FFI::Platform.mac? ? '' : 'lib.target/'
 
     ffi_lib File.expand_path("../../../ext/snowcrash/build/out/Release/#{prefix}libsnowcrash.#{FFI::Platform::LIBSUFFIX}", __FILE__)
     # @see https://github.com/apiaryio/snowcrash/blob/master/src/BlueprintParserCore.h#L31

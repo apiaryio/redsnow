@@ -76,7 +76,7 @@ module RedSnow
 
     def return_item_value(key)
       item = get_item(key.to_s)
-      item.nil? ? nil : item[:value]
+      item && item[:value]
     end
 
     def get_item(key)
