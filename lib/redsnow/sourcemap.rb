@@ -1,27 +1,23 @@
-require "redsnow/object"
+require 'redsnow/object'
 
 # The classes in this module should be 1:1 with the Snow Crash Blueprint sourcemap
 # counterparts (https://github.com/apiaryio/snowcrash/blob/master/src/BlueprintSourcemap.h).
 module RedSnow
-
   module Sourcemap
-
     class Node
     end
-
+    # SourceMap
     class SourceMap < Array
-
       def initialize(sc_source_map_handle)
         source_map_size = RedSnow::Binding.sc_source_map_size(sc_source_map_handle) - 1
 
-        for index in 0..source_map_size do
+        (0..source_map_size).each do |index|
           location = RedSnow::Binding.sc_source_map_location(sc_source_map_handle, index)
           length = RedSnow::Binding.sc_source_map_length(sc_source_map_handle, index)
 
           self << [location, length]
         end
       end
-
     end
 
     # Blueprint sourcemap node with name and description associated
@@ -31,54 +27,49 @@ module RedSnow
     #
     # @abstract
     class NamedNode < Node
-
       attr_accessor :name
       attr_accessor :description
-
     end
 
     # Metadata source map collection node
     class Metadata < Node
-
       attr_accessor :collection
 
       # @param sc_sm_metadata_collection_handle [FFI::Pointer]
       def initialize(sc_sm_metadata_collection_handle)
         sc_sm_metadata_collection_size = RedSnow::Binding.sc_sm_metadata_collection_size(sc_sm_metadata_collection_handle)
 
-        if sc_sm_metadata_collection_size > 0
-          metadata_size = sc_sm_metadata_collection_size - 1
-          @collection = Array.new
+        @collection = []
+        return if sc_sm_metadata_collection_size == 0
 
-          for index in 0..metadata_size do
-            sc_sm_metadata_handle = RedSnow::Binding.sc_sm_metadata_handle(sc_sm_metadata_collection_handle, index)
-            @collection << SourceMap.new(RedSnow::Binding.sc_sm_metadata(sc_sm_metadata_handle))
-          end
+        metadata_size = sc_sm_metadata_collection_size - 1
+
+        (0..metadata_size).each do |index|
+          sc_sm_metadata_handle = RedSnow::Binding.sc_sm_metadata_handle(sc_sm_metadata_collection_handle, index)
+          @collection << SourceMap.new(RedSnow::Binding.sc_sm_metadata(sc_sm_metadata_handle))
         end
       end
-
     end
 
     # Headers source map collection node
     class Headers < Node
-
       attr_accessor :collection
 
       # @param sc_header_collection_handle_payload [FFI::Pointer]
       def initialize(sc_sm_header_collection_handle_payload)
         sc_sm_header_collection_size = RedSnow::Binding.sc_sm_header_collection_size(sc_sm_header_collection_handle_payload)
 
-        if sc_sm_header_collection_size > 0
-          headers_size = sc_sm_header_collection_size - 1
-          @collection = Array.new
+        @collection = []
 
-          for index in 0..headers_size do
-            sc_sm_header_handle = RedSnow::Binding.sc_sm_header_handle(sc_sm_header_collection_handle_payload, index)
-            @collection << SourceMap.new(RedSnow::Binding.sc_sm_header(sc_sm_header_handle))
-          end
+        return if sc_sm_header_collection_size == 0
+
+        headers_size = sc_sm_header_collection_size - 1
+
+        (0..headers_size).each do |index|
+          sc_sm_header_handle = RedSnow::Binding.sc_sm_header_handle(sc_sm_header_collection_handle_payload, index)
+          @collection << SourceMap.new(RedSnow::Binding.sc_sm_header(sc_sm_header_handle))
         end
       end
-
     end
 
     # Parameter source map node
@@ -89,7 +80,6 @@ module RedSnow
     # @attr example_value [Sourcemap] example value of the parameter or nil
     # @attr values [Array<Sourcemap>] an enumeration of possible parameter values
     class Parameter < NamedNode
-
       attr_accessor :type
       attr_accessor :use
       attr_accessor :default_value
@@ -105,45 +95,42 @@ module RedSnow
         @default_value = SourceMap.new(RedSnow::Binding.sc_sm_parameter_default_value(sc_sm_parameter_handle))
         @example_value = SourceMap.new(RedSnow::Binding.sc_sm_parameter_example_value(sc_sm_parameter_handle))
 
-        @values = Array.new
+        @values = []
 
         sc_sm_value_collection_handle = RedSnow::Binding.sc_sm_value_collection_handle(sc_sm_parameter_handle)
         sc_sm_value_collection_size = RedSnow::Binding.sc_sm_value_collection_size(sc_sm_value_collection_handle)
 
-        if sc_sm_value_collection_size > 0
-          values_size = sc_sm_value_collection_size - 1
+        return if sc_sm_value_collection_size == 0
 
-          for valueIndex in 0..values_size do
-            sc_sm_value_handle = RedSnow::Binding.sc_sm_value_handle(sc_sm_value_collection_handle, valueIndex)
-            @values << SourceMap.new(RedSnow::Binding.sc_sm_value(sc_sm_value_handle))
-          end
+        values_size = sc_sm_value_collection_size - 1
+
+        (0..values_size).each do |value_index|
+          sc_sm_value_handle = RedSnow::Binding.sc_sm_value_handle(sc_sm_value_collection_handle, value_index)
+          @values << SourceMap.new(RedSnow::Binding.sc_sm_value(sc_sm_value_handle))
         end
       end
-
     end
 
     # Parameters source map collection node
     #
     # @attr collection [Array<Parameter>] an array of URI parameters
     class Parameters < Node
-
       attr_accessor :collection
 
       # @param sc_sm_parameter_collection_handle [FFI::Pointer]
       def initialize(sc_sm_parameter_collection_handle)
         sc_sm_parameter_collection_size = RedSnow::Binding.sc_sm_parameter_collection_size(sc_sm_parameter_collection_handle)
-        @collection = Array.new
+        @collection = []
 
-        if sc_sm_parameter_collection_size > 0
-          parameters_size = sc_sm_parameter_collection_size - 1
+        return if sc_sm_parameter_collection_size == 0
 
-          for index in 0..parameters_size do
-            sc_sm_parameter_handle = RedSnow::Binding.sc_sm_parameter_handle(sc_sm_parameter_collection_handle, index)
-            @collection << Parameter.new(sc_sm_parameter_handle)
-          end
+        parameters_size = sc_sm_parameter_collection_size - 1
+
+        (0..parameters_size).each do |index|
+          sc_sm_parameter_handle = RedSnow::Binding.sc_sm_parameter_handle(sc_sm_parameter_collection_handle, index)
+          @collection << Parameter.new(sc_sm_parameter_handle)
         end
       end
-
     end
 
     # Payload source map node
@@ -155,7 +142,6 @@ module RedSnow
     # @attr schema [Sourcemap] HTTP-message body validation schema or nil
     # @attr reference [Sourcemap] Symbol Reference sourcemap if the payload is a reference
     class Payload < NamedNode
-
       attr_accessor :headers
       attr_accessor :body
       attr_accessor :schema
@@ -180,7 +166,6 @@ module RedSnow
         sc_sm_header_collection_handle_payload = RedSnow::Binding.sc_sm_header_collection_handle_payload(sc_sm_payload_handle_resource)
         @headers = Headers.new(sc_sm_header_collection_handle_payload)
       end
-
     end
 
     # Transaction example source map node
@@ -188,7 +173,6 @@ module RedSnow
     # @attr requests [Array<Request>] example request payloads
     # @attr response [Array<Response>] example response payloads
     class TransactionExample < NamedNode
-
       attr_accessor :requests
       attr_accessor :responses
 
@@ -198,34 +182,33 @@ module RedSnow
         @description = SourceMap.new(RedSnow::Binding.sc_sm_transaction_example_description(sc_sm_transaction_example_handle))
 
         # BP Resource Actions Examples Requests
-        @requests = Array.new
+        @requests = []
         sc_sm_payload_collection_handle_requests = RedSnow::Binding.sc_sm_payload_collection_handle_requests(sc_sm_transaction_example_handle)
         sc_sm_payload_collection_size_requests = RedSnow::Binding.sc_sm_payload_collection_size(sc_sm_payload_collection_handle_requests)
 
         if sc_sm_payload_collection_size_requests > 0
           requests_size = sc_sm_payload_collection_size_requests - 1
 
-          for index in 0..requests_size do
+          (0..requests_size).each do |index|
             sc_sm_payload_handle = RedSnow::Binding.sc_sm_payload_handle(sc_sm_payload_collection_handle_requests, index)
             @requests << Payload.new(sc_sm_payload_handle)
           end
         end
 
         # BP Resource Actions Examples Responses
-        @responses = Array.new
+        @responses = []
         sc_sm_payload_collection_handle_responses = RedSnow::Binding.sc_sm_payload_collection_handle_responses(sc_sm_transaction_example_handle)
         sc_sm_payload_collection_size_responses = RedSnow::Binding.sc_sm_payload_collection_size(sc_sm_payload_collection_handle_responses)
 
-        if sc_sm_payload_collection_size_responses > 0
-          responses_size = sc_sm_payload_collection_size_responses - 1
+        return if sc_sm_payload_collection_size_responses == 0
 
-          for index in 0..responses_size do
-            sc_sm_payload_handle = RedSnow::Binding.sc_sm_payload_handle(sc_sm_payload_collection_handle_responses, index)
-            @responses << Payload.new(sc_sm_payload_handle)
-          end
+        responses_size = sc_sm_payload_collection_size_responses - 1
+
+        (0..responses_size).each do |index|
+          sc_sm_payload_handle = RedSnow::Binding.sc_sm_payload_handle(sc_sm_payload_collection_handle_responses, index)
+          @responses << Payload.new(sc_sm_payload_handle)
         end
       end
-
     end
 
     # Action source map node
@@ -234,7 +217,6 @@ module RedSnow
     # @attr parameters [Parameters] action-specific URI parameters or nil
     # @attr examples [Array<TransactionExample>] action transaction examples
     class Action < NamedNode
-
       attr_accessor :method
       attr_accessor :parameters
       attr_accessor :examples
@@ -248,20 +230,19 @@ module RedSnow
 
         @parameters = Parameters.new(RedSnow::Binding.sc_sm_parameter_collection_handle_action(sc_sm_action_handle))
 
-        @examples = Array.new
+        @examples = []
         sc_sm_transaction_example_collection_handle = RedSnow::Binding.sc_sm_transaction_example_collection_handle(sc_sm_action_handle)
         sc_sm_transaction_example_collection_size = RedSnow::Binding.sc_sm_transaction_example_collection_size(sc_sm_transaction_example_collection_handle)
 
-        if sc_sm_transaction_example_collection_size > 0
-          examples_size = sc_sm_transaction_example_collection_size - 1
+        return if sc_sm_transaction_example_collection_size == 0
 
-          for index in 0..examples_size do
-            sc_sm_transaction_example_handle = RedSnow::Binding.sc_sm_transaction_example_handle(sc_sm_transaction_example_collection_handle, index)
-            @examples << TransactionExample.new(sc_sm_transaction_example_handle)
-          end
+        examples_size = sc_sm_transaction_example_collection_size - 1
+
+        (0..examples_size).each do |index|
+          sc_sm_transaction_example_handle = RedSnow::Binding.sc_sm_transaction_example_handle(sc_sm_transaction_example_collection_handle, index)
+          @examples << TransactionExample.new(sc_sm_transaction_example_handle)
         end
       end
-
     end
 
     # Resource source map node
@@ -271,7 +252,6 @@ module RedSnow
     # @attr parameters [Parameters] action-specific URI parameters or nil
     # @attr actions [Array<Action>] array of resource actions or nil
     class Resource < NamedNode
-
       attr_accessor :uri_template
       attr_accessor :model
       attr_accessor :parameters
@@ -286,29 +266,27 @@ module RedSnow
         sc_sm_payload_handle_resource = RedSnow::Binding.sc_sm_payload_handle_resource(sc_sm_resource_handle)
         @model = Payload.new(sc_sm_payload_handle_resource)
 
-        @actions = Array.new
+        @actions = []
         sc_sm_action_collection_handle = RedSnow::Binding.sc_sm_action_collection_handle(sc_sm_resource_handle)
         sc_sm_action_collection_size = RedSnow::Binding.sc_sm_action_collection_size(sc_sm_action_collection_handle)
 
-        if sc_sm_action_collection_size > 0
-          action_size = sc_sm_action_collection_size - 1
-
-          for index in 0..action_size do
-            sc_sm_action_handle = RedSnow::Binding.sc_sm_action_handle(sc_sm_action_collection_handle, index)
-            @actions << Action.new(sc_sm_action_handle)
-          end
-        end
-
         @parameters = Parameters.new(RedSnow::Binding.sc_sm_parameter_collection_handle_resource(sc_sm_resource_handle))
-      end
 
+        return if sc_sm_action_collection_size == 0
+
+        action_size = sc_sm_action_collection_size - 1
+
+        (0..action_size).each do |index|
+          sc_sm_action_handle = RedSnow::Binding.sc_sm_action_handle(sc_sm_action_collection_handle, index)
+          @actions << Action.new(sc_sm_action_handle)
+        end
+      end
     end
 
     # Resource group source map node
     #
     # @attr resources [Array<Resource>] array of resources in the group
     class ResourceGroup < NamedNode
-
       attr_accessor :resources
 
       # @param sc_sm_resource_group_handle [FFI::Pointer]
@@ -316,29 +294,26 @@ module RedSnow
         @name = SourceMap.new(RedSnow::Binding.sc_sm_resource_group_name(sc_sm_resource_group_handle))
         @description = SourceMap.new(RedSnow::Binding.sc_sm_resource_group_description(sc_sm_resource_group_handle))
 
-        @resources = Array.new
+        @resources = []
         sc_sm_resource_collection_handle = RedSnow::Binding.sc_sm_resource_collection_handle(sc_sm_resource_group_handle)
         sc_sm_resource_collection_size = RedSnow::Binding.sc_sm_resource_collection_size(sc_sm_resource_collection_handle)
 
-        if sc_sm_resource_collection_size > 0
-          resource_size = sc_sm_resource_collection_size - 1
+        return if sc_sm_resource_collection_size == 0
 
-          for index in 0..resource_size do
-            sc_sm_resource_handle = RedSnow::Binding.sc_sm_resource_handle(sc_sm_resource_collection_handle, index)
-            @resources << Resource.new(sc_sm_resource_handle)
-          end
+        resource_size = sc_sm_resource_collection_size - 1
+
+        (0..resource_size).each do |index|
+          sc_sm_resource_handle = RedSnow::Binding.sc_sm_resource_handle(sc_sm_resource_collection_handle, index)
+          @resources << Resource.new(sc_sm_resource_handle)
         end
       end
-
     end
-
 
     # Blueprint source map node
     #
     # @attr metadata [Metadata] tool-specific metadata collection or nil
     # @attr resource_groups [Array<ResourceGroup>] array of resource groups
     class Blueprint < NamedNode
-
       attr_accessor :metadata
       attr_accessor :resource_groups
 
@@ -355,15 +330,15 @@ module RedSnow
         # BP Resource Groups
         sc_sm_resource_group_collection_handle = RedSnow::Binding.sc_sm_resource_group_collection_handle(handle)
         sc_sm_resource_group_collection_size = RedSnow::Binding.sc_sm_resource_group_collection_size(sc_sm_resource_group_collection_handle)
-        @resource_groups = Array.new
+        @resource_groups = []
 
-        if sc_sm_resource_group_collection_size > 0
-          group_size = sc_sm_resource_group_collection_size - 1
+        return if sc_sm_resource_group_collection_size == 0
 
-          for index in 0..group_size do
-            sc_sm_resource_group_handle = RedSnow::Binding.sc_sm_resource_group_handle(sc_sm_resource_group_collection_handle, index)
-            @resource_groups << ResourceGroup.new(sc_sm_resource_group_handle)
-          end
+        group_size = sc_sm_resource_group_collection_size - 1
+
+        (0..group_size).each do |index|
+          sc_sm_resource_group_handle = RedSnow::Binding.sc_sm_resource_group_handle(sc_sm_resource_group_collection_handle, index)
+          @resource_groups << ResourceGroup.new(sc_sm_resource_group_handle)
         end
       end
     end

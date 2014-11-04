@@ -5,7 +5,7 @@ rvm:
 script:
 - rake test
 - rake install
-- bundle exec rubocop
+- bundle exec rubocop lib test Rakefile redsnow.gemspec
 before_install:
 - git submodule update --init --recursive
 - gem update bundler

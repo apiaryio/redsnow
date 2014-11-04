@@ -1,9 +1,8 @@
-require "redsnow/object"
+require 'redsnow/object'
 
 # The classes in this module should be 1:1 with the Snow Crash AST
 # counterparts (https://github.com/apiaryio/snowcrash/blob/master/src/Blueprint.h).
 module RedSnow
-
   # Blueprint AST node
   #   Base class for API Blueprint AST nodes
   #
@@ -17,7 +16,6 @@ module RedSnow
   #
   # @abstrac
   class ReferenceNode < BlueprintNode
-
     attr_accessor :id
 
     def initialize(id)
@@ -32,7 +30,6 @@ module RedSnow
   #
   # @abstract
   class NamedBlueprintNode < BlueprintNode
-
     attr_accessor :name
     attr_accessor :description
 
@@ -56,15 +53,14 @@ module RedSnow
   # @abstract
   # @attr collection [Array<Hash>] array of key value hashes
   class KeyValueCollection < BlueprintNode
-
     attr_accessor :collection
 
     # Retrieves the value of the collection item by its key
     #
     # @param key [String] Name of the item key to retrieve
     # @return [NilClass] if the collection does not have an item with the key
-    # @return [String] if the collection has an item with the key 
-    def [] key
+    # @return [String] if the collection has an item with the key
+    def [](key)
       return nil if @collection.nil?
       return_item_value key
     end
@@ -75,13 +71,16 @@ module RedSnow
       return @collection if ignore_keys.blank?
       @collection.select { |kv_item| !ignore_keys.include?(kv_item.keys.first) }
     end
+
     private
-    def return_item_value key
+
+    def return_item_value(key)
       item = get_item(key.to_s)
-      item.nil? ? nil : item[:value]
+      item && item[:value]
     end
-    def get_item key
-      @collection.select{|item| item[:name].downcase == key.downcase }.first
+
+    def get_item(key)
+      @collection.select { |item| item[:name].downcase == key.downcase }.first
     end
   end
 
@@ -92,15 +91,15 @@ module RedSnow
     # @param sc_metadata_collection_handle [FFI::Pointer]
     def initialize(sc_metadata_collection_handle)
       sc_metadata_collection_size = RedSnow::Binding.sc_metadata_collection_size(sc_metadata_collection_handle)
+      @collection = []
 
-      if sc_metadata_collection_size > 0
-        metadata_size = sc_metadata_collection_size - 1
-        @collection = Array.new
+      return if sc_metadata_collection_size == 0
 
-        for index in 0..metadata_size do
-          sc_metadata_handle = RedSnow::Binding.sc_metadata_handle(sc_metadata_collection_handle, index)
-          @collection << Hash[:name => RedSnow::Binding.sc_metadata_key(sc_metadata_handle), :value => RedSnow::Binding.sc_metadata_value(sc_metadata_handle)]
-        end
+      metadata_size = sc_metadata_collection_size - 1
+
+      (0..metadata_size).each do |index|
+        sc_metadata_handle = RedSnow::Binding.sc_metadata_handle(sc_metadata_collection_handle, index)
+        @collection << Hash[name: RedSnow::Binding.sc_metadata_key(sc_metadata_handle), value: RedSnow::Binding.sc_metadata_value(sc_metadata_handle)]
       end
     end
   end
@@ -108,31 +107,29 @@ module RedSnow
   # Headers collection Blueprint AST node
   #   represents 'headers section'
   class Headers < KeyValueCollection
-
     # HTTP 'Content-Type' header
     CONTENT_TYPE_HEADER_KEY = :'Content-Type'
 
     # @return [String] the value of 'Content-type' header if present or nil
     def content_type
-      content_type_header = @collection.detect { |header| header.has_key?(CONTENT_TYPE_HEADER_KEY) }
-      return (content_type_header.nil?) ? nil : content_type_header[CONTENT_TYPE_HEADER_KEY]
+      content_type_header = @collection.find { |header| header.key?(CONTENT_TYPE_HEADER_KEY) }
+      (content_type_header.nil?) ? nil : content_type_header[CONTENT_TYPE_HEADER_KEY]
     end
 
     # @param sc_header_collection_handle_payload [FFI::Pointer]
     def initialize(sc_header_collection_handle_payload)
       sc_header_collection_size = RedSnow::Binding.sc_header_collection_size(sc_header_collection_handle_payload)
+      @collection = []
 
-      if sc_header_collection_size > 0
-        headers_size = sc_header_collection_size - 1
-        @collection = Array.new
+      return if sc_header_collection_size == 0
 
-        for index in 0..headers_size do
-          sc_header_handle = RedSnow::Binding.sc_header_handle(sc_header_collection_handle_payload, index)
-          @collection << Hash[:name => RedSnow::Binding.sc_header_key(sc_header_handle), :value => RedSnow::Binding.sc_header_value(sc_header_handle)]
-        end
+      headers_size = sc_header_collection_size - 1
+
+      (0..headers_size).each do |index|
+        sc_header_handle = RedSnow::Binding.sc_header_handle(sc_header_collection_handle_payload, index)
+        @collection << Hash[name: RedSnow::Binding.sc_header_key(sc_header_handle), value: RedSnow::Binding.sc_header_value(sc_header_handle)]
       end
     end
-
   end
 
   # URI parameter Blueprint AST node
@@ -146,7 +143,6 @@ module RedSnow
   # @attr example_value [String] example value of the parameter or nil
   # @attr values [Array<String>] an enumeration of possible parameter values
   class Parameter < NamedBlueprintNode
-
     attr_accessor :type
     attr_accessor :use
     attr_accessor :default_value
@@ -162,21 +158,20 @@ module RedSnow
       @default_value = RedSnow::Binding.sc_parameter_default_value(sc_parameter_handle)
       @example_value = RedSnow::Binding.sc_parameter_example_value(sc_parameter_handle)
 
-      @values = Array.new
+      @values = []
 
       sc_value_collection_handle = RedSnow::Binding.sc_value_collection_handle(sc_parameter_handle)
       sc_value_collection_size = RedSnow::Binding.sc_value_collection_size(sc_value_collection_handle)
 
-      if sc_value_collection_size > 0
-        values_size = sc_value_collection_size - 1
+      return if sc_value_collection_size == 0
 
-        for valueIndex in 0..values_size do
-          sc_value_handle = RedSnow::Binding.sc_value_handle(sc_value_collection_handle, valueIndex)
-          @values << RedSnow::Binding.sc_value(sc_value_handle)
-        end
+      values_size = sc_value_collection_size - 1
+
+      (0..values_size).each do |value_index|
+        sc_value_handle = RedSnow::Binding.sc_value_handle(sc_value_collection_handle, value_index)
+        @values << RedSnow::Binding.sc_value(sc_value_handle)
       end
     end
-
   end
 
   # Collection of URI parameters Blueprint AST node
@@ -184,24 +179,22 @@ module RedSnow
   #
   # @attr collection [Array<Parameter>] an array of URI parameters
   class Parameters < BlueprintNode
-
     attr_accessor :collection
 
     # @param sc_parameter_collection_handle [FFI::Pointer]
     def initialize(sc_parameter_collection_handle)
       sc_parameter_collection_size = RedSnow::Binding.sc_parameter_collection_size(sc_parameter_collection_handle)
-      @collection = Array.new
+      @collection = []
 
-      if sc_parameter_collection_size > 0
-        parameters_size = sc_parameter_collection_size - 1
+      return if sc_parameter_collection_size == 0
 
-        for index in 0..parameters_size do
-          sc_parameter_handle = RedSnow::Binding.sc_parameter_handle(sc_parameter_collection_handle, index)
-          @collection << Parameter.new(sc_parameter_handle)
-        end
+      parameters_size = sc_parameter_collection_size - 1
+
+      (0..parameters_size).each do |index|
+        sc_parameter_handle = RedSnow::Binding.sc_parameter_handle(sc_parameter_collection_handle, index)
+        @collection << Parameter.new(sc_parameter_handle)
       end
     end
-
   end
 
   # HTTP message payload Blueprint AST node
@@ -214,7 +207,6 @@ module RedSnow
   # @attr schema [String] HTTP-message body validation schema or nil
   # @attr reference [Hash] Symbol Reference if the payload is a reference
   class Payload < NamedBlueprintNode
-
     attr_accessor :headers
     attr_accessor :body
     attr_accessor :schema
@@ -230,14 +222,13 @@ module RedSnow
       sc_reference_handle_payload = RedSnow::Binding.sc_reference_handle_payload(sc_payload_handle_resource)
       sc_reference_id = RedSnow::Binding.sc_reference_id(sc_reference_handle_payload)
 
-      if not sc_reference_id.empty?
+      unless sc_reference_id.empty?
         @reference = ReferenceNode.new(sc_reference_id)
       end
 
       sc_header_collection_handle_payload = RedSnow::Binding.sc_header_collection_handle_payload(sc_payload_handle_resource)
       @headers = Headers.new(sc_header_collection_handle_payload)
     end
-
   end
 
   # Transaction example Blueprint AST node
@@ -245,7 +236,6 @@ module RedSnow
   # @attr requests [Array<Request>] example request payloads
   # @attr response [Array<Response>] example response payloads
   class TransactionExample < NamedBlueprintNode
-
     attr_accessor :requests
     attr_accessor :responses
 
@@ -255,34 +245,33 @@ module RedSnow
       @description = RedSnow::Binding.sc_transaction_example_description(sc_transaction_example_handle)
 
       # BP Resource Actions Examples Requests
-      @requests = Array.new
+      @requests = []
       sc_payload_collection_handle_requests = RedSnow::Binding.sc_payload_collection_handle_requests(sc_transaction_example_handle)
       sc_payload_collection_size_requests = RedSnow::Binding.sc_payload_collection_size(sc_payload_collection_handle_requests)
 
       if sc_payload_collection_size_requests > 0
         requests_size = sc_payload_collection_size_requests - 1
 
-        for index in 0..requests_size do
+        (0..requests_size).each do |index|
           sc_payload_handle = RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_requests, index)
           @requests << Payload.new(sc_payload_handle)
         end
       end
 
       # BP Resource Actions Examples Responses
-      @responses = Array.new
+      @responses = []
       sc_payload_collection_handle_responses = RedSnow::Binding.sc_payload_collection_handle_responses(sc_transaction_example_handle)
       sc_payload_collection_size_responses = RedSnow::Binding.sc_payload_collection_size(sc_payload_collection_handle_responses)
 
-      if sc_payload_collection_size_responses > 0
-        responses_size = sc_payload_collection_size_responses - 1
+      return if sc_payload_collection_size_responses == 0
 
-        for index in 0..responses_size do
-          sc_payload_handle = RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_responses, index)
-          @responses << Payload.new(sc_payload_handle)
-        end
+      responses_size = sc_payload_collection_size_responses - 1
+
+      (0..responses_size).each do |index|
+        sc_payload_handle = RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_responses, index)
+        @responses << Payload.new(sc_payload_handle)
       end
     end
-
   end
 
   # Action Blueprint AST node
@@ -292,7 +281,6 @@ module RedSnow
   # @attr parameters [Parameters] action-specific URI parameters or nil
   # @attr examples [Array<TransactionExample>] action transaction examples
   class Action < NamedBlueprintNode
-
     attr_accessor :method
     attr_accessor :parameters
     attr_accessor :examples
@@ -306,20 +294,19 @@ module RedSnow
 
       @parameters = Parameters.new(RedSnow::Binding.sc_parameter_collection_handle_action(sc_action_handle))
 
-      @examples = Array.new
+      @examples = []
       sc_transaction_example_collection_handle = RedSnow::Binding.sc_transaction_example_collection_handle(sc_action_handle)
       sc_transaction_example_collection_size = RedSnow::Binding.sc_transaction_example_collection_size(sc_transaction_example_collection_handle)
 
-      if sc_transaction_example_collection_size > 0
-        examples_size = sc_transaction_example_collection_size - 1
+      return if sc_transaction_example_collection_size == 0
 
-        for index in 0..examples_size do
-          sc_transaction_example_handle = RedSnow::Binding.sc_transaction_example_handle(sc_transaction_example_collection_handle, index)
-          @examples << TransactionExample.new(sc_transaction_example_handle)
-        end
+      examples_size = sc_transaction_example_collection_size - 1
+
+      (0..examples_size).each do |index|
+        sc_transaction_example_handle = RedSnow::Binding.sc_transaction_example_handle(sc_transaction_example_collection_handle, index)
+        @examples << TransactionExample.new(sc_transaction_example_handle)
       end
     end
-
   end
 
   # Resource Blueprint AST node
@@ -330,7 +317,6 @@ module RedSnow
   # @attr parameters [Parameters] action-specific URI parameters or nil
   # @attr actions [Array<Action>] array of resource actions or nil
   class Resource < NamedBlueprintNode
-
     attr_accessor :uri_template
     attr_accessor :model
     attr_accessor :parameters
@@ -345,22 +331,21 @@ module RedSnow
       sc_payload_handle_resource = RedSnow::Binding.sc_payload_handle_resource(sc_resource_handle)
       @model = Payload.new(sc_payload_handle_resource)
 
-      @actions = Array.new
+      @parameters = Parameters.new(RedSnow::Binding.sc_parameter_collection_handle_resource(sc_resource_handle))
+
+      @actions = []
       sc_action_collection_handle = RedSnow::Binding.sc_action_collection_handle(sc_resource_handle)
       sc_action_collection_size = RedSnow::Binding.sc_action_collection_size(sc_action_collection_handle)
 
-      if sc_action_collection_size > 0
-        action_size = sc_action_collection_size - 1
+      return if sc_action_collection_size == 0
 
-        for index in 0..action_size do
-          sc_action_handle = RedSnow::Binding.sc_action_handle(sc_action_collection_handle, index)
-          @actions << Action.new(sc_action_handle)
-        end
+      action_size = sc_action_collection_size - 1
+
+      (0..action_size).each do |index|
+        sc_action_handle = RedSnow::Binding.sc_action_handle(sc_action_collection_handle, index)
+        @actions << Action.new(sc_action_handle)
       end
-
-      @parameters = Parameters.new(RedSnow::Binding.sc_parameter_collection_handle_resource(sc_resource_handle))
     end
-
   end
 
   # Resource group Blueprint AST node
@@ -368,7 +353,6 @@ module RedSnow
   #
   # @attr resources [Array<Resource>] array of resources in the group
   class ResourceGroup < NamedBlueprintNode
-
     attr_accessor :resources
 
     # @param sc_resource_group_handle [FFI::Pointer]
@@ -376,22 +360,20 @@ module RedSnow
       @name = RedSnow::Binding.sc_resource_group_name(sc_resource_group_handle)
       @description = RedSnow::Binding.sc_resource_group_description(sc_resource_group_handle)
 
-      @resources = Array.new
+      @resources = []
       sc_resource_collection_handle = RedSnow::Binding.sc_resource_collection_handle(sc_resource_group_handle)
       sc_resource_collection_size = RedSnow::Binding.sc_resource_collection_size(sc_resource_collection_handle)
 
-      if sc_resource_collection_size > 0
-        resource_size = sc_resource_collection_size - 1
+      return if sc_resource_collection_size == 0
 
-        for index in 0..resource_size do
-          sc_resource_handle = RedSnow::Binding.sc_resource_handle(sc_resource_collection_handle, index)
-          @resources << Resource.new(sc_resource_handle)
-        end
+      resource_size = sc_resource_collection_size - 1
+
+      (0..resource_size).each do |index|
+        sc_resource_handle = RedSnow::Binding.sc_resource_handle(sc_resource_collection_handle, index)
+        @resources << Resource.new(sc_resource_handle)
       end
     end
-
   end
-
 
   # Top-level Blueprint AST node
   #   represents 'blueprint section'
@@ -399,7 +381,6 @@ module RedSnow
   # @attr metadata [Metadata] tool-specific metadata collection or nil
   # @attr resource_groups [Array<ResourceGroup>] array of blueprint resource groups
   class Blueprint < NamedBlueprintNode
-
     attr_accessor :metadata
     attr_accessor :resource_groups
 
@@ -407,7 +388,7 @@ module RedSnow
     VERSION_KEY = :_version
 
     # Supported version of Api Blueprint
-    SUPPORTED_VERSIONS = ["2.1"]
+    SUPPORTED_VERSIONS = ['2.1']
 
     # @param handle [FFI:Pointer]
     def initialize(handle)
@@ -422,15 +403,15 @@ module RedSnow
       # BP Resource Groups
       sc_resource_group_collection_handle = RedSnow::Binding.sc_resource_group_collection_handle(handle)
       sc_resource_group_collection_size = RedSnow::Binding.sc_resource_group_collection_size(sc_resource_group_collection_handle)
-      @resource_groups = Array.new
+      @resource_groups = []
 
-      if sc_resource_group_collection_size > 0
-        group_size = sc_resource_group_collection_size - 1
+      return if sc_resource_group_collection_size == 0
 
-        for index in 0..group_size do
-          sc_resource_group_handle = RedSnow::Binding.sc_resource_group_handle(sc_resource_group_collection_handle, index)
-          @resource_groups << ResourceGroup.new(sc_resource_group_handle)
-        end
+      group_size = sc_resource_group_collection_size - 1
+
+      (0..group_size).each do |index|
+        sc_resource_group_handle = RedSnow::Binding.sc_resource_group_handle(sc_resource_group_collection_handle, index)
+        @resource_groups << ResourceGroup.new(sc_resource_group_handle)
       end
     end
   end
