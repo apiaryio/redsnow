@@ -138,6 +138,10 @@ class RedSnowParsingTest < Test::Unit::TestCase
         assert_equal 'text/plain', @resource.model.headers['Content-Type']
       end
 
+      should 'have a getter to its resource_group' do
+        assert_equal @resource.resource_group, @resource_group
+      end
+
       should 'have actions' do
         assert_equal 2, @resource.actions.count
         assert_equal 'GET', @action.method

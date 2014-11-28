@@ -321,9 +321,11 @@ module RedSnow
     attr_accessor :model
     attr_accessor :parameters
     attr_accessor :actions
+    attr_reader :resource_group
 
     # @param sc_resource_handle [FFI::Pointer]
-    def initialize(sc_resource_handle)
+    def initialize(sc_resource_handle, resource_group)
+      @resource_group = resource_group
       @name = RedSnow::Binding.sc_resource_name(sc_resource_handle)
       @description = RedSnow::Binding.sc_resource_description(sc_resource_handle)
       @uri_template = RedSnow::Binding.sc_resource_uritemplate(sc_resource_handle)
@@ -370,7 +372,7 @@ module RedSnow
 
       (0..resource_size).each do |index|
         sc_resource_handle = RedSnow::Binding.sc_resource_handle(sc_resource_collection_handle, index)
-        @resources << Resource.new(sc_resource_handle)
+        @resources << Resource.new(sc_resource_handle, self)
       end
     end
   end
