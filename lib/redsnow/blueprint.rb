@@ -238,9 +238,11 @@ module RedSnow
   class TransactionExample < NamedBlueprintNode
     attr_accessor :requests
     attr_accessor :responses
+    attr_reader :action
 
     # @param sc_transaction_example_handle [FFI::Pointer]
-    def initialize(sc_transaction_example_handle)
+    def initialize(sc_transaction_example_handle, action)
+      @action = action
       @name  = RedSnow::Binding.sc_transaction_example_name(sc_transaction_example_handle)
       @description = RedSnow::Binding.sc_transaction_example_description(sc_transaction_example_handle)
 
@@ -306,7 +308,7 @@ module RedSnow
 
       (0..examples_size).each do |index|
         sc_transaction_example_handle = RedSnow::Binding.sc_transaction_example_handle(sc_transaction_example_collection_handle, index)
-        @examples << TransactionExample.new(sc_transaction_example_handle)
+        @examples << TransactionExample.new(sc_transaction_example_handle, self)
       end
     end
   end
