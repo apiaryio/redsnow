@@ -155,6 +155,57 @@ class RedSnowParsingTest < Test::Unit::TestCase
 
     end
 
+    context 'Action' do
+      setup do
+
+        source = <<-STR
+          # My Resource [/resource]
+          Resource description
+
+          ## Retrieve Resource [GET]
+          Method description
+
+            + Parameters
+                + limit = `20` (optional, number, `42`) ... This is a limit
+
+            + Response 202
+
+            + Response 203
+
+          STR
+
+        @result = RedSnow.parse(source.unindent)
+        @resource_group = @result.ast.resource_groups[0]
+        @resource = @resource_group.resources[0]
+        @action = @resource.actions[0]
+        @parameter = @action.parameters.collection.first
+      end
+
+      should 'have a name' do
+        assert_equal 'Retrieve Resource', @action.name
+      end
+
+      should 'have a description' do
+        assert_equal "Method description\n\n", @action.description
+      end
+
+      should 'have a method' do
+        assert_equal 'GET', @action.method
+      end
+
+      should 'have 1 example' do
+        assert_equal 1, @action.examples.count
+      end
+
+      should 'have the right parameters' do
+        assert_equal 'limit', @parameter.name
+      end
+
+      should 'have a resource' do
+        assert_equal @resource, @action.resource
+      end
+    end
+
     context 'parses blueprint metadata' do
       setup do
         source = <<-STR

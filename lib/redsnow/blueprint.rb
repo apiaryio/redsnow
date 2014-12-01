@@ -284,9 +284,11 @@ module RedSnow
     attr_accessor :method
     attr_accessor :parameters
     attr_accessor :examples
+    attr_reader :resource
 
     # @param sc_action_handle [FFI::Pointer]
-    def initialize(sc_action_handle)
+    def initialize(sc_action_handle, resource)
+      @resource = resource
       @name = RedSnow::Binding.sc_action_name(sc_action_handle)
       @description = RedSnow::Binding.sc_action_description(sc_action_handle)
 
@@ -345,7 +347,7 @@ module RedSnow
 
       (0..action_size).each do |index|
         sc_action_handle = RedSnow::Binding.sc_action_handle(sc_action_collection_handle, index)
-        @actions << Action.new(sc_action_handle)
+        @actions << Action.new(sc_action_handle, self)
       end
     end
   end
