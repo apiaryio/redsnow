@@ -211,6 +211,7 @@ module RedSnow
     attr_accessor :body
     attr_accessor :schema
     attr_accessor :reference
+    attr_reader :example
 
     # @param sc_payload_handle_resource [FFI::Pointer]
     def initialize(sc_payload_handle_resource)
@@ -238,9 +239,11 @@ module RedSnow
   class TransactionExample < NamedBlueprintNode
     attr_accessor :requests
     attr_accessor :responses
+    attr_reader :action
 
     # @param sc_transaction_example_handle [FFI::Pointer]
-    def initialize(sc_transaction_example_handle)
+    def initialize(sc_transaction_example_handle, action)
+      @action = action
       @name  = RedSnow::Binding.sc_transaction_example_name(sc_transaction_example_handle)
       @description = RedSnow::Binding.sc_transaction_example_description(sc_transaction_example_handle)
 
@@ -254,7 +257,9 @@ module RedSnow
 
         (0..requests_size).each do |index|
           sc_payload_handle = RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_requests, index)
-          @requests << Payload.new(sc_payload_handle)
+          @requests << Payload.new(sc_payload_handle).tap do |payload|
+            payload.instance_variable_set('@example', self)
+          end
         end
       end
 
@@ -269,7 +274,9 @@ module RedSnow
 
       (0..responses_size).each do |index|
         sc_payload_handle = RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_responses, index)
-        @responses << Payload.new(sc_payload_handle)
+        @responses << Payload.new(sc_payload_handle).tap do |payload|
+          payload.instance_variable_set('@example', self)
+        end
       end
     end
   end
@@ -284,9 +291,11 @@ module RedSnow
     attr_accessor :method
     attr_accessor :parameters
     attr_accessor :examples
+    attr_reader :resource
 
     # @param sc_action_handle [FFI::Pointer]
-    def initialize(sc_action_handle)
+    def initialize(sc_action_handle, resource)
+      @resource = resource
       @name = RedSnow::Binding.sc_action_name(sc_action_handle)
       @description = RedSnow::Binding.sc_action_description(sc_action_handle)
 
@@ -304,7 +313,7 @@ module RedSnow
 
       (0..examples_size).each do |index|
         sc_transaction_example_handle = RedSnow::Binding.sc_transaction_example_handle(sc_transaction_example_collection_handle, index)
-        @examples << TransactionExample.new(sc_transaction_example_handle)
+        @examples << TransactionExample.new(sc_transaction_example_handle, self)
       end
     end
   end
@@ -345,7 +354,7 @@ module RedSnow
 
       (0..action_size).each do |index|
         sc_action_handle = RedSnow::Binding.sc_action_handle(sc_action_collection_handle, index)
-        @actions << Action.new(sc_action_handle)
+        @actions << Action.new(sc_action_handle, self)
       end
     end
   end
