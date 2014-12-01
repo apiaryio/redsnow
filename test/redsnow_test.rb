@@ -363,6 +363,8 @@ class RedSnowParsingTest < Test::Unit::TestCase
         assert_equal 'creating', @examples[0].requests[0].headers.collection[1][:value]
         assert_equal '201', @examples[0].responses[0].name
         assert_equal @action, @examples[0].action
+        assert_equal @examples[0], @examples[0].responses[0].example
+        assert_equal @examples[0], @examples[0].requests[0].example
         assert_equal 'Unable to create note', @examples[1].requests[0].name
         assert_equal 'Content-Type', @examples[1].requests[0].headers.collection[0][:name]
         assert_equal 'application/json', @examples[1].requests[0].headers['content-type']
@@ -371,6 +373,8 @@ class RedSnowParsingTest < Test::Unit::TestCase
         assert_equal '{ "ti": "Buy cheese and bread for breakfast." }' + "\n", @examples[1].requests[0].body
         assert_equal '500', @examples[1].responses[0].name
         assert_equal @action, @examples[1].action
+        assert_equal @examples[1], @examples[1].responses[0].example
+        assert_equal @examples[1], @examples[1].requests[0].example
       end
     end
   end

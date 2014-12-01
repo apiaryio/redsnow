@@ -211,6 +211,7 @@ module RedSnow
     attr_accessor :body
     attr_accessor :schema
     attr_accessor :reference
+    attr_reader :example
 
     # @param sc_payload_handle_resource [FFI::Pointer]
     def initialize(sc_payload_handle_resource)
@@ -256,7 +257,9 @@ module RedSnow
 
         (0..requests_size).each do |index|
           sc_payload_handle = RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_requests, index)
-          @requests << Payload.new(sc_payload_handle)
+          @requests << Payload.new(sc_payload_handle).tap do |payload|
+            payload.instance_variable_set('@example', self)
+          end
         end
       end
 
@@ -271,7 +274,9 @@ module RedSnow
 
       (0..responses_size).each do |index|
         sc_payload_handle = RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_responses, index)
-        @responses << Payload.new(sc_payload_handle)
+        @responses << Payload.new(sc_payload_handle).tap do |payload|
+          payload.instance_variable_set('@example', self)
+        end
       end
     end
   end
