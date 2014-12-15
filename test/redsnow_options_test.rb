@@ -2,7 +2,6 @@ require '_helper'
 # RedSnowOptionsTest
 class RedSnowOptionsTest < Test::Unit::TestCase
   context 'Test arguments' do
-
     context 'Arguments' do
       should "raise error if first parameter isn't String" do
         exception = assert_raise(ArgumentError) { RedSnow.parse(1) }
@@ -33,8 +32,6 @@ class RedSnowOptionsTest < Test::Unit::TestCase
         options = RedSnow.parse_options(0)
         assert_equal 0, options
       end
-
     end
-
   end
 end
