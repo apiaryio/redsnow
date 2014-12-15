@@ -4,7 +4,6 @@ require 'unindent'
 class RedSnowParsingTest < Test::Unit::TestCase
   # https://github.com/apiaryio/protagonist/blob/master/test/parser-test.coffee
   context 'API Blueprint parser' do
-
     context 'API' do
       setup do
         @result = RedSnow.parse('# My API')
@@ -70,9 +69,7 @@ class RedSnowParsingTest < Test::Unit::TestCase
     end
 
     context 'Resource' do
-
       setup do
-
         source = <<-STR
           # My Resource [/resource]
           Resource description
@@ -152,12 +149,10 @@ class RedSnowParsingTest < Test::Unit::TestCase
       should 'have reference' do
         assert_equal 'My Resource', @response.reference.id
       end
-
     end
 
     context 'Action' do
       setup do
-
         source = <<-STR
           # My Resource [/resource]
           Resource description

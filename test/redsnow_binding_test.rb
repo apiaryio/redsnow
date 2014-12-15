@@ -3,7 +3,6 @@ require '_helper'
 class RedSnowBindingTest < Test::Unit::TestCase
   context 'RedSnow Binding' do
     should 'convert API Blueprint to AST' do
-
       report = FFI::MemoryPointer.new :pointer
       blueprint = FFI::MemoryPointer.new :pointer
       sourcemap = FFI::MemoryPointer.new :pointer
@@ -45,7 +44,6 @@ class RedSnowBindingTest < Test::Unit::TestCase
       RedSnow::Binding.sc_blueprint_free(blueprint)
       RedSnow::Binding.sc_sm_blueprint_free(sourcemap)
       RedSnow::Binding.sc_report_free(report)
-
     end
   end
 end
