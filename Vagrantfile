@@ -1,5 +1,5 @@
 Vagrant.configure('2') do |config|
-  config.vm.box = 'ffuenf/ubuntu-14.04-server-amd64'
+  config.vm.box = 'ubuntu/trusty64'
 
   # VirtualBox
   config.vm.provider :virtualbox do |vb|
@@ -14,6 +14,6 @@ Vagrant.configure('2') do |config|
   end
 
   config.vm.network :private_network, ip: '10.3.3.3'
-  config.vm.synced_folder '.', '/vagrant', id: 'vagrant-root', type: 'nfs'
+  config.vm.synced_folder '.', '/vagrant', id: 'vagrant-root'
   config.vm.provision :shell, path: './provisioning.sh'
 end

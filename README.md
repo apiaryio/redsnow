@@ -11,6 +11,8 @@ The best way to install RedSnow is by using its [GEM package](https://rubygems.o
 
     gem install redsnow
 
+Installation instructions for Ubuntu 14.04 are described in detail [here](Installation.md).
+
 ## Documentation
 
 - [Documentation at rubydoc](http://rubydoc.info/gems/redsnow/)
@@ -20,8 +22,9 @@ The best way to install RedSnow is by using its [GEM package](https://rubygems.o
 ```ruby
 require 'redsnow'
 
-result = RedSnow::parse('# My API')
+result = RedSnow.parse('# My API', exportSourcemap: true)
 puts result.ast.name
+puts result.sourcemap.name
 ```
 
 ## Parsing options
