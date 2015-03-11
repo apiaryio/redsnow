@@ -14,7 +14,7 @@ Gem::Specification.new do |gem|
   gem.license       = 'MIT'
   gem.files         = Dir['lib/**/*']
   gem.files         << Dir['*']
-  gem.files         << Dir['ext/snowcrash/**/*'].reject { |f| f =~ /cmdline|test|features|README*|LICENSE|Gemfile*|\.xcode*/   }
+  gem.files         << Dir['ext/drafter/**/*'].reject { |f| f =~ /cmdline|test|features|README*|LICENSE|Gemfile*|\.xcode*/   }
   gem.executables   = gem.files.grep(/^bin/).map { |f| File.basename(f) }
   gem.test_files    = gem.files.grep(/^(test|spec|features)/)
   gem.require_paths = %w(lib ext)
@@ -25,7 +25,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency 'ffi', '~> 1.9.3'
   gem.add_dependency 'rake', '>= 10.3.2'
-  gem.add_dependency 'bundler', '~> 1.7.0'
+  gem.add_dependency 'bundler', '>= 1.7.0'
   gem.add_dependency 'yard', '~> 0.8.7.4'
 
   gem.add_development_dependency 'shoulda'
