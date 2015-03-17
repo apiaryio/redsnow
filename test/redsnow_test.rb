@@ -299,7 +299,7 @@ class RedSnowParsingTest < Test::Unit::TestCase
 
       should 'have parameters' do
         assert_equal 'id', @parameter.name
-        assert_equal :undefined, @parameter.use
+        assert_equal :required, @parameter.use
       end
     end
 
