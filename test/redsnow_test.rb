@@ -240,6 +240,69 @@ class RedSnowParsingTest < Test::Unit::TestCase
       end
     end
 
+    context 'parses action attributes' do
+      setup do
+        source = <<-STR
+        # /machine{?limit}
+
+        + Parameters
+            + limit = `20` (optional, number, `42`) ... This is a limit
+              + Values
+                  + `20`
+                  + `42`
+                  + `53`
+
+        ## GET
+
+        + Response 204
+        STR
+
+        @result = RedSnow.parse(source.unindent)
+        @resource_group = @result.ast.resource_groups[0]
+        @resource = @resource_group.resources[0]
+        @parameter = @resource.parameters.collection[0]
+        @values = @parameter.values
+      end
+
+      should 'have parameters' do
+        assert_equal 'limit', @parameter.name
+        assert_equal 'This is a limit', @parameter.description
+        assert_equal 'number', @parameter.type
+        assert_equal :optional, @parameter.use
+        assert_equal '20', @parameter.default_value
+        assert_equal '42', @parameter.example_value
+        assert_equal 3, @parameter.values.count
+
+        assert_equal '20', @values[0]
+        assert_equal '42', @values[1]
+        assert_equal '53', @values[2]
+      end
+    end
+
+    context 'parses action parameters' do
+      setup do
+        source = <<-STR
+        # GET /coupons/{id}
+
+        + Parameters
+            + id (number, `1001`) ... Id of coupon
+
+        + Response 204
+        STR
+
+        @result = RedSnow.parse(source.unindent)
+        @resource_group = @result.ast.resource_groups[0]
+        @resource = @resource_group.resources[0]
+        @action = @resource.actions[0]
+        @parameter = @action.parameters.collection[0]
+      end
+
+      should 'have parameters' do
+        assert_equal 'id', @parameter.name
+        assert_equal :required, @parameter.use
+      end
+    end
+
     context 'parses resource parameters' do
       setup do
         source = <<-STR
