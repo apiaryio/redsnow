@@ -2,7 +2,7 @@ require 'ffi'
 
 module RedSnow
   # C-binding with Snow Crash Library using [FFI](https://github.com/ffi/ffi)
-  # @see https://github.com/apiaryio/snowcrash/blob/master/src/csnowcrash.cc
+  # @see https://github.com/apiaryio/drafter/blob/master/src/cdrafter.h
   module Memory
     extend FFI::Library
     ffi_lib FFI::Library::LIBC
@@ -16,7 +16,6 @@ module RedSnow
     prefix = FFI::Platform.mac? ? '' : 'lib.target/'
 
     ffi_lib File.expand_path("../../../ext/drafter/build/out/Release/#{prefix}libdrafter.#{FFI::Platform::LIBSUFFIX}", __FILE__)
-    # @see https://github.com/apiaryio/snowcrash/blob/master/src/BlueprintParserCore.h#L31
     enum :option, [
       :render_descriptions_option,
       :require_blueprint_name_option,
