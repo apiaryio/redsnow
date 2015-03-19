@@ -32,41 +32,7 @@ module RedSnow
         @warnings << source_annotation(warning)
       end
 
-    #  (0..(warnings_size - 1)).each do |index|
-    #    sc_warning_handler = RedSnow::Binding.sc_warning_handler(warnings, index)
-
-    #    warning = {}
-    #    warning[:message] = RedSnow::Binding.sc_warning_message(sc_warning_handler)
-    #    warning[:code] = RedSnow::Binding.sc_warning_code(sc_warning_handler)
-    #    warning[:ok] = RedSnow::Binding.sc_warning_ok(sc_warning_handler)
-
-    #    sc_location_handler = RedSnow::Binding.sc_location_handler(sc_warning_handler)
-    #    sc_location_size = RedSnow::Binding.sc_location_size(sc_location_handler)
-    #    warning[:location] = []
-
-    #    if sc_location_size > 0
-    #      (0..(sc_location_size - 1)).each do |index_size|
-    #        warning[:location] << Location.new(sc_location_handler, index_size)
-    #      end
-    #    end
-    #    @warnings << warning
-    #  end
-
-    #  error_handler = RedSnow::Binding.sc_error_handler(report_handle)
       @error = source_annotation(report["error"])
-      #@error[:message] = RedSnow::Binding.sc_error_message(error_handler)
-      #@error[:code] = RedSnow::Binding.sc_error_code(error_handler)
-      #@error[:ok] = RedSnow::Binding.sc_error_ok(error_handler)
-
-    #  sc_location_handler = RedSnow::Binding.sc_location_handler(error_handler)
-    #  sc_location_size = RedSnow::Binding.sc_location_size(sc_location_handler)
-    #  @error[:location] = []
-
-    #  return if sc_location_size == 0
-
-    #  (0..(sc_location_size - 1)).each do |index|
-    #    @error[:location] << Location.new(sc_location_handler, index)
-    #  end
     end
 
     protected
