@@ -279,10 +279,12 @@ class RedSnowParsingTest < Test::Unit::TestCase
       end
     end
 
-    context 'parses action parameters' do
+    context 'parses action parameters and attributes' do
       setup do
         source = <<-STR
         # GET /coupons/{id}
+
+        + Relation: coupon
 
         + Parameters
             + id (number, `1001`) ... Id of coupon
@@ -300,6 +302,8 @@ class RedSnowParsingTest < Test::Unit::TestCase
       should 'have parameters' do
         assert_equal 'id', @parameter.name
         assert_equal :required, @parameter.use
+        assert_equal 'coupon', @action.relation
+        assert_equal '', @action.uri_template
       end
     end
 
