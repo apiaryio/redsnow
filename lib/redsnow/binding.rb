@@ -1,8 +1,7 @@
 require 'ffi'
 
 module RedSnow
-  # C-binding with Snow Crash Library using [FFI](https://github.com/ffi/ffi)
-  # @see https://github.com/apiaryio/drafter/blob/master/src/cdrafter.h
+  # expose function free() to allow release memory allocated by C-interface
   module Memory
     extend FFI::Library
     ffi_lib FFI::Library::LIBC
@@ -10,6 +9,8 @@ module RedSnow
     attach_function :free, [:pointer], :void
   end
 
+  # C-binding with Snow Crash Library using [FFI](https://github.com/ffi/ffi)
+  # @see https://github.com/apiaryio/drafter/blob/master/src/cdrafter.h
   module Binding
     extend FFI::Library
 
@@ -23,6 +24,5 @@ module RedSnow
     ]
 
     attach_function('drafter_c_parse', 'drafter_c_parse', [:string, :option, :pointer], :int)
-
   end
 end

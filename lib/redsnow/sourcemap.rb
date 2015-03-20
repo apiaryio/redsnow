@@ -4,15 +4,16 @@ require 'redsnow/object'
 # counterparts (https://github.com/apiaryio/snowcrash/blob/master/src/BlueprintSourcemap.h).
 module RedSnow
   module Sourcemap
+    # Base Node - holds @collection
     class Node
       attr_accessor :collection
 
       # @param sourcemap [json array or nil]
-      def initialize(sourcemap) 
+      def initialize(sourcemap)
         @collection = []
 
         return if sourcemap.nil?
-        
+
         sourcemap.each do |sm|
           @collection << SourceMap.new(sm)
         end
@@ -21,7 +22,6 @@ module RedSnow
 
     # SourceMap
     class SourceMap < Array
-      
       # @param sourcemap [json array or nil]
       def initialize(sourcemap)
         return if sourcemap.nil?
@@ -32,7 +32,7 @@ module RedSnow
       end
     end
 
-    # Blueprint sourcemap node with name and description associated
+    # Blueprint sourcemap node with name && description associated
     #
     # @attr name [SourceMap] name of the node
     # @attr description [SourceMap] description of the node
@@ -46,14 +46,13 @@ module RedSnow
       def initialize(sourcemap)
         return if sourcemap.nil?
 
-        @name = SourceMap.new(sourcemap["name"])
-        @description = SourceMap.new(sourcemap["description"])
+        @name = SourceMap.new(sourcemap['name'])
+        @description = SourceMap.new(sourcemap['description'])
       end
     end
 
     # Metadata source map collection node
     class Metadata < Node
-
       # @param sourcemap [json]
       def initialize(sourcemap)
         super(sourcemap)
@@ -62,7 +61,6 @@ module RedSnow
 
     # Headers source map collection node
     class Headers < Node
-
       # @param sourcemap [json]
       def initialize(sourcemap)
         super(sourcemap)
@@ -87,14 +85,14 @@ module RedSnow
       def initialize(sourcemap)
         super(sourcemap)
 
-        @type = SourceMap.new(sourcemap["type"])
-        @use = SourceMap.new(sourcemap["required"])
-        @default_value = SourceMap.new(sourcemap["default"])
-        @example_value = SourceMap.new(sourcemap["example"])
+        @type = SourceMap.new(sourcemap['type'])
+        @use = SourceMap.new(sourcemap['required'])
+        @default_value = SourceMap.new(sourcemap['default'])
+        @example_value = SourceMap.new(sourcemap['example'])
         @values = []
 
-        sourcemap.has_key?("values") && sourcemap["values"].each do |value|
-          @values << SourceMap.new(value["value"])
+        sourcemap.key?('values') && sourcemap['values'].each do |value|
+          @values << SourceMap.new(value['value'])
         end
       end
     end
@@ -103,7 +101,6 @@ module RedSnow
     #
     # @attr collection [Array<Parameter>] an array of URI parameters
     class Parameters < Node
-
       # @param sourcemap [json]
       def initialize(sourcemap)
         @collection = []
@@ -136,10 +133,10 @@ module RedSnow
 
         super(sourcemap)
 
-        @body = SourceMap.new(sourcemap["body"])
-        @schema = SourceMap.new(sourcemap["schema"])
-        @reference = SourceMap.new(sourcemap["reference"])
-        @headers = Headers.new(sourcemap["headers"])
+        @body = SourceMap.new(sourcemap['body'])
+        @schema = SourceMap.new(sourcemap['schema'])
+        @reference = SourceMap.new(sourcemap['reference'])
+        @headers = Headers.new(sourcemap['headers'])
       end
     end
 
@@ -156,12 +153,12 @@ module RedSnow
         super(sourcemap)
 
         @requests = []
-        sourcemap.has_key?("requests") and sourcemap["requests"].each do |request|
+        sourcemap.key?('requests') && sourcemap['requests'].each do |request|
           @requests << Payload.new(request)
         end
 
         @responses = []
-        sourcemap.has_key?("responses") and sourcemap["responses"].each do |response|
+        sourcemap.key?('responses') && sourcemap['responses'].each do |response|
           @responses << Payload.new(response)
         end
       end
@@ -183,11 +180,11 @@ module RedSnow
 
         super(sourcemap)
 
-        @method = SourceMap.new(sourcemap["method"])
-        @parameters = Parameters.new(sourcemap["parameters"])
+        @method = SourceMap.new(sourcemap['method'])
+        @parameters = Parameters.new(sourcemap['parameters'])
 
         @examples = []
-        sourcemap.has_key?("examples") and sourcemap["examples"].each do |example|
+        sourcemap.key?('examples') && sourcemap['examples'].each do |example|
           @examples << TransactionExample.new(example)
         end
       end
@@ -210,12 +207,12 @@ module RedSnow
         return if sourcemap.nil?
 
         super(sourcemap)
-        @uri_template = SourceMap.new(sourcemap["uriTemplate"])
-        @model = Payload.new(sourcemap["model"])
-        @parameters = Parameters.new(sourcemap["parameters"])
+        @uri_template = SourceMap.new(sourcemap['uriTemplate'])
+        @model = Payload.new(sourcemap['model'])
+        @parameters = Parameters.new(sourcemap['parameters'])
 
         @actions = []
-        sourcemap.has_key?("actions") and sourcemap["actions"].each do |action|
+        sourcemap.key?('actions') && sourcemap['actions'].each do |action|
           @actions << Action.new(action)
         end
       end
@@ -232,7 +229,7 @@ module RedSnow
         super(sourcemap)
 
         @resources = []
-        sourcemap.has_key?("resources") and sourcemap["resources"].each do |resource|
+        sourcemap.key?('resources') && sourcemap['resources'].each do |resource|
           @resources << Resource.new(resource)
         end
       end
@@ -252,10 +249,10 @@ module RedSnow
 
         super(sourcemap)
 
-        @metadata = Metadata.new(sourcemap["metadata"])
+        @metadata = Metadata.new(sourcemap['metadata'])
         @resource_groups = []
 
-        sourcemap.has_key?("resourceGroups") and sourcemap["resourceGroups"].each do |resource_group|
+        sourcemap.key?('resourceGroups') && sourcemap['resourceGroups'].each do |resource_group|
           @resource_groups << ResourceGroup.new(resource_group)
         end
       end
