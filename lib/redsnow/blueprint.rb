@@ -252,10 +252,14 @@ module RedSnow
   # @attr method [String] HTTP request method or nil
   # @attr parameters [Parameters] action-specific URI parameters or nil
   # @attr examples [Array<TransactionExample>] action transaction examples
+  # @attr relation [String] action relation attribute
+  # @attr uri_template [String] action uri template attribute
   class Action < NamedBlueprintNode
     attr_accessor :method
     attr_accessor :parameters
     attr_accessor :examples
+    attr_accessor :relation
+    attr_accessor :uri_template
 
     # @param action [json]
     def initialize(action)
@@ -272,6 +276,11 @@ module RedSnow
           action_instance = self
           inst.define_singleton_method(:action) { action_instance }
         end
+      end
+      
+      if action["attributes"] 
+        @relation = action["attributes"].fetch("relation", "")
+        @uri_template = action["attributes"].fetch("uriTemplate", "")
       end
     end
   end
