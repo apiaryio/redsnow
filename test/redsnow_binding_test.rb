@@ -11,13 +11,13 @@ class RedSnowBindingTest < Test::Unit::TestCase
       report = report.get_pointer(0)
       assert !report.null?
 
-      report_as_string = report.null? ? nil : report.read_string()
+      report_as_string = report.null? ? nil : report.read_string
       assert_not_nil report_as_string
 
       parsed = JSON.parse(report_as_string)
 
-      assert_equal 'XXXX', parsed["ast"]["name"]
-      assert_equal 'description for it', parsed["ast"]["description"]
+      assert_equal 'XXXX', parsed['ast']['name']
+      assert_equal 'description for it', parsed['ast']['description']
     end
   end
 end

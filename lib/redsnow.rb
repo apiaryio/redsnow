@@ -44,9 +44,9 @@ module RedSnow
 
     report = report.get_pointer(0)
 
-    ParseResult.new(report.null? ? nil : report.read_string())
+    ParseResult.new(report.null? ? nil : report.read_string)
   ensure
-    
+
     RedSnow::Memory.free(report)
   end
 end

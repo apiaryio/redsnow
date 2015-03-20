@@ -4,7 +4,7 @@ require 'unindent'
 class RedSnowParseResultTest < Test::Unit::TestCase
   context 'Simple API' do
     setup do
-      @result = RedSnow.parse('# My API',4)
+      @result = RedSnow.parse('# My API', 4)
     end
 
     should 'have name' do

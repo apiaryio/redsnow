@@ -1,11 +1,10 @@
+require 'json'
+
 module RedSnow
-
-  require 'json'
-
   # Parse Result
   # @see https://github.com/apiaryio/api-blueprint-ast/blob/master/Parse%20Result.md
   # @param ast [Blueprint]
-  # @param error [Hash] Description of a parsing error as occurred during parsing. If this field is present and code different from 0 then the content of ast field should be ignored.
+  # @param error [Hash] Description of a parsing error as occurred during parsing. If this field is present && code different from 0 then the content of ast field should be ignored.
   # @param warnings [Array<Hash>] Ordered array of parser warnings as occurred during the parsing.
   # @param sourcemap [BlueprintSourcemap]
   class ParseResult
@@ -24,31 +23,32 @@ module RedSnow
     def initialize(report)
       report = JSON.parse(report)
 
-      @ast = Blueprint.new(report["ast"])
-      @sourcemap = RedSnow::Sourcemap::Blueprint.new(report["sourcemap"])
+      @ast = Blueprint.new(report['ast'])
+      @sourcemap = RedSnow::Sourcemap::Blueprint.new(report['sourcemap'])
 
       @warnings = []
-      report.has_key?("warnings") and report["warnings"].each do |warning|
+      report.key?('warnings') && report['warnings'].each do |warning|
         @warnings << source_annotation(warning)
       end
 
-      @error = source_annotation(report["error"])
+      @error = source_annotation(report['error'])
     end
 
     protected
+
     def source_annotation(json)
       annotation = {}
 
-      annotation[:message] = json["message"]
-      annotation[:code] = json["code"]
-      annotation[:ok] = json.fetch("code",0)
+      annotation[:message] = json['message']
+      annotation[:code] = json['code']
+      annotation[:ok] = json.fetch('code', 0)
 
       annotation[:location] = []
-      json.has_key?("location") and json["location"].each do |location|
+      json.key?('location') && json['location'].each do |location|
         annotation[:location] << Location.new(location)
       end
 
-      return annotation
+      annotation
     end
   end
 
@@ -61,8 +61,8 @@ module RedSnow
 
     # @param location [json]
     def initialize(location)
-      @length = location["length"]
-      @index = location["index"]
+      @length = location['length']
+      @index = location['index']
     end
   end
 

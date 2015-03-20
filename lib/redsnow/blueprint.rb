@@ -23,7 +23,7 @@ module RedSnow
     end
   end
 
-  # Blueprint AST node with name and description associated
+  # Blueprint AST node with name && description associated
   #
   # @attr name [String] name of the node
   # @attr description [String] description of the node
@@ -40,10 +40,10 @@ module RedSnow
     def ensure_description_newlines(buffer)
       return if description.empty?
 
-      if description[-1, 1] != "\n"
-        buffer << "\n\n"
-      elsif description.length > 1 && description[-2, 1] != "\n"
-        buffer << "\n"
+      if description[-1, 1] != '\n'
+        buffer << '\n\n'
+      elsif description.length > 1 && description[-2, 1] != '\n'
+        buffer << '\n'
       end
     end
   end
@@ -54,7 +54,6 @@ module RedSnow
   # @attr collection [Array<Hash>] array of key value hashes
   class KeyValueCollection < BlueprintNode
     attr_accessor :collection
-
 
     # Retrieves the value of the collection item by its key
     #
@@ -88,14 +87,13 @@ module RedSnow
   # Metadata collection Blueprint AST node
   #   represents 'metadata section'
   class Metadata < KeyValueCollection
-
     # @param metadata [json]
     def initialize(metadata)
       return if metadata.nil?
 
       @collection = []
       metadata.each do |item|
-        @collection << Hash[name: item["name"], value: item.fetch("value", nil)]
+        @collection << Hash[name: item['name'], value: item.fetch('value', nil)]
       end
     end
   end
@@ -119,7 +117,7 @@ module RedSnow
       return if headers.nil?
 
       headers.each do |item|
-        @collection << Hash[name: item["name"], value: item["value"]]
+        @collection << Hash[name: item['name'], value: item['value']]
       end
     end
   end
@@ -143,11 +141,11 @@ module RedSnow
 
     # @param parameter [json]
     def initialize(parameter)
-      @name = parameter.fetch("name", "")
-      @description = parameter.fetch("description", "")
-      @type = parameter.fetch("type", "")
+      @name = parameter.fetch('name', '')
+      @description = parameter.fetch('description', '')
+      @type = parameter.fetch('type', '')
 
-      case parameter["required"]
+      case parameter['required']
       when true
         @use = :required
       when false
@@ -156,12 +154,12 @@ module RedSnow
         @use = :undefined
       end
 
-      @default_value = parameter.fetch("default", nil)
-      @example_value = parameter.fetch("example", nil)
+      @default_value = parameter.fetch('default', nil)
+      @example_value = parameter.fetch('example', nil)
 
       @values = []
-      parameter.has_key?("values") and parameter["values"].each do |value|
-        @values << value["value"]
+      parameter.key?('values') && parameter['values'].each do |value|
+        @values << value['value']
       end
     end
   end
@@ -202,16 +200,16 @@ module RedSnow
 
     # @param payload [json]
     def initialize(payload)
-       @name = payload.fetch("name", "")
-       @description = payload.fetch("description", "")
-       @body = payload.fetch("body", "")
-       @schema = payload.fetch("schema", "")
+      @name = payload.fetch('name', '')
+      @description = payload.fetch('description', '')
+      @body = payload.fetch('body', '')
+      @schema = payload.fetch('schema', '')
 
-       if payload.has_key?("reference") and payload["reference"].has_key?("id")
-         @reference = ReferenceNode.new(payload["reference"]["id"])
-       end
+      if payload.key?('reference') && payload['reference'].key?('id')
+        @reference = ReferenceNode.new(payload['reference']['id'])
+      end
 
-       @headers = Headers.new(payload.fetch("headers", nil))
+      @headers = Headers.new(payload.fetch('headers', nil))
     end
   end
 
@@ -225,11 +223,11 @@ module RedSnow
 
     # @param example [json]
     def initialize(example)
-      @name = example.fetch("name", "")
-      @description = example.fetch("description", "")
+      @name = example.fetch('name', '')
+      @description = example.fetch('description', '')
 
       @requests = []
-      example.has_key?("requests") and example["requests"].each do |request|
+      example.key?('requests') && example['requests'].each do |request|
         @requests << Payload.new(request).tap do |inst|
           example_instance = self
           inst.define_singleton_method(:example) { example_instance }
@@ -237,7 +235,7 @@ module RedSnow
       end
 
       @responses = []
-      example.has_key?("responses") and example["responses"].each do |response|
+      example.key?('responses') && example['responses'].each do |response|
         @responses << Payload.new(response).tap do |inst|
           example_instance = self
           inst.define_singleton_method(:example) { example_instance }
@@ -263,24 +261,24 @@ module RedSnow
 
     # @param action [json]
     def initialize(action)
-      @name = action.fetch("name", "")
-      @description = action.fetch("description", "")
+      @name = action.fetch('name', '')
+      @description = action.fetch('description', '')
 
-      @method = action.fetch("method", "")
+      @method = action.fetch('method', '')
 
-      @parameters = Parameters.new(action.fetch("parameters", nil))
+      @parameters = Parameters.new(action.fetch('parameters', nil))
+
+      if action.key?('attributes')
+        @relation = action['attributes'].fetch('relation', '')
+        @uri_template = action['attributes'].fetch('uriTemplate', '')
+      end
 
       @examples = []
-      action.has_key?("examples") and action["examples"].each do |example|
+      action.key?('examples') && action['examples'].each do |example|
         @examples << TransactionExample.new(example).tap do |inst|
           action_instance = self
           inst.define_singleton_method(:action) { action_instance }
         end
-      end
-      
-      if action["attributes"] 
-        @relation = action["attributes"].fetch("relation", "")
-        @uri_template = action["attributes"].fetch("uriTemplate", "")
       end
     end
   end
@@ -300,16 +298,16 @@ module RedSnow
 
     # @param resource [json]
     def initialize(resource)
-      @name = resource.fetch("name", "")
-      @description = resource.fetch("description", "")
-      @uri_template = resource.fetch("uriTemplate", "")
+      @name = resource.fetch('name', '')
+      @description = resource.fetch('description', '')
+      @uri_template = resource.fetch('uriTemplate', '')
 
-      @model = Payload.new(resource.fetch("model", nil))
+      @model = Payload.new(resource.fetch('model', nil))
 
-      @parameters = Parameters.new(resource.fetch("parameters", nil))
+      @parameters = Parameters.new(resource.fetch('parameters', nil))
 
       @actions = []
-      resource.has_key?("actions") and resource["actions"].each do |action|
+      resource.key?('actions') && resource['actions'].each do |action|
         @actions << Action.new(action).tap do |inst|
           resource_instance = self
           inst.define_singleton_method(:resource) { resource_instance }
@@ -327,11 +325,11 @@ module RedSnow
 
     # @param resource_group [json]
     def initialize(resource_group)
-      @name = resource_group.fetch("name", "")
-      @description = resource_group.fetch("description", "")
+      @name = resource_group.fetch('name', '')
+      @description = resource_group.fetch('description', '')
 
       @resources = []
-      resource_group.has_key?("resources") and resource_group["resources"].each do |resource|
+      resource_group.key?('resources') && resource_group['resources'].each do |resource|
         @resources << Resource.new(resource).tap do |inst|
           resource_group_instance = self
           inst.define_singleton_method(:resource_group) { resource_group_instance }
@@ -357,12 +355,12 @@ module RedSnow
 
     # @param ast [json]
     def initialize(ast)
-      @name = ast.fetch("name", "")
-      @description = ast.fetch("description", "")
-      @metadata = Metadata.new(ast.fetch("metadata", nil))
+      @name = ast.fetch('name', '')
+      @description = ast.fetch('description', '')
+      @metadata = Metadata.new(ast.fetch('metadata', nil))
 
       @resource_groups = []
-      ast.has_key?("resourceGroups") and ast["resourceGroups"].each do |resource_group|
+      ast.key?('resourceGroups') && ast['resourceGroups'].each do |resource_group|
         @resource_groups << ResourceGroup.new(resource_group)
       end
     end
