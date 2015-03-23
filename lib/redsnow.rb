@@ -38,15 +38,15 @@ module RedSnow
 
     blueprint_options = parse_options(options)
 
-    report = FFI::MemoryPointer.new :pointer
+    parse_result = FFI::MemoryPointer.new :pointer
 
-    RedSnow::Binding.drafter_c_parse(raw_blueprint, blueprint_options, report)
+    RedSnow::Binding.drafter_c_parse(raw_blueprint, blueprint_options, parse_result)
 
-    report = report.get_pointer(0)
+    parse_result = parse_result.get_pointer(0)
 
-    ParseResult.new(report.null? ? nil : report.read_string)
+    ParseResult.new(parse_result.null? ? nil : parse_result.read_string)
   ensure
 
-    RedSnow::Memory.free(report)
+    RedSnow::Memory.free(parse_result)
   end
 end
