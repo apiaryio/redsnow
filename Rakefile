@@ -27,16 +27,16 @@ task default: :compile
 desc 'Compile extension'
 task :compile do
   prefix = FFI::Platform.mac? ? '' : 'lib.target/'
-  # Path to compiled snowcrash library
-  path = File.expand_path("ext/snowcrash/build/out/Release/#{prefix}libsnowcrash.#{FFI::Platform::LIBSUFFIX}", File.dirname(__FILE__))
+  # Path to compiled drafter library
+  path = File.expand_path("ext/drafter/build/out/Release/#{prefix}libdrafter.#{FFI::Platform::LIBSUFFIX}", File.dirname(__FILE__))
   puts "Path to library #{path}"
   if !File.exist?(path) || ENV['RECOMPILE']
-    unless File.directory?(File.expand_path('ext/snowcrash/src'))
+    unless File.directory?(File.expand_path('ext/drafter/src'))
       puts 'Initializing submodules (if required)...'
       `git submodule update --init --recursive 2>/dev/null`
     end
     puts 'Compiling extension...'
-    `cd #{File.expand_path('ext/snowcrash/')} && ./configure --shared && make`
+    `cd #{File.expand_path('ext/drafter/')} && ./configure --shared && make`
     status = $CHILD_STATUS.to_i
     if status == 0
       puts 'Compiling done.'

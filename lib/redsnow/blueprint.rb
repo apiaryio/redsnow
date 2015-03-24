@@ -14,7 +14,7 @@ module RedSnow
   #
   # @attr id [String] identifier of the reference
   #
-  # @abstrac
+  # @abstract
   class ReferenceNode < BlueprintNode
     attr_accessor :id
 
@@ -23,7 +23,7 @@ module RedSnow
     end
   end
 
-  # Blueprint AST node with name and description associated
+  # Blueprint AST node with name && description associated
   #
   # @attr name [String] name of the node
   # @attr description [String] description of the node
@@ -40,10 +40,10 @@ module RedSnow
     def ensure_description_newlines(buffer)
       return if description.empty?
 
-      if description[-1, 1] != "\n"
-        buffer << "\n\n"
-      elsif description.length > 1 && description[-2, 1] != "\n"
-        buffer << "\n"
+      if description[-1, 1] != '\n'
+        buffer << '\n\n'
+      elsif description.length > 1 && description[-2, 1] != '\n'
+        buffer << '\n'
       end
     end
   end
@@ -87,19 +87,13 @@ module RedSnow
   # Metadata collection Blueprint AST node
   #   represents 'metadata section'
   class Metadata < KeyValueCollection
-    # Constructor
-    # @param sc_metadata_collection_handle [FFI::Pointer]
-    def initialize(sc_metadata_collection_handle)
-      sc_metadata_collection_size = RedSnow::Binding.sc_metadata_collection_size(sc_metadata_collection_handle)
+    # @param metadata [json]
+    def initialize(metadata)
+      return if metadata.nil?
+
       @collection = []
-
-      return if sc_metadata_collection_size == 0
-
-      metadata_size = sc_metadata_collection_size - 1
-
-      (0..metadata_size).each do |index|
-        sc_metadata_handle = RedSnow::Binding.sc_metadata_handle(sc_metadata_collection_handle, index)
-        @collection << Hash[name: RedSnow::Binding.sc_metadata_key(sc_metadata_handle), value: RedSnow::Binding.sc_metadata_value(sc_metadata_handle)]
+      metadata.each do |item|
+        @collection << Hash[name: item['name'], value: item.fetch('value', nil)]
       end
     end
   end
@@ -116,18 +110,14 @@ module RedSnow
       (content_type_header.nil?) ? nil : content_type_header[CONTENT_TYPE_HEADER_KEY]
     end
 
-    # @param sc_header_collection_handle_payload [FFI::Pointer]
-    def initialize(sc_header_collection_handle_payload)
-      sc_header_collection_size = RedSnow::Binding.sc_header_collection_size(sc_header_collection_handle_payload)
+    # @param headers [json]
+    def initialize(headers)
       @collection = []
 
-      return if sc_header_collection_size == 0
+      return if headers.nil?
 
-      headers_size = sc_header_collection_size - 1
-
-      (0..headers_size).each do |index|
-        sc_header_handle = RedSnow::Binding.sc_header_handle(sc_header_collection_handle_payload, index)
-        @collection << Hash[name: RedSnow::Binding.sc_header_key(sc_header_handle), value: RedSnow::Binding.sc_header_value(sc_header_handle)]
+      headers.each do |item|
+        @collection << Hash[name: item['name'], value: item['value']]
       end
     end
   end
@@ -149,27 +139,27 @@ module RedSnow
     attr_accessor :example_value
     attr_accessor :values
 
-    # @param sc_parameter_handle [FFI::Pointer]
-    def initialize(sc_parameter_handle)
-      @name = RedSnow::Binding.sc_parameter_name(sc_parameter_handle)
-      @description = RedSnow::Binding.sc_parameter_description(sc_parameter_handle)
-      @type = RedSnow::Binding.sc_parameter_type(sc_parameter_handle)
-      @use =  RedSnow::Binding.sc_parameter_parameter_use(sc_parameter_handle)
-      @default_value = RedSnow::Binding.sc_parameter_default_value(sc_parameter_handle)
-      @example_value = RedSnow::Binding.sc_parameter_example_value(sc_parameter_handle)
+    # @param parameter [json]
+    def initialize(parameter)
+      @name = parameter.fetch('name', '')
+      @description = parameter.fetch('description', '')
+      @type = parameter.fetch('type', '')
+
+      case parameter['required']
+      when true
+        @use = :required
+      when false
+        @use = :optional
+      else
+        @use = :undefined
+      end
+
+      @default_value = parameter.fetch('default', nil)
+      @example_value = parameter.fetch('example', nil)
 
       @values = []
-
-      sc_value_collection_handle = RedSnow::Binding.sc_value_collection_handle(sc_parameter_handle)
-      sc_value_collection_size = RedSnow::Binding.sc_value_collection_size(sc_value_collection_handle)
-
-      return if sc_value_collection_size == 0
-
-      values_size = sc_value_collection_size - 1
-
-      (0..values_size).each do |value_index|
-        sc_value_handle = RedSnow::Binding.sc_value_handle(sc_value_collection_handle, value_index)
-        @values << RedSnow::Binding.sc_value(sc_value_handle)
+      parameter.key?('values') && parameter['values'].each do |value|
+        @values << value['value']
       end
     end
   end
@@ -181,18 +171,14 @@ module RedSnow
   class Parameters < BlueprintNode
     attr_accessor :collection
 
-    # @param sc_parameter_collection_handle [FFI::Pointer]
-    def initialize(sc_parameter_collection_handle)
-      sc_parameter_collection_size = RedSnow::Binding.sc_parameter_collection_size(sc_parameter_collection_handle)
+    # @param parameters [json]
+    def initialize(parameters)
       @collection = []
 
-      return if sc_parameter_collection_size == 0
+      return if parameters.nil?
 
-      parameters_size = sc_parameter_collection_size - 1
-
-      (0..parameters_size).each do |index|
-        sc_parameter_handle = RedSnow::Binding.sc_parameter_handle(sc_parameter_collection_handle, index)
-        @collection << Parameter.new(sc_parameter_handle)
+      parameters.each do |item|
+        @collection << Parameter.new(item)
       end
     end
   end
@@ -212,22 +198,18 @@ module RedSnow
     attr_accessor :schema
     attr_accessor :reference
 
-    # @param sc_payload_handle_resource [FFI::Pointer]
-    def initialize(sc_payload_handle_resource)
-      @name = RedSnow::Binding.sc_payload_name(sc_payload_handle_resource)
-      @description = RedSnow::Binding.sc_payload_description(sc_payload_handle_resource)
-      @body = RedSnow::Binding.sc_payload_body(sc_payload_handle_resource)
-      @schema = RedSnow::Binding.sc_payload_schema(sc_payload_handle_resource)
+    # @param payload [json]
+    def initialize(payload)
+      @name = payload.fetch('name', '')
+      @description = payload.fetch('description', '')
+      @body = payload.fetch('body', '')
+      @schema = payload.fetch('schema', '')
 
-      sc_reference_handle_payload = RedSnow::Binding.sc_reference_handle_payload(sc_payload_handle_resource)
-      sc_reference_id = RedSnow::Binding.sc_reference_id(sc_reference_handle_payload)
-
-      unless sc_reference_id.empty?
-        @reference = ReferenceNode.new(sc_reference_id)
+      if payload.key?('reference') && payload['reference'].key?('id')
+        @reference = ReferenceNode.new(payload['reference']['id'])
       end
 
-      sc_header_collection_handle_payload = RedSnow::Binding.sc_header_collection_handle_payload(sc_payload_handle_resource)
-      @headers = Headers.new(sc_header_collection_handle_payload)
+      @headers = Headers.new(payload.fetch('headers', nil))
     end
   end
 
@@ -239,42 +221,24 @@ module RedSnow
     attr_accessor :requests
     attr_accessor :responses
 
-    # @param sc_transaction_example_handle [FFI::Pointer]
-    def initialize(sc_transaction_example_handle)
-      @name  = RedSnow::Binding.sc_transaction_example_name(sc_transaction_example_handle)
-      @description = RedSnow::Binding.sc_transaction_example_description(sc_transaction_example_handle)
+    # @param example [json]
+    def initialize(example)
+      @name = example.fetch('name', '')
+      @description = example.fetch('description', '')
 
-      # BP Resource Actions Examples Requests
       @requests = []
-      sc_payload_collection_handle_requests = RedSnow::Binding.sc_payload_collection_handle_requests(sc_transaction_example_handle)
-      sc_payload_collection_size_requests = RedSnow::Binding.sc_payload_collection_size(sc_payload_collection_handle_requests)
-
-      if sc_payload_collection_size_requests > 0
-        requests_size = sc_payload_collection_size_requests - 1
-
-        (0..requests_size).each do |index|
-          sc_payload_handle = RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_requests, index)
-          @requests << Payload.new(sc_payload_handle).tap do |payload|
-            example_instance = self
-            payload.define_singleton_method(:example) { example_instance }
-          end
+      example.key?('requests') && example['requests'].each do |request|
+        @requests << Payload.new(request).tap do |inst|
+          example_instance = self
+          inst.define_singleton_method(:example) { example_instance }
         end
       end
 
-      # BP Resource Actions Examples Responses
       @responses = []
-      sc_payload_collection_handle_responses = RedSnow::Binding.sc_payload_collection_handle_responses(sc_transaction_example_handle)
-      sc_payload_collection_size_responses = RedSnow::Binding.sc_payload_collection_size(sc_payload_collection_handle_responses)
-
-      return if sc_payload_collection_size_responses == 0
-
-      responses_size = sc_payload_collection_size_responses - 1
-
-      (0..responses_size).each do |index|
-        sc_payload_handle = RedSnow::Binding.sc_payload_handle(sc_payload_collection_handle_responses, index)
-        @responses << Payload.new(sc_payload_handle).tap do |payload|
+      example.key?('responses') && example['responses'].each do |response|
+        @responses << Payload.new(response).tap do |inst|
           example_instance = self
-          payload.define_singleton_method(:example) { example_instance }
+          inst.define_singleton_method(:example) { example_instance }
         end
       end
     end
@@ -286,33 +250,34 @@ module RedSnow
   # @attr method [String] HTTP request method or nil
   # @attr parameters [Parameters] action-specific URI parameters or nil
   # @attr examples [Array<TransactionExample>] action transaction examples
+  # @attr relation [String] action relation attribute
+  # @attr uri_template [String] action uri template attribute
   class Action < NamedBlueprintNode
     attr_accessor :method
     attr_accessor :parameters
     attr_accessor :examples
+    attr_accessor :relation
+    attr_accessor :uri_template
 
-    # @param sc_action_handle [FFI::Pointer]
-    def initialize(sc_action_handle)
-      @name = RedSnow::Binding.sc_action_name(sc_action_handle)
-      @description = RedSnow::Binding.sc_action_description(sc_action_handle)
+    # @param action [json]
+    def initialize(action)
+      @name = action.fetch('name', '')
+      @description = action.fetch('description', '')
 
-      @method = RedSnow::Binding.sc_action_httpmethod(sc_action_handle)
+      @method = action.fetch('method', '')
 
-      @parameters = Parameters.new(RedSnow::Binding.sc_parameter_collection_handle_action(sc_action_handle))
+      @parameters = Parameters.new(action.fetch('parameters', nil))
+
+      if action.key?('attributes')
+        @relation = action['attributes'].fetch('relation', '')
+        @uri_template = action['attributes'].fetch('uriTemplate', '')
+      end
 
       @examples = []
-      sc_transaction_example_collection_handle = RedSnow::Binding.sc_transaction_example_collection_handle(sc_action_handle)
-      sc_transaction_example_collection_size = RedSnow::Binding.sc_transaction_example_collection_size(sc_transaction_example_collection_handle)
-
-      return if sc_transaction_example_collection_size == 0
-
-      examples_size = sc_transaction_example_collection_size - 1
-
-      (0..examples_size).each do |index|
-        sc_transaction_example_handle = RedSnow::Binding.sc_transaction_example_handle(sc_transaction_example_collection_handle, index)
-        @examples << TransactionExample.new(sc_transaction_example_handle).tap do |example|
+      action.key?('examples') && action['examples'].each do |example|
+        @examples << TransactionExample.new(example).tap do |inst|
           action_instance = self
-          example.define_singleton_method(:action) { action_instance }
+          inst.define_singleton_method(:action) { action_instance }
         end
       end
     end
@@ -331,30 +296,21 @@ module RedSnow
     attr_accessor :parameters
     attr_accessor :actions
 
-    # @param sc_resource_handle [FFI::Pointer]
-    def initialize(sc_resource_handle)
-      @name = RedSnow::Binding.sc_resource_name(sc_resource_handle)
-      @description = RedSnow::Binding.sc_resource_description(sc_resource_handle)
-      @uri_template = RedSnow::Binding.sc_resource_uritemplate(sc_resource_handle)
+    # @param resource [json]
+    def initialize(resource)
+      @name = resource.fetch('name', '')
+      @description = resource.fetch('description', '')
+      @uri_template = resource.fetch('uriTemplate', '')
 
-      sc_payload_handle_resource = RedSnow::Binding.sc_payload_handle_resource(sc_resource_handle)
-      @model = Payload.new(sc_payload_handle_resource)
+      @model = Payload.new(resource.fetch('model', nil))
 
-      @parameters = Parameters.new(RedSnow::Binding.sc_parameter_collection_handle_resource(sc_resource_handle))
+      @parameters = Parameters.new(resource.fetch('parameters', nil))
 
       @actions = []
-      sc_action_collection_handle = RedSnow::Binding.sc_action_collection_handle(sc_resource_handle)
-      sc_action_collection_size = RedSnow::Binding.sc_action_collection_size(sc_action_collection_handle)
-
-      return if sc_action_collection_size == 0
-
-      action_size = sc_action_collection_size - 1
-
-      (0..action_size).each do |index|
-        sc_action_handle = RedSnow::Binding.sc_action_handle(sc_action_collection_handle, index)
-        @actions << Action.new(sc_action_handle).tap do |action|
+      resource.key?('actions') && resource['actions'].each do |action|
+        @actions << Action.new(action).tap do |inst|
           resource_instance = self
-          action.define_singleton_method(:resource) { resource_instance }
+          inst.define_singleton_method(:resource) { resource_instance }
         end
       end
     end
@@ -367,24 +323,16 @@ module RedSnow
   class ResourceGroup < NamedBlueprintNode
     attr_accessor :resources
 
-    # @param sc_resource_group_handle [FFI::Pointer]
-    def initialize(sc_resource_group_handle)
-      @name = RedSnow::Binding.sc_resource_group_name(sc_resource_group_handle)
-      @description = RedSnow::Binding.sc_resource_group_description(sc_resource_group_handle)
+    # @param resource_group [json]
+    def initialize(resource_group)
+      @name = resource_group.fetch('name', '')
+      @description = resource_group.fetch('description', '')
 
       @resources = []
-      sc_resource_collection_handle = RedSnow::Binding.sc_resource_collection_handle(sc_resource_group_handle)
-      sc_resource_collection_size = RedSnow::Binding.sc_resource_collection_size(sc_resource_collection_handle)
-
-      return if sc_resource_collection_size == 0
-
-      resource_size = sc_resource_collection_size - 1
-
-      (0..resource_size).each do |index|
-        sc_resource_handle = RedSnow::Binding.sc_resource_handle(sc_resource_collection_handle, index)
-        @resources << Resource.new(sc_resource_handle).tap do |resource|
+      resource_group.key?('resources') && resource_group['resources'].each do |resource|
+        @resources << Resource.new(resource).tap do |inst|
           resource_group_instance = self
-          resource.define_singleton_method(:resource_group) { resource_group_instance }
+          inst.define_singleton_method(:resource_group) { resource_group_instance }
         end
       end
     end
@@ -405,28 +353,15 @@ module RedSnow
     # Supported version of Api Blueprint
     SUPPORTED_VERSIONS = ['2.1']
 
-    # @param handle [FFI:Pointer]
-    def initialize(handle)
-      # BP name, desc
-      @name = RedSnow::Binding.sc_blueprint_name(handle)
-      @description = RedSnow::Binding.sc_blueprint_description(handle)
+    # @param ast [json]
+    def initialize(ast)
+      @name = ast.fetch('name', '')
+      @description = ast.fetch('description', '')
+      @metadata = Metadata.new(ast.fetch('metadata', nil))
 
-      # BP metadata
-      sc_metadata_collection_handle = RedSnow::Binding.sc_metadata_collection_handle(handle)
-      @metadata = Metadata.new(sc_metadata_collection_handle)
-
-      # BP Resource Groups
-      sc_resource_group_collection_handle = RedSnow::Binding.sc_resource_group_collection_handle(handle)
-      sc_resource_group_collection_size = RedSnow::Binding.sc_resource_group_collection_size(sc_resource_group_collection_handle)
       @resource_groups = []
-
-      return if sc_resource_group_collection_size == 0
-
-      group_size = sc_resource_group_collection_size - 1
-
-      (0..group_size).each do |index|
-        sc_resource_group_handle = RedSnow::Binding.sc_resource_group_handle(sc_resource_group_collection_handle, index)
-        @resource_groups << ResourceGroup.new(sc_resource_group_handle)
+      ast.key?('resourceGroups') && ast['resourceGroups'].each do |resource_group|
+        @resource_groups << ResourceGroup.new(resource_group)
       end
     end
   end
