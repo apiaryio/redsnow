@@ -19,19 +19,19 @@ module RedSnow
     # Supported version of Api Blueprint
     SUPPORTED_VERSIONS = ['2.1']
 
-    # @param report [ string or nil ]
-    def initialize(report)
-      report = JSON.parse(report)
+    # @param parse_result [ string or nil ]
+    def initialize(parse_result)
+      parse_result = JSON.parse(parse_result)
 
-      @ast = Blueprint.new(report['ast'])
-      @sourcemap = RedSnow::Sourcemap::Blueprint.new(report['sourcemap'])
+      @ast = Blueprint.new(parse_result['ast'])
+      @sourcemap = RedSnow::Sourcemap::Blueprint.new(parse_result['sourcemap'])
 
       @warnings = []
-      report.key?('warnings') && report['warnings'].each do |warning|
+      parse_result.key?('warnings') && parse_result['warnings'].each do |warning|
         @warnings << source_annotation(warning)
       end
 
-      @error = source_annotation(report['error'])
+      @error = source_annotation(parse_result['error'])
     end
 
     protected
