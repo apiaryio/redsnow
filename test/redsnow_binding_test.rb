@@ -4,17 +4,17 @@ require 'json'
 class RedSnowBindingTest < Test::Unit::TestCase
   context 'RedSnow Binding' do
     should 'convert API Blueprint to AST' do
-      report = FFI::MemoryPointer.new :pointer
+      parse_result = FFI::MemoryPointer.new :pointer
 
-      RedSnow::Binding.drafter_c_parse("meta: data\nfoo:bar\n#XXXX\ndescription for it", 4, report)
+      RedSnow::Binding.drafter_c_parse("meta: data\nfoo:bar\n#XXXX\ndescription for it", 4, parse_result)
 
-      report = report.get_pointer(0)
-      assert !report.null?
+      parse_result = parse_result.get_pointer(0)
+      assert !parse_result.null?
 
-      report_as_string = report.null? ? nil : report.read_string
-      assert_not_nil report_as_string
+      parse_result_as_string = parse_result.null? ? nil : parse_result.read_string
+      assert_not_nil parse_result_as_string
 
-      parsed = JSON.parse(report_as_string)
+      parsed = JSON.parse(parse_result_as_string)
 
       assert_equal 'XXXX', parsed['ast']['name']
       assert_equal 'description for it', parsed['ast']['description']
