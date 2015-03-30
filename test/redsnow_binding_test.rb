@@ -1,49 +1,23 @@
 require '_helper'
+require 'json'
 # RedSnowBindingTest
 class RedSnowBindingTest < Test::Unit::TestCase
   context 'RedSnow Binding' do
     should 'convert API Blueprint to AST' do
-      report = FFI::MemoryPointer.new :pointer
-      blueprint = FFI::MemoryPointer.new :pointer
-      sourcemap = FFI::MemoryPointer.new :pointer
+      parse_result = FFI::MemoryPointer.new :pointer
 
-      RedSnow::Binding.sc_c_parse("meta: data\nfoo:bar\n#XXXX\ndescription for it", 4, report, blueprint, sourcemap)
+      RedSnow::Binding.drafter_c_parse("meta: data\nfoo:bar\n#XXXX\ndescription for it", 4, parse_result)
 
-      blueprint = blueprint.get_pointer(0)
-      report = report.get_pointer(0)
-      sourcemap = sourcemap.get_pointer(0)
+      parse_result = parse_result.get_pointer(0)
+      assert !parse_result.null?
 
-      assert_equal 'XXXX', RedSnow::Binding.sc_blueprint_name(blueprint)
+      parse_result_as_string = parse_result.null? ? nil : parse_result.read_string
+      assert_not_nil parse_result_as_string
 
-      sm_bluperint_name = RedSnow::Binding.sc_sm_blueprint_name(sourcemap)
-      assert_equal 1, RedSnow::Binding.sc_source_map_size(sm_bluperint_name)
-      assert_equal 19, RedSnow::Binding.sc_source_map_location(sm_bluperint_name, 0)
-      assert_equal 6, RedSnow::Binding.sc_source_map_length(sm_bluperint_name, 0)
+      parsed = JSON.parse(parse_result_as_string)
 
-      assert_equal 'description for it', RedSnow::Binding.sc_blueprint_description(blueprint)
-
-      sm_bluperint_description = RedSnow::Binding.sc_sm_blueprint_description(sourcemap)
-      assert_equal 1, RedSnow::Binding.sc_source_map_size(sm_bluperint_description)
-      assert_equal 25, RedSnow::Binding.sc_source_map_location(sm_bluperint_description, 0)
-      assert_equal 18, RedSnow::Binding.sc_source_map_length(sm_bluperint_description, 0)
-
-      meta_data_col = RedSnow::Binding.sc_metadata_collection_handle(blueprint)
-      assert_equal 2, RedSnow::Binding.sc_metadata_collection_size(meta_data_col)
-
-      sm_meta_data_col = RedSnow::Binding.sc_sm_metadata_collection_handle(sourcemap)
-      assert_equal 2, RedSnow::Binding.sc_sm_metadata_collection_size(sm_meta_data_col)
-
-      warnings = RedSnow::Binding.sc_warnings_handler(report)
-      assert_equal 0, RedSnow::Binding.sc_warnings_size(warnings)
-
-      error = RedSnow::Binding.sc_error_handler(report)
-      assert_equal '', RedSnow::Binding.sc_error_message(error)
-      assert_equal 0, RedSnow::Binding.sc_error_code(error)
-      assert_equal 0, RedSnow::Binding.sc_error_ok(error)
-
-      RedSnow::Binding.sc_blueprint_free(blueprint)
-      RedSnow::Binding.sc_sm_blueprint_free(sourcemap)
-      RedSnow::Binding.sc_report_free(report)
+      assert_equal 'XXXX', parsed['ast']['name']
+      assert_equal 'description for it', parsed['ast']['description']
     end
   end
 end

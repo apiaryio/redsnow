@@ -1,8 +1,10 @@
+require 'json'
+
 module RedSnow
   # Parse Result
   # @see https://github.com/apiaryio/api-blueprint-ast/blob/master/Parse%20Result.md
   # @param ast [Blueprint]
-  # @param error [Hash] Description of a parsing error as occurred during parsing. If this field is present and code different from 0 then the content of ast field should be ignored.
+  # @param error [Hash] Description of a parsing error as occurred during parsing. If this field is present && code different from 0 then the content of ast field should be ignored.
   # @param warnings [Array<Hash>] Ordered array of parser warnings as occurred during the parsing.
   # @param sourcemap [BlueprintSourcemap]
   class ParseResult
@@ -17,51 +19,36 @@ module RedSnow
     # Supported version of Api Blueprint
     SUPPORTED_VERSIONS = ['2.1']
 
-    # @param report_handle [FFI::Pointer]
-    def initialize(report_handle, blueprint_handle, sourcemap_handle)
-      @ast = Blueprint.new(blueprint_handle)
-      @sourcemap = RedSnow::Sourcemap::Blueprint.new(sourcemap_handle)
+    # @param parse_result [ string or nil ]
+    def initialize(parse_result)
+      parse_result = JSON.parse(parse_result)
 
-      warnings = RedSnow::Binding.sc_warnings_handler(report_handle)
-      warnings_size = RedSnow::Binding.sc_warnings_size(warnings)
+      @ast = Blueprint.new(parse_result['ast'])
+      @sourcemap = RedSnow::Sourcemap::Blueprint.new(parse_result['sourcemap'])
 
       @warnings = []
-
-      (0..(warnings_size - 1)).each do |index|
-        sc_warning_handler = RedSnow::Binding.sc_warning_handler(warnings, index)
-
-        warning = {}
-        warning[:message] = RedSnow::Binding.sc_warning_message(sc_warning_handler)
-        warning[:code] = RedSnow::Binding.sc_warning_code(sc_warning_handler)
-        warning[:ok] = RedSnow::Binding.sc_warning_ok(sc_warning_handler)
-
-        sc_location_handler = RedSnow::Binding.sc_location_handler(sc_warning_handler)
-        sc_location_size = RedSnow::Binding.sc_location_size(sc_location_handler)
-        warning[:location] = []
-
-        if sc_location_size > 0
-          (0..(sc_location_size - 1)).each do |index_size|
-            warning[:location] << Location.new(sc_location_handler, index_size)
-          end
-        end
-        @warnings << warning
+      parse_result.key?('warnings') && parse_result['warnings'].each do |warning|
+        @warnings << source_annotation(warning)
       end
 
-      error_handler = RedSnow::Binding.sc_error_handler(report_handle)
-      @error = {}
-      @error[:message] = RedSnow::Binding.sc_error_message(error_handler)
-      @error[:code] = RedSnow::Binding.sc_error_code(error_handler)
-      @error[:ok] = RedSnow::Binding.sc_error_ok(error_handler)
+      @error = source_annotation(parse_result['error'])
+    end
 
-      sc_location_handler = RedSnow::Binding.sc_location_handler(error_handler)
-      sc_location_size = RedSnow::Binding.sc_location_size(sc_location_handler)
-      @error[:location] = []
+    protected
 
-      return if sc_location_size == 0
+    def source_annotation(json)
+      annotation = {}
 
-      (0..(sc_location_size - 1)).each do |index|
-        @error[:location] << Location.new(sc_location_handler, index)
+      annotation[:message] = json['message']
+      annotation[:code] = json['code']
+      annotation[:ok] = json.fetch('code', 0)
+
+      annotation[:location] = []
+      json.key?('location') && json['location'].each do |location|
+        annotation[:location] << Location.new(location)
       end
+
+      annotation
     end
   end
 
@@ -72,11 +59,10 @@ module RedSnow
     attr_accessor :index
     attr_accessor :length
 
-    # @param location_hander [FFI:Pointer]
-    # @param index [Number]
-    def initialize(location_hander, index)
-      @length = RedSnow::Binding.sc_location_length(location_hander, index)
-      @index = RedSnow::Binding.sc_location_location(location_hander, index)
+    # @param location [json]
+    def initialize(location)
+      @length = location['length']
+      @index = location['index']
     end
   end
 
