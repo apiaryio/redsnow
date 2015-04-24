@@ -10,8 +10,8 @@ module RedSnow
   include Binding
 
   # Options
-  EXPORT_SOURCEMAP_OPTION_KEY = :'exportSourcemap'
-  REQUIRE_BLUEPRINT_NAME_OPTION_KEY = :'requireBlueprintName'
+  EXPORT_SOURCEMAP_OPTION_KEY = :exportSourcemap
+  REQUIRE_BLUEPRINT_NAME_OPTION_KEY = :requireBlueprintName
 
   # Parse options
   attr_accessor :options
