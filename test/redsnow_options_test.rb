@@ -1,10 +1,10 @@
 require '_helper'
 # RedSnowOptionsTest
-class RedSnowOptionsTest < Test::Unit::TestCase
+class RedSnowOptionsTest < Minitest::Test
   context 'Test arguments' do
     context 'Arguments' do
       should "raise error if first parameter isn't String" do
-        exception = assert_raise(ArgumentError) { RedSnow.parse(1) }
+        exception = assert_raises(ArgumentError) { RedSnow.parse(1) }
         assert_equal('Expected string value', exception.message)
       end
 

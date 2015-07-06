@@ -1,7 +1,7 @@
 require '_helper'
 require 'unindent'
 # RedSnowParseResultTest
-class RedSnowParseResultTest < Test::Unit::TestCase
+class RedSnowParseResultTest < Minitest::Test
   context 'Simple API' do
     setup do
       @result = RedSnow.parse('# My API', 4)

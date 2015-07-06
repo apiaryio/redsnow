@@ -1,7 +1,7 @@
 require '_helper'
 require 'unindent'
 # RedSnowParsingTest
-class RedSnowSourcemapTest < Test::Unit::TestCase
+class RedSnowSourcemapTest < Minitest::Test
   context 'API Blueprint parser' do
     context 'API' do
       setup do

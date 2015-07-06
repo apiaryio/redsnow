@@ -1,12 +1,11 @@
 require 'bundler/setup'
 
-require 'test/unit'
+require 'minitest/autorun'
 require 'shoulda'
-require 'turn' unless ENV['TM_FILEPATH'] || ENV['CI']
 require 'mocha'
 require File.join(File.expand_path('../../lib/redsnow.rb', __FILE__))
 # Test Helper
-class TestHelper < Test::Unit::TestCase
+class TestHelper < Minitest::Test
   def fixture_file(name)
     File.read File.expand_path("../fixtures/#{name}", __FILE__)
   end
