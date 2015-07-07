@@ -1,7 +1,7 @@
 require '_helper'
 require 'json'
 # RedSnowBindingTest
-class RedSnowBindingTest < Test::Unit::TestCase
+class RedSnowBindingTest < Minitest::Test
   context 'RedSnow Binding' do
     should 'convert API Blueprint to AST' do
       parse_result = FFI::MemoryPointer.new :pointer
@@ -12,7 +12,7 @@ class RedSnowBindingTest < Test::Unit::TestCase
       assert !parse_result.null?
 
       parse_result_as_string = parse_result.null? ? nil : parse_result.read_string
-      assert_not_nil parse_result_as_string
+      refute_nil parse_result_as_string
 
       parsed = JSON.parse(parse_result_as_string)
 

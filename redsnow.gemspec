@@ -28,9 +28,9 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'bundler', '>= 1.7.0'
   gem.add_dependency 'yard', '~> 0.8.7.4'
 
+  gem.add_development_dependency 'minitest'
   gem.add_development_dependency 'shoulda'
   gem.add_development_dependency 'mocha'
-  gem.add_development_dependency 'turn'
   gem.add_development_dependency 'unindent'
   gem.add_development_dependency 'rubocop'
   gem.add_development_dependency 'guard-rubocop'

@@ -2,7 +2,7 @@ require '_helper'
 require 'unindent'
 
 # RedSnowParsingTest
-class RedSnowParsingAPITest < Test::Unit::TestCase
+class RedSnowParsingAPITest < Minitest::Test
   # https://github.com/apiaryio/protagonist/blob/master/test/parser-test.coffee
   context 'API' do
     setup do
@@ -30,7 +30,7 @@ class RedSnowParsingAPITest < Test::Unit::TestCase
   end
 end
 
-class RedSnowParsingGroupTest < Test::Unit::TestCase
+class RedSnowParsingGroupTest < Minitest::Test
   context 'Group' do
     setup do
       source = <<-STR
@@ -71,7 +71,7 @@ class RedSnowParsingGroupTest < Test::Unit::TestCase
   end
 end
 
-class RedSnowParsingResourceTest < Test::Unit::TestCase
+class RedSnowParsingResourceTest < Minitest::Test
   context 'Resource' do
     setup do
       source = <<-STR
@@ -156,7 +156,7 @@ class RedSnowParsingResourceTest < Test::Unit::TestCase
   end
 end
 
-class RedSnowParsingActionTest < Test::Unit::TestCase
+class RedSnowParsingActionTest < Minitest::Test
   context 'Action' do
     setup do
       source = <<-STR
@@ -208,7 +208,7 @@ class RedSnowParsingActionTest < Test::Unit::TestCase
   end
 end
 
-class RedSnowParsingMetadataTest < Test::Unit::TestCase
+class RedSnowParsingMetadataTest < Minitest::Test
   context 'parses blueprint metadata' do
     setup do
       source = <<-STR
@@ -249,7 +249,7 @@ class RedSnowParsingMetadataTest < Test::Unit::TestCase
   end
 end
 
-class RedSnowParsingParametersTest < Test::Unit::TestCase
+class RedSnowParsingParametersTest < Minitest::Test
   context 'parses action attributes' do
     setup do
       source = <<-STR
@@ -381,7 +381,7 @@ class RedSnowParsingParametersTest < Test::Unit::TestCase
   end
 end
 
-class RedSnowParsingMultipleTransactionsTest < Test::Unit::TestCase
+class RedSnowParsingMultipleTransactionsTest < Minitest::Test
   context 'parses multiple transactions' do
     setup do
       source = <<-STR
