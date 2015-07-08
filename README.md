@@ -73,6 +73,13 @@ $ bundle install
 $ rake test
 ```
 
+### Release
+Use `rake install` to test locally released version.
+
+```sh
+$ rake release
+```
+
 ### Contribute
 Fork & Pull Request.
 
