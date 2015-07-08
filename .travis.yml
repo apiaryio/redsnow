@@ -3,7 +3,7 @@ language: ruby
 rvm:
 - 1.9.3
 - 2.1.0
-- "2.2"
+- '2.2'
 script:
 - rake test
 - rake install
@@ -23,5 +23,14 @@ notifications:
     rooms:
       secure: d1RJSY+QU7y01wmqvxpgYsAyRzNzbAK2r1Ut9X87s5UOFB+5yxUgRocs4sKpGSpm0UVtD0u/G3H1wqbmWpxnYpmQYilTw9Qa04GDwJJ2/IraHU1fpGG+gZCsOMid7NjNl6jErbY8cfoUmCQdrUiYBgLowtxh5i8HbPT//Cb7mhU=
     template:
-      - '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message} (<a href="%{build_url}">Details</a>/<a href="%{compare_url}">Change view</a>)'
+    - ! '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}
+      (<a href="%{build_url}">Details</a>/<a href="%{compare_url}">Change view</a>)'
     format: html
+deploy:
+  provider: rubygems
+  api_key:
+    secure: H1fybpyLM915pBlPwn6rtrZ+IBzRumTasMC/vuwcJarBTiqIvYW4XXveA4Y2FNkuo7amCjjwujLDKUImhBM0Yyk0d2WTDC6izSUyP9/+MraicnKYX/biTzW13re/sUPr/FXI4HupvZsjBcKYA6F/eidPf4QM4O2LZ89FpW23/GY=
+  gem: redsnow
+  on:
+    tags: true
+    repo: apiaryio/redsnow
