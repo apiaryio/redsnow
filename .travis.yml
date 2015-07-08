@@ -32,6 +32,6 @@ deploy:
     secure: H1fybpyLM915pBlPwn6rtrZ+IBzRumTasMC/vuwcJarBTiqIvYW4XXveA4Y2FNkuo7amCjjwujLDKUImhBM0Yyk0d2WTDC6izSUyP9/+MraicnKYX/biTzW13re/sUPr/FXI4HupvZsjBcKYA6F/eidPf4QM4O2LZ89FpW23/GY=
   gem: redsnow
   on:
-    branch: master
+    all_branches: true
     tags: true
     rvm: 1.9.3
