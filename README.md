@@ -2,6 +2,9 @@
 
 # RedSnow [![Build Status](https://travis-ci.org/apiaryio/redsnow.png?branch=master)](https://travis-ci.org/apiaryio/redsnow)
 ### API Blueprint Parser for Ruby
+
+**NOTE**: *This library is deprecated and unmaintained. We recommend using [drafter](https://github.com/apiaryio/drafter) directly via [libffi](https://github.com/ffi/ffi/wiki).*
+
 Ruby binding for the [Snow Crash](https://github.com/apiaryio/snowcrash) library, also a thermonuclear weapon.
 
 API Blueprint is Web API documentation language. You can find API Blueprint documentation on the [API Blueprint site](http://apiblueprint.org).
