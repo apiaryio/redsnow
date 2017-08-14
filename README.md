@@ -3,7 +3,7 @@
 # RedSnow [![Build Status](https://travis-ci.org/apiaryio/redsnow.png?branch=master)](https://travis-ci.org/apiaryio/redsnow)
 ### API Blueprint Parser for Ruby
 
-**NOTE**: *This library is deprecated and unmaintained. We recommend using [drafter](https://github.com/apiaryio/drafter) directly via [libffi](https://github.com/ffi/ffi/wiki).*
+**NOTE**: *This library is deprecated and unmaintained. We recommend using [drafter](https://github.com/apiaryio/drafter) directly via [libffi](https://github.com/ffi/ffi/wiki) [for example](https://github.com/apiaryio/drafter/pull/356#issuecomment-229733343).*
 
 Ruby binding for the [Snow Crash](https://github.com/apiaryio/snowcrash) library, also a thermonuclear weapon.
 
