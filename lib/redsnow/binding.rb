@@ -14,9 +14,9 @@ module RedSnow
   module Binding
     extend FFI::Library
 
-    prefix = FFI::Platform.mac? ? '' : 'lib.target/'
-
-    ffi_lib File.expand_path("../../../ext/drafter/build/out/Release/#{prefix}libdrafter.#{FFI::Platform::LIBSUFFIX}", __FILE__)
+    # for unix/mac either a .so (unix) or .dylib (mac) is built
+    # Mac will accept both .so or .dylib so the below will work cross platform
+    ffi_lib  Dir.glob("./ext/drafter/build/out/Release/**/libdrafter.*").first
     enum :option, [
       :render_descriptions_option,
       :require_blueprint_name_option,
